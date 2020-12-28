@@ -10,7 +10,7 @@ class QuickReply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
       margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
         children: <Widget>[
@@ -19,17 +19,17 @@ class QuickReply extends StatelessWidget {
             children: <Widget>[
               Container(
                 margin: const EdgeInsets.only(right: 16.0),
-                child: new CircleAvatar(child: new Text('B')),
+                child: CircleAvatar(child:  Text('B')),
               ),
-              new Expanded(
-                child: new Column(
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    new Text(this.name,
-                        style: new TextStyle(fontWeight: FontWeight.bold)),
-                    new Container(
+                    Text(this.name,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Container(
                       margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                      child: new Text(title),
+                      child: Text(title),
                     ),
                   ],
                 ),
@@ -40,7 +40,7 @@ class QuickReply extends StatelessWidget {
             alignment: WrapAlignment.spaceBetween,
             direction: Axis.horizontal,
             children: quickReplies.map((quickReply) {
-              return new Container(
+              return Container(
                 margin: const EdgeInsets.all(5.0),
                 child: OutlineButton(
                   child: Text(quickReply),
@@ -49,7 +49,6 @@ class QuickReply extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(5))),
                   onPressed: () {
-
                     return insertQuickReply(quickReply);
                   },
                 ),
@@ -61,4 +60,3 @@ class QuickReply extends StatelessWidget {
     );
   }
 }
-

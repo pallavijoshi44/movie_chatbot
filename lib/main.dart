@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/message.dart';
+import 'package:flutter_app/widget/carousel.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 void main() => runApp(ChatBot());
@@ -91,14 +92,24 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         _showMessage(MessageType.QUICK_REPLY, replies.quickReplies,
             replies.title, null, "Bot", _insertQuickReply);
       } else {
-        _showMessage(
-            MessageType.CHAT_MESSAGE,
-            null,
-            response.getMessage() ??
-                new CardDialogflow(response.getListMessage()[0]).title,
-            false,
-            "Bot",
-            null);
+        var carouselSelect = response.getListMessage().firstWhere(
+                (element) => element.containsKey('carouselSelect'),
+            orElse: () => null);
+
+        if (carouselSelect != null) {
+          CarouselSelect carouselSelect = new CarouselSelect(response.getListMessage()[0]);
+          new Carousel();
+
+        } else {
+          _showMessage(
+              MessageType.CHAT_MESSAGE,
+              null,
+              response.getMessage() ??
+                  new CardDialogflow(response.getListMessage()[0]).title,
+              false,
+              "Bot",
+              null);
+        }
       }
     }
   }

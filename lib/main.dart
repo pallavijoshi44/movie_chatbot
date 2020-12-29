@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/message.dart';
-import 'package:flutter_app/widget/carousel.dart';
+import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 void main() => runApp(ChatBot());
@@ -90,16 +90,17 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       if (payload != null) {
         QuickReplies replies = new QuickReplies(payload['payload']);
         _showMessage(MessageType.QUICK_REPLY, replies.quickReplies,
-            replies.title, null, "Bot", _insertQuickReply);
+            replies.title, null, "Bot", _insertQuickReply, null);
       } else {
         var carouselSelect = response.getListMessage().firstWhere(
-                (element) => element.containsKey('carouselSelect'),
+            (element) => element.containsKey('carouselSelect'),
             orElse: () => null);
 
         if (carouselSelect != null) {
-          CarouselSelect carouselSelect = new CarouselSelect(response.getListMessage()[0]);
-          new Carousel();
-
+          CarouselSelect carouselSelect =
+              new CarouselSelect(response.getListMessage()[0]);
+          _showMessage(MessageType.CAROUSEL, null, null, null, "Bot", null,
+              carouselSelect);
         } else {
           _showMessage(
               MessageType.CHAT_MESSAGE,
@@ -108,14 +109,21 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   new CardDialogflow(response.getListMessage()[0]).title,
               false,
               "Bot",
+              null,
               null);
         }
       }
     }
   }
 
-  void _showMessage(MessageType type, List<String> replies, String messageText,
-      bool messageType, String messageName, Function insertQuickReply) {
+  void _showMessage(
+      MessageType type,
+      List<String> replies,
+      String messageText,
+      bool messageType,
+      String messageName,
+      Function insertQuickReply,
+      CarouselSelect carouselSelect) {
     Message message = new Message(
       messageType: type,
       quickReplies: replies,
@@ -123,6 +131,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       name: messageName,
       type: messageType,
       updateQuickReply: insertQuickReply,
+      carouselSelect: carouselSelect,
     );
     setState(() {
       _messages.insert(0, message);
@@ -131,7 +140,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   void _handleSubmitted(String text) {
     _textController.clear();
-    _showMessage(MessageType.CHAT_MESSAGE, null, text, true, "Promise", null);
+    _showMessage(
+        MessageType.CHAT_MESSAGE, null, text, true, "Promise", null, null);
     getDialogFlowResponse(text);
   }
 
@@ -142,16 +152,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         centerTitle: true,
         title: new Text("Flutter and Dialogflow"),
       ),
-      body: new Column(children: <Widget>[
-        new Flexible(
-            child: new ListView.builder(
-          padding: new EdgeInsets.all(8.0),
+      body: Column(children: <Widget>[
+        Flexible(
+            child: ListView.builder(
+          padding: EdgeInsets.all(8.0),
           reverse: true,
           itemBuilder: (_, int index) => _messages[index],
           itemCount: _messages.length,
         )),
-        new Divider(height: 1.0),
-        new Container(
+        Divider(height: 1.0),
+        Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
           child: _buildTextComposer(),
         ),

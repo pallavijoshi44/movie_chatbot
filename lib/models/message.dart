@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
+import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class Message extends StatelessWidget {
   final String text;
@@ -9,6 +11,7 @@ class Message extends StatelessWidget {
   final String name;
   final bool type;
   final Function updateQuickReply;
+  final CarouselSelect carouselSelect;
 
   Message(
       {this.messageType,
@@ -16,7 +19,8 @@ class Message extends StatelessWidget {
       this.name,
       this.type,
       this.quickReplies,
-      this.updateQuickReply});
+      this.updateQuickReply,
+      this.carouselSelect});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +32,9 @@ class Message extends StatelessWidget {
         name: this.name,
       );
     }
+    if (messageType == MessageType.CAROUSEL) {
+      return CarouselDialogSlider(this.carouselSelect);
+    }
     return ChatMessage(
       text: this.text,
       name: this.name,
@@ -36,4 +43,4 @@ class Message extends StatelessWidget {
   }
 }
 
-enum MessageType { CHAT_MESSAGE, QUICK_REPLY }
+enum MessageType { CHAT_MESSAGE, QUICK_REPLY, CAROUSEL }

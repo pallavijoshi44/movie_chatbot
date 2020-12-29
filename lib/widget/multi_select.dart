@@ -17,7 +17,6 @@ class MultiSelect extends StatefulWidget {
 
 class _MultiSelectState extends State<MultiSelect> {
   List<String> _selectedItems = [];
-  final _multiSelectKey = GlobalKey<FormFieldState>();
 
   @override
   void initState() {
@@ -70,6 +69,7 @@ class _MultiSelectState extends State<MultiSelect> {
                             items: _items,
                             onConfirm: (values) {
                               _selectedItems = values;
+                              widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
                             },
                           ),
                         ],

@@ -59,12 +59,11 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   }
 
   void _insertQuickReply(String reply) {
-    _handleSubmitted(reply);
+    getDialogFlowResponse(reply);
   }
 
   void getDialogFlowResponse(query) async {
     _textController.clear();
-
     try {
       AuthGoogle authGoogle =
           await AuthGoogle(fileJson: "assets/credentials.json").build();

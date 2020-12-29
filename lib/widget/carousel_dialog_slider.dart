@@ -78,7 +78,6 @@ class CarouselDialogSlider extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

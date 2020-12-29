@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
+import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
@@ -25,7 +26,7 @@ class Message extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (messageType == MessageType.QUICK_REPLY) {
-      return QuickReply(
+      return MultiSelect(
         title: this.text,
         quickReplies: this.quickReplies,
         insertQuickReply: updateQuickReply,

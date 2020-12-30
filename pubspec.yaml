@@ -22,6 +22,7 @@ dependencies:
   flutter_dialogflow: ^0.1.2
   carousel_slider: ^2.3.1
   multi_select_flutter: ^3.1.6
+  dash_chat: ^1.1.15
 
 
   # The following adds the Cupertino Icons font to your application.

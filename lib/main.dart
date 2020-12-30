@@ -8,6 +8,8 @@ import 'package:flutter_app/widget/chat_message.dart';
 import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
+const String ADDITIONAL_FILTERS = "ask-additional-filters";
+
 void main() => runApp(ChatBot());
 
 class ChatBot extends StatelessWidget {
@@ -66,13 +68,14 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   void _insertQuickReply(String selectedGenres) {
     _userMoviePreferences = selectedGenres;
-    getDialogFlowResponse("ask-additional-filters");
+    getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
   void getDialogFlowResponse(query) async {
     _textController.clear();
-    if (_userMoviePreferences != "") {
+    if (_userMoviePreferences != "" && query != ADDITIONAL_FILTERS) {
       query = query + " " + "[$_userMoviePreferences]";
+      _userMoviePreferences = "";
     }
     try {
       AuthGoogle authGoogle =

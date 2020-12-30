@@ -16,12 +16,13 @@ class MultiSelect extends StatefulWidget {
 }
 
 class _MultiSelectState extends State<MultiSelect> {
-  List<String> _selectedItems = [];
+  List<String> _selectedGenres = [];
 
   @override
   void initState() {
-    _selectedItems = this.widget.quickReplies;
     super.initState();
+
+    _selectedGenres = this.widget.quickReplies;
   }
 
   @override
@@ -59,7 +60,7 @@ class _MultiSelectState extends State<MultiSelect> {
                           borderRadius: BorderRadius.all(Radius.circular(15))),
                       child: Column(
                         children: <Widget>[
-                          MultiSelectBottomSheetField(
+                           MultiSelectBottomSheetField(
                             initialChildSize: 0.4,
                             listType: MultiSelectListType.CHIP,
                             searchable: true,
@@ -68,8 +69,9 @@ class _MultiSelectState extends State<MultiSelect> {
                             buttonIcon: Icon(Icons.arrow_drop_down),
                             items: _items,
                             onConfirm: (values) {
-                              _selectedItems = values;
-                              widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
+                              _selectedGenres = values;
+                              widget.insertQuickReply(_selectedGenres.reduce((previousValue, element) => previousValue + " " + element));
+                              //  widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
                             },
                           ),
                         ],

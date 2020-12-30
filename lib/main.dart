@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/carousel_model.dart';
+import 'package:flutter_app/models/chat_model.dart';
 import 'package:flutter_app/models/message.dart';
+import 'package:flutter_app/models/reply_model.dart';
 import 'package:flutter_app/widget/carousel_dialog_slider.dart';
+import 'package:flutter_app/widget/chat_message.dart';
+import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 void main() => runApp(ChatBot());
@@ -27,7 +32,8 @@ class ChatBotFlow extends StatefulWidget {
 }
 
 class _ChatBotFlowState extends State<ChatBotFlow> {
-  final List<Message> _messages = <Message>[];
+  final List<Message> _messages = [];
+  String _userMoviePreferences = "";
 
   final TextEditingController _textController = new TextEditingController();
 
@@ -58,12 +64,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     );
   }
 
-  void _insertQuickReply(String reply) {
-    getDialogFlowResponse(reply);
+  void _insertQuickReply(String selectedGenres) {
+    _userMoviePreferences = selectedGenres;
+    getDialogFlowResponse("ask-additional-filters");
   }
 
   void getDialogFlowResponse(query) async {
     _textController.clear();
+    if (_userMoviePreferences != "") {
+      query = query + " " + "[$_userMoviePreferences]";
+    }
     try {
       AuthGoogle authGoogle =
           await AuthGoogle(fileJson: "assets/credentials.json").build();
@@ -88,8 +98,17 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
       if (payload != null) {
         QuickReplies replies = new QuickReplies(payload['payload']);
-        _showMessage(MessageType.QUICK_REPLY, replies.quickReplies,
-            replies.title, null, "Bot", _insertQuickReply, null);
+
+        setState(() {
+          var replyModel = ReplyModel(
+            text: replies.title,
+            name: "Bot",
+            quickReplies: replies.quickReplies,
+            updateQuickReply: _insertQuickReply,
+            type: MessageType.QUICK_REPLY,
+          );
+          _messages.insert(0, replyModel);
+        });
       } else {
         var carouselSelect = response.getListMessage().firstWhere(
             (element) => element.containsKey('carouselSelect'),
@@ -98,49 +117,40 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         if (carouselSelect != null) {
           CarouselSelect carouselSelect =
               new CarouselSelect(response.getListMessage()[0]);
-          _showMessage(MessageType.CAROUSEL, null, null, null, "Bot", null,
-              carouselSelect);
+
+          setState(() {
+            var carouselModel = CarouselModel(
+              name: "Bot",
+              carouselSelect: carouselSelect,
+              type: MessageType.CAROUSEL,
+            );
+            _messages.insert(0, carouselModel);
+          });
         } else {
-          _showMessage(
-              MessageType.CHAT_MESSAGE,
-              null,
-              response.getMessage() ??
-                  new CardDialogflow(response.getListMessage()[0]).title,
-              false,
-              "Bot",
-              null,
-              null);
+          setState(() {
+            var chatModel = new ChatModel(
+                name: "Bot",
+                type: MessageType.CHAT_MESSAGE,
+                text: response.getMessage() ??
+                    new CardDialogflow(response.getListMessage()[0]).title,
+                chatType: false);
+            _messages.insert(0, chatModel);
+          });
         }
       }
     }
   }
 
-  void _showMessage(
-      MessageType type,
-      List<String> replies,
-      String messageText,
-      bool messageType,
-      String messageName,
-      Function insertQuickReply,
-      CarouselSelect carouselSelect) {
-    Message message = new Message(
-      messageType: type,
-      quickReplies: replies,
-      text: messageText,
-      name: messageName,
-      type: messageType,
-      updateQuickReply: insertQuickReply,
-      carouselSelect: carouselSelect,
-    );
-    setState(() {
-      _messages.insert(0, message);
-    });
-  }
-
   void _handleSubmitted(String text) {
     _textController.clear();
-    _showMessage(
-        MessageType.CHAT_MESSAGE, null, text, true, "Promise", null, null);
+    setState(() {
+      var chatModel = new ChatModel(
+          name: "Pallavi",
+          type: MessageType.CHAT_MESSAGE,
+          text: text,
+          chatType: true);
+      _messages.insert(0, chatModel);
+    });
     getDialogFlowResponse(text);
   }
 
@@ -156,7 +166,31 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             child: ListView.builder(
           padding: EdgeInsets.all(8.0),
           reverse: true,
-          itemBuilder: (_, int index) => _messages[index],
+          itemBuilder: (_, int index) {
+            var message = _messages[index];
+            if (message != null) {
+              if (message.type == MessageType.CHAT_MESSAGE) {
+                return ChatMessage(
+                  text: (message as ChatModel).text,
+                  name: (message as ChatModel).name,
+                  type: (message as ChatModel).chatType,
+                );
+              }
+              if (message.type == MessageType.QUICK_REPLY) {
+                return MultiSelect(
+                  title: (message as ReplyModel).text,
+                  quickReplies: (message as ReplyModel).quickReplies,
+                  insertQuickReply: (message as ReplyModel).updateQuickReply,
+                  name: (message as ReplyModel).name,
+                );
+              }
+              if (message.type == MessageType.CAROUSEL) {
+                return CarouselDialogSlider(
+                    (message as CarouselModel).carouselSelect);
+              }
+            }
+            return Container();
+          },
           itemCount: _messages.length,
         )),
         Divider(height: 1.0),

@@ -1,12 +1,23 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/movie_webview.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
-class CarouselDialogSlider extends StatelessWidget {
+class CarouselDialogSlider extends StatefulWidget {
   CarouselDialogSlider(this.carouselSelect);
 
   final CarouselSelect carouselSelect;
+
+  @override
+  _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
+}
+
+class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
+  var _postalCode = 'US';
 
   _inform(BuildContext context, String movieName) {
     Navigator.push(
@@ -21,7 +32,7 @@ class CarouselDialogSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<String> imageList =
-        carouselSelect.items.map((item) => item.image.imageUri).toList();
+        widget.carouselSelect.items.map((item) => item.image.imageUri).toList();
     return Container(
         child: Column(
       children: <Widget>[
@@ -34,8 +45,21 @@ class CarouselDialogSlider extends StatelessWidget {
           ),
           items: imageList
               .map((item) => InkWell(
-                    onTap: () => _inform(context,
-                        '${carouselSelect.items[imageList.indexOf(item)].title}'),
+                    onTap: () async {
+                     // var permission = await Geolocator.checkPermission();
+                      var currentPosition = await Geolocator.getCurrentPosition();
+                      var placeMarks = await placemarkFromCoordinates(
+                          currentPosition.latitude, currentPosition.longitude);
+
+                      if (placeMarks != null && placeMarks.length > 0) {
+                        setState(() {
+                          _postalCode = placeMarks[0].isoCountryCode;
+                        });
+                      }
+
+                      // return _inform(context,
+                      // '${widget.carouselSelect.items[imageList.indexOf(item)].title}');
+                    },
                     child: Card(
                       elevation: 5,
                       margin: EdgeInsets.all(5),
@@ -66,7 +90,7 @@ class CarouselDialogSlider extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 20.0),
                               child: Text(
-                                '${carouselSelect.items[imageList.indexOf(item)].title}',
+                                '${widget.carouselSelect.items[imageList.indexOf(item)].title}',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 20.0,
@@ -86,7 +110,7 @@ class CarouselDialogSlider extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 20.0),
                               child: Text(
-                                '${carouselSelect.items[imageList.indexOf(item)].description}',
+                                '${widget.carouselSelect.items[imageList.indexOf(item)].description}',
                                 maxLines: 5,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -105,4 +129,16 @@ class CarouselDialogSlider extends StatelessWidget {
       ],
     ));
   }
+}
+
+enum _PositionItemType {
+  permission,
+  position,
+}
+
+class _PositionItem {
+  _PositionItem(this.type, this.displayValue);
+
+  final _PositionItemType type;
+  final String displayValue;
 }

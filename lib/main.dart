@@ -90,7 +90,11 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   void _insertQuickReply(String reply) {
     _textController.clear();
-    getDialogFlowResponse(reply);
+    if (reply.toLowerCase() == 'yes') {
+      getDialogFlowResponse(reply);
+    } else {
+      getDialogFlowResponse(ADDITIONAL_FILTERS);
+    }
   }
 
   void getDialogFlowResponse(query) async {
@@ -164,15 +168,15 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
           if (multiSelect != null) {
             CardDialogflow card =
-            new CardDialogflow(response.getListMessage()[0]);
+                new CardDialogflow(response.getListMessage()[0]);
 
             setState(() {
               var multiSelectModel = MultiSelectModel(
-              text: card.title,
-              name: "Bot",
-              buttons: card.buttons,
-              updateMultiSelect: _insertMultiSelect,
-              type: MessageType.MULTI_SELECT,
+                text: card.title,
+                name: "Bot",
+                buttons: card.buttons,
+                updateMultiSelect: _insertMultiSelect,
+                type: MessageType.MULTI_SELECT,
               );
               _messages.insert(0, multiSelectModel);
             });
@@ -239,7 +243,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 return MultiSelect(
                   title: (message as MultiSelectModel).text,
                   buttons: (message as MultiSelectModel).buttons,
-                  insertMultiSelect: (message as MultiSelectModel).updateMultiSelect,
+                  insertMultiSelect:
+                      (message as MultiSelectModel).updateMultiSelect,
                   name: (message as MultiSelectModel).name,
                   previouslySelected: _selectedGenres,
                 );

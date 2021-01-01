@@ -16,10 +16,26 @@ class ChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ChatBot flow flutter',
+      title: 'Movie Chatbot',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.purple,
+          errorColor: Colors.red,
+          textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold),
+              headline: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 14),
+              button: TextStyle(color: Colors.white)),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                    title: TextStyle(
+                        fontFamily: 'OpenSans',
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ))),
       home: ChatBotFlow(title: 'ChatBotFlow Home Page'),
     );
   }
@@ -162,7 +178,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text("Flutter and Dialogflow"),
+        title: new Text("Movie Chatbot"),
       ),
       body: Column(children: <Widget>[
         Flexible(

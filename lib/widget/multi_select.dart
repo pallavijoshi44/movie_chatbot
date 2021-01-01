@@ -49,10 +49,19 @@ class _MultiSelectState extends State<MultiSelect> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(this.widget.name,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: Theme.of(context).textTheme.title),
                     Container(
-                      margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                      child: Text(widget.title),
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(25),
+                          topLeft: Radius.circular(25),
+                          bottomLeft: Radius.circular(25),
+                        ),
+                      ),
+                      margin: const EdgeInsets.only(top: 5.0),
+                      padding: const EdgeInsets.all(15),
+                      child: Text(widget.title,  style: Theme.of(context).textTheme.headline),
                     ),
                     Container(
                       decoration: BoxDecoration(

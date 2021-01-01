@@ -25,9 +25,7 @@ class ChatBot extends StatelessWidget {
                   fontFamily: 'OpenSans',
                   fontSize: 16,
                   fontWeight: FontWeight.bold),
-              headline: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontSize: 14),
+              headline: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
               button: TextStyle(color: Colors.white)),
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
@@ -51,7 +49,7 @@ class ChatBotFlow extends StatefulWidget {
 
 class _ChatBotFlowState extends State<ChatBotFlow> {
   final List<Message> _messages = [];
-  String _userMoviePreferences = "";
+  List<String> _selectedGenres = [];
 
   final TextEditingController _textController = new TextEditingController();
 
@@ -82,16 +80,22 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     );
   }
 
-  void _insertQuickReply(String selectedGenres) {
-    _userMoviePreferences = selectedGenres;
+  void _insertQuickReply(List<String> selectedGenres) {
+    _selectedGenres = selectedGenres;
     getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
   void getDialogFlowResponse(query) async {
     _textController.clear();
-    if (_userMoviePreferences != "" && query != ADDITIONAL_FILTERS) {
+
+    if (_selectedGenres != null &&
+        _selectedGenres.isNotEmpty &&
+        query != ADDITIONAL_FILTERS) {
+      var _userMoviePreferences = _selectedGenres
+          .reduce((previousValue, element) => previousValue + " " + element);
+
       query = query + " " + "[$_userMoviePreferences]";
-      _userMoviePreferences = "";
+      _selectedGenres = [];
     }
     try {
       AuthGoogle authGoogle =
@@ -201,6 +205,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   quickReplies: (message as ReplyModel).quickReplies,
                   insertQuickReply: (message as ReplyModel).updateQuickReply,
                   name: (message as ReplyModel).name,
+                  previouslySelected: _selectedGenres,
                 );
               }
               if (message.type == MessageType.CAROUSEL) {

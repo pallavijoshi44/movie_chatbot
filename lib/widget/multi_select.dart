@@ -2,33 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class MultiSelect extends StatefulWidget {
+class MultiSelect extends StatelessWidget {
   MultiSelect(
-      {this.quickReplies, this.insertQuickReply, this.title, this.name});
+      {this.quickReplies, this.insertQuickReply, this.title, this.name, this.previouslySelected});
 
   final List<String> quickReplies;
   final String title;
   final String name;
   final Function insertQuickReply;
-
-  @override
-  _MultiSelectState createState() => _MultiSelectState();
-}
-
-class _MultiSelectState extends State<MultiSelect> {
-  List<String> _selectedGenres = [];
-
-  @override
-  void initState() {
-    super.initState();
-
-    _selectedGenres = this.widget.quickReplies;
-  }
+  final List<String> previouslySelected;
 
   @override
   Widget build(BuildContext context) {
     final _items = this
-        .widget
         .quickReplies
         .map((reply) => MultiSelectItem<String>(reply, reply))
         .toList();
@@ -48,7 +34,7 @@ class _MultiSelectState extends State<MultiSelect> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(this.widget.name,
+                    Text(this.name,
                     style: Theme.of(context).textTheme.title),
                     Container(
                       decoration: BoxDecoration(
@@ -61,7 +47,7 @@ class _MultiSelectState extends State<MultiSelect> {
                       ),
                       margin: const EdgeInsets.only(top: 5.0),
                       padding: const EdgeInsets.all(15),
-                      child: Text(widget.title,  style: Theme.of(context).textTheme.headline),
+                      child: Text(title,  style: Theme.of(context).textTheme.headline),
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -70,6 +56,7 @@ class _MultiSelectState extends State<MultiSelect> {
                       child: Column(
                         children: <Widget>[
                            MultiSelectBottomSheetField(
+                             initialValue: previouslySelected,
                             initialChildSize: 0.4,
                             listType: MultiSelectListType.CHIP,
                             searchable: true,
@@ -78,8 +65,7 @@ class _MultiSelectState extends State<MultiSelect> {
                             buttonIcon: Icon(Icons.arrow_drop_down),
                             items: _items,
                             onConfirm: (values) {
-                              _selectedGenres = values;
-                              widget.insertQuickReply(_selectedGenres.reduce((previousValue, element) => previousValue + " " + element));
+                              insertQuickReply(values);
                               //  widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
                             },
                           ),

@@ -20,6 +20,7 @@ class CarouselDialogSlider extends StatelessWidget {
             autoPlay: true,
             aspectRatio: 1.0,
             enlargeCenterPage: true,
+            enableInfiniteScroll: false,
           ),
           items: imageList
               .map((item) => Card(

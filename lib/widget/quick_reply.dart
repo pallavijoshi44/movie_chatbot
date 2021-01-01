@@ -37,7 +37,7 @@ class QuickReply extends StatelessWidget {
             ],
           ),
           Wrap(
-            alignment: WrapAlignment.spaceBetween,
+            alignment: WrapAlignment.spaceAround,
             direction: Axis.horizontal,
             children: quickReplies.map((quickReply) {
               return Container(

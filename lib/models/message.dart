@@ -6,4 +6,4 @@ class Message {
   Message({this.text, this.name, this.type});
 }
 
-enum MessageType { CHAT_MESSAGE, QUICK_REPLY, CAROUSEL }
+enum MessageType { CHAT_MESSAGE, QUICK_REPLY, CAROUSEL, MULTI_SELECT }

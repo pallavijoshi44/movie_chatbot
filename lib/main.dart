@@ -6,7 +6,10 @@ import 'package:flutter_app/models/reply_model.dart';
 import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
 import 'package:flutter_app/widget/multi_select.dart';
+import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
+
+import 'models/multi_select_model.dart';
 
 const String ADDITIONAL_FILTERS = "ask-additional-filters";
 
@@ -80,9 +83,14 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     );
   }
 
-  void _insertQuickReply(List<String> selectedGenres) {
+  void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
     getDialogFlowResponse(ADDITIONAL_FILTERS);
+  }
+
+  void _insertQuickReply(String reply) {
+    _textController.clear();
+    getDialogFlowResponse(reply);
   }
 
   void getDialogFlowResponse(query) async {
@@ -150,15 +158,35 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             _messages.insert(0, carouselModel);
           });
         } else {
-          setState(() {
-            var chatModel = new ChatModel(
-                name: "Bot",
-                type: MessageType.CHAT_MESSAGE,
-                text: response.getMessage() ??
-                    new CardDialogflow(response.getListMessage()[0]).title,
-                chatType: false);
-            _messages.insert(0, chatModel);
-          });
+          var multiSelect = response.getListMessage().firstWhere(
+              (element) => element.containsKey('card'),
+              orElse: () => null);
+
+          if (multiSelect != null) {
+            CardDialogflow card =
+            new CardDialogflow(response.getListMessage()[0]);
+
+            setState(() {
+              var multiSelectModel = MultiSelectModel(
+              text: card.title,
+              name: "Bot",
+              buttons: card.buttons,
+              updateMultiSelect: _insertMultiSelect,
+              type: MessageType.MULTI_SELECT,
+              );
+              _messages.insert(0, multiSelectModel);
+            });
+          } else {
+            setState(() {
+              var chatModel = new ChatModel(
+                  name: "Bot",
+                  type: MessageType.CHAT_MESSAGE,
+                  text: response.getMessage() ??
+                      new CardDialogflow(response.getListMessage()[0]).title,
+                  chatType: false);
+              _messages.insert(0, chatModel);
+            });
+          }
         }
       }
     }
@@ -200,11 +228,19 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 );
               }
               if (message.type == MessageType.QUICK_REPLY) {
-                return MultiSelect(
+                return QuickReply(
                   title: (message as ReplyModel).text,
                   quickReplies: (message as ReplyModel).quickReplies,
                   insertQuickReply: (message as ReplyModel).updateQuickReply,
                   name: (message as ReplyModel).name,
+                );
+              }
+              if (message.type == MessageType.MULTI_SELECT) {
+                return MultiSelect(
+                  title: (message as MultiSelectModel).text,
+                  buttons: (message as MultiSelectModel).buttons,
+                  insertMultiSelect: (message as MultiSelectModel).updateMultiSelect,
+                  name: (message as MultiSelectModel).name,
                   previouslySelected: _selectedGenres,
                 );
               }

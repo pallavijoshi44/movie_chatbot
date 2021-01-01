@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
+import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class MultiSelect extends StatelessWidget {
   MultiSelect(
-      {this.quickReplies, this.insertQuickReply, this.title, this.name, this.previouslySelected});
+      {this.buttons, this.insertMultiSelect, this.title, this.name, this.previouslySelected});
 
-  final List<String> quickReplies;
+  final List<ButtonDialogflow> buttons;
   final String title;
   final String name;
-  final Function insertQuickReply;
+  final Function insertMultiSelect;
   final List<String> previouslySelected;
 
   @override
   Widget build(BuildContext context) {
     final _items = this
-        .quickReplies
-        .map((reply) => MultiSelectItem<String>(reply, reply))
+        .buttons
+        .map((reply) => MultiSelectItem<String>(reply.text, reply.text))
         .toList();
 
     return Container(
@@ -60,12 +61,12 @@ class MultiSelect extends StatelessWidget {
                             initialChildSize: 0.4,
                             listType: MultiSelectListType.CHIP,
                             searchable: true,
-                            buttonText: Text("Select genres here"),
-                            title: Text("Genres"),
+                            buttonText: Text("Select",  style: Theme.of(context).textTheme.headline),
+                            title: Text("Genres",  style: Theme.of(context).textTheme.headline),
                             buttonIcon: Icon(Icons.arrow_drop_down),
                             items: _items,
                             onConfirm: (values) {
-                              insertQuickReply(values);
+                              insertMultiSelect(values);
                               //  widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
                             },
                           ),

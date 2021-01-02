@@ -2,32 +2,21 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widget/movie_webview.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect);
+  CarouselDialogSlider(this.carouselSelect, this.getURLByCountryCode);
 
   final CarouselSelect carouselSelect;
+  final Function getURLByCountryCode;
 
   @override
   _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
 }
 
 class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
-  var _postalCode = 'US';
-
-  _inform(BuildContext context, String movieName) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MovieWebView(
-                  url: 'https://flutter.dev',
-                  movieName: movieName,
-                )));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +35,17 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
           items: imageList
               .map((item) => InkWell(
                     onTap: () async {
-                     // var permission = await Geolocator.checkPermission();
-                      var currentPosition = await Geolocator.getCurrentPosition();
+                      // var permission = await Geolocator.checkPermission();
+                      var currentPosition =
+                          await Geolocator.getCurrentPosition();
                       var placeMarks = await placemarkFromCoordinates(
                           currentPosition.latitude, currentPosition.longitude);
+                      var _countryCode = 'US';
 
                       if (placeMarks != null && placeMarks.length > 0) {
-                        setState(() {
-                          _postalCode = placeMarks[0].isoCountryCode;
-                        });
+                        _countryCode = placeMarks[0].isoCountryCode;
                       }
-
+                      widget.getURLByCountryCode(_countryCode, widget.carouselSelect.items[imageList.indexOf(item)].info['key']);
                       // return _inform(context,
                       // '${widget.carouselSelect.items[imageList.indexOf(item)].title}');
                     },
@@ -129,16 +118,4 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
       ],
     ));
   }
-}
-
-enum _PositionItemType {
-  permission,
-  position,
-}
-
-class _PositionItem {
-  _PositionItem(this.type, this.displayValue);
-
-  final _PositionItemType type;
-  final String displayValue;
 }

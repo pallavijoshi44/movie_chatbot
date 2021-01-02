@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/carousel_model.dart';
 import 'package:flutter_app/models/chat_model.dart';
@@ -7,11 +9,15 @@ import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
 import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
-import 'package:flutter_dialogflow/dialogflow_v2.dart';
-
+import 'package:flutter_app/models/dialog_flow.dart';
+import 'package:flutter_dialogflow/utils/language.dart';
+import 'package:flutter_dialogflow/v2/auth_google.dart';
+import 'package:flutter_dialogflow/v2/message.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'models/multi_select_model.dart';
 
 const String ADDITIONAL_FILTERS = "ask-additional-filters";
+const String MOVIE_TAPPED_EVENT = "MOVIE_CARD_TAPPED";
 
 void main() => runApp(ChatBot());
 
@@ -88,12 +94,30 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
+  void _getUrlByCountryCode(String countryCode, String movieId) {
+    var parameters =
+        "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode' }";
+    getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
+  }
+
   void _insertQuickReply(String reply) {
     _textController.clear();
     if (reply.toLowerCase() == 'yes') {
       getDialogFlowResponse(reply);
     } else {
       getDialogFlowResponse(ADDITIONAL_FILTERS);
+    }
+  }
+
+  Future<void> _openWebView(BuildContext context, String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -110,10 +134,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       _selectedGenres = [];
     }
     try {
-      AuthGoogle authGoogle =
-          await AuthGoogle(fileJson: "assets/credentials.json").build();
-      Dialogflow dialogflow =
-          Dialogflow(authGoogle: authGoogle, language: Language.english);
+      AuthGoogle authGoogle = await getAuthGoogle();
+      Dialogflow dialogflow = getDialogFlow(authGoogle);
       try {
         AIResponse response = await dialogflow.detectIntent(query);
         executeResponse(response);
@@ -123,6 +145,36 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     } catch (error) {
       print(error);
     }
+  }
+
+  void getDialogFlowResponseByEvent(
+      String eventName, dynamic parameters) async {
+    _textController.clear();
+    try {
+      AuthGoogle authGoogle = await getAuthGoogle();
+      Dialogflow dialogflow = getDialogFlow(authGoogle);
+      try {
+        AIResponse response =
+            await dialogflow.detectIntentByEvent(eventName, parameters);
+        executeResponse(response);
+      } catch (error) {
+        print(error);
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  Future<AuthGoogle> getAuthGoogle() async {
+    AuthGoogle authGoogle =
+        await AuthGoogle(fileJson: "assets/credentials.json").build();
+    return authGoogle;
+  }
+
+  Dialogflow getDialogFlow(AuthGoogle authGoogle) {
+    Dialogflow dialogflow =
+        Dialogflow(authGoogle: authGoogle, language: Language.english);
+    return dialogflow;
   }
 
   void executeResponse(AIResponse response) {
@@ -181,15 +233,29 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               _messages.insert(0, multiSelectModel);
             });
           } else {
-            setState(() {
-              var chatModel = new ChatModel(
-                  name: "Bot",
-                  type: MessageType.CHAT_MESSAGE,
-                  text: response.getMessage() ??
-                      new CardDialogflow(response.getListMessage()[0]).title,
-                  chatType: false);
-              _messages.insert(0, chatModel);
-            });
+            var textMessages = response.getListMessage().firstWhere(
+                (element) => element.containsKey('text'),
+                orElse: () => null);
+
+            String url = textMessages['text']['text'].firstWhere(
+                (element) =>
+                    element != null &&
+                    element.toString().contains('url_webview'),
+                orElse: () => null);
+
+            if (url != null && url != "") {
+              _openWebView(context, url.replaceAll("url_webview: ", ""));
+            } else {
+              setState(() {
+                var chatModel = new ChatModel(
+                    name: "Bot",
+                    type: MessageType.CHAT_MESSAGE,
+                    text: response.getMessage() ??
+                        new CardDialogflow(response.getListMessage()[0]).title,
+                    chatType: false);
+                _messages.insert(0, chatModel);
+              });
+            }
           }
         }
       }
@@ -251,7 +317,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               }
               if (message.type == MessageType.CAROUSEL) {
                 return CarouselDialogSlider(
-                    (message as CarouselModel).carouselSelect);
+                    (message as CarouselModel).carouselSelect,
+                    _getUrlByCountryCode);
               }
             }
             return Container();

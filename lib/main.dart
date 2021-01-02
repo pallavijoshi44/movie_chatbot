@@ -125,7 +125,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     if (reply.toLowerCase() == 'yes') {
       getDialogFlowResponse(reply);
     } else {
-      getDialogFlowResponse(ADDITIONAL_FILTERS);
+      getDialogFlowResponse('$ADDITIONAL_FILTERS [Random]');
     }
   }
 
@@ -291,8 +291,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 var chatModel = new ChatModel(
                     name: "Bot",
                     type: MessageType.CHAT_MESSAGE,
-                    text: response.getMessage() ??
-                        new CardDialogflow(response.getListMessage()[0]).title,
+                    text: response.getMessage() ?? response.getListMessage()[0]['text']['text'][0],
                     chatType: false);
                 _messages.insert(0, chatModel);
               });

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
@@ -74,7 +75,16 @@ class Dialogflow {
   const Dialogflow({@required this.authGoogle, this.language = "en"});
 
   String _getUrl() {
-    return "https://dialogflow.googleapis.com/v2/projects/${authGoogle.getProjectId}/agent/sessions/${authGoogle.getSessionId}:detectIntent";
+    //return "https://dialogflow.googleapis.com/v2/projects/${authGoogle.getProjectId}/agent/sessions/${authGoogle.getSessionId}:detectIntent";
+    String baseURL = "https://dialogflow.googleapis.com";
+    String version = "v2";
+    String environmentIdentifier;
+    if (kReleaseMode)
+      environmentIdentifier = "production";
+    else
+      environmentIdentifier = "test";
+    String url = "$baseURL/$version/projects/${authGoogle.getProjectId}/agent/environments/$environmentIdentifier/users/-/sessions/${authGoogle.getSessionId}:detectIntent";
+    return url;
   }
 
   Future<AIResponse> detectIntent(String query) async {

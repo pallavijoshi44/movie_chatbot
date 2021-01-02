@@ -17,7 +17,6 @@ import 'package:flutter_app/widget/url_widget.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'models/movie_providers_model.dart';
 import 'models/multi_select_model.dart';
 
@@ -64,7 +63,7 @@ class ChatBotFlow extends StatefulWidget {
 class _ChatBotFlowState extends State<ChatBotFlow> {
   final List<Message> _messages = [];
   List<String> _selectedGenres = [];
-
+  bool _doNotShowTyping = true;
   final TextEditingController _textController = new TextEditingController();
 
   Widget _buildTextComposer() {
@@ -77,17 +76,23 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             new Flexible(
               child: new TextField(
                 controller: _textController,
+                onChanged: (String text) {
+                  setState(() {
+                    _doNotShowTyping = text.length > 0 || text == "";
+                  });
+                },
                 onSubmitted: _handleSubmitted,
                 decoration:
                     new InputDecoration.collapsed(hintText: "Send a message"),
               ),
             ),
             new Container(
-              margin: new EdgeInsets.symmetric(horizontal: 4.0),
-              child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  onPressed: () => _handleSubmitted(_textController.text)),
-            ),
+                margin: new EdgeInsets.symmetric(horizontal: 4.0),
+                child: new IconButton(
+                    icon: new Icon(Icons.send),
+                    onPressed: _doNotShowTyping
+                        ? () => _handleSubmitted(_textController.text)
+                        : null)),
           ],
         ),
       ),
@@ -96,6 +101,9 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
+    setState(() {
+      _doNotShowTyping = false;
+    });
     getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
@@ -103,11 +111,17 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       String countryCode, String movieId, String movieName) {
     var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode', 'movie_name': '$movieName' }";
+    setState(() {
+      _doNotShowTyping = false;
+    });
     getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
   }
 
   void _insertQuickReply(String reply) {
     _textController.clear();
+    setState(() {
+      _doNotShowTyping = false;
+    });
     if (reply.toLowerCase() == 'yes') {
       getDialogFlowResponse(reply);
     } else {
@@ -188,6 +202,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             updateQuickReply: _insertQuickReply,
             type: MessageType.QUICK_REPLY,
           );
+          _doNotShowTyping = true;
           _messages.insert(0, replyModel);
         });
       } else {
@@ -205,6 +220,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               carouselSelect: carouselSelect,
               type: MessageType.CAROUSEL,
             );
+            _doNotShowTyping = true;
             _messages.insert(0, carouselModel);
           });
         } else {
@@ -224,6 +240,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 updateMultiSelect: _insertMultiSelect,
                 type: MessageType.MULTI_SELECT,
               );
+              _doNotShowTyping = true;
               _messages.insert(0, multiSelectModel);
             });
           } else {
@@ -234,6 +251,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               MovieProvidersModel movieProviders =
                   new MovieProvidersModel(movieDetails);
               setState(() {
+                _doNotShowTyping = true;
                 if (movieProviders.title != null &&
                     movieProviders.title != "") {
                   _messages.insert(
@@ -268,16 +286,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 }
               });
             } else {
-              // String url = textMessages['text']['text'].firstWhere(
-              //     (element) =>
-              //         element != null &&
-              //         element.toString().contains('url_webview'),
-              //     orElse: () => null);
-
-              // if (url != null && url != "") {
-              //   _openWebView(context, url.replaceAll("url_webview: ", ""));
-              // }
               setState(() {
+                _doNotShowTyping = true;
                 var chatModel = new ChatModel(
                     name: "Bot",
                     type: MessageType.CHAT_MESSAGE,
@@ -294,16 +304,19 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   }
 
   void _handleSubmitted(String text) {
-    _textController.clear();
-    setState(() {
-      var chatModel = new ChatModel(
-          name: "Pallavi",
-          type: MessageType.CHAT_MESSAGE,
-          text: text,
-          chatType: true);
-      _messages.insert(0, chatModel);
-    });
-    getDialogFlowResponse(text);
+    if (text != "") {
+      _textController.clear();
+      setState(() {
+        _doNotShowTyping = false;
+        var chatModel = new ChatModel(
+            name: "Pallavi",
+            type: MessageType.CHAT_MESSAGE,
+            text: text,
+            chatType: true);
+        _messages.insert(0, chatModel);
+      });
+      getDialogFlowResponse(text);
+    }
   }
 
   @override
@@ -366,6 +379,17 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
           },
           itemCount: _messages.length,
         )),
+        Visibility(
+          visible: !_doNotShowTyping,
+          child: Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.all(10.0),
+            child: Text(
+              'Bot is typing...',
+              style: Theme.of(context).textTheme.headline,
+            ),
+          ),
+        ),
         Divider(height: 1.0),
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),

@@ -26,10 +26,10 @@ class QuickReply extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(this.name,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                      style: Theme.of(context).textTheme.title,),
                     Container(
                       margin: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-                      child: Text(title),
+                      child: Text(title, style: Theme.of(context).textTheme.headline,),
                     ),
                   ],
                 ),

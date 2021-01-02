@@ -45,7 +45,11 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                       if (placeMarks != null && placeMarks.length > 0) {
                         _countryCode = placeMarks[0].isoCountryCode;
                       }
-                      widget.getURLByCountryCode(_countryCode, widget.carouselSelect.items[imageList.indexOf(item)].info['key']);
+                      var movieTitle = widget.carouselSelect.items[imageList.indexOf(item)].title;
+                      widget.getURLByCountryCode(
+                          _countryCode,
+                          widget.carouselSelect.items[imageList.indexOf(item)].info['key'],
+                          movieTitle.substring(0, movieTitle.indexOf(' (')));
                       // return _inform(context,
                       // '${widget.carouselSelect.items[imageList.indexOf(item)].title}');
                     },

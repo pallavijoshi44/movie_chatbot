@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/carousel_model.dart';
 import 'package:flutter_app/models/chat_model.dart';
 import 'package:flutter_app/models/message.dart';
+import 'package:flutter_app/models/movie_provider.dart';
+import 'package:flutter_app/models/movie_provider_url.dart';
 import 'package:flutter_app/models/reply_model.dart';
 import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
+import 'package:flutter_app/widget/movie_provider_widget.dart';
 import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/models/dialog_flow.dart';
+import 'package:flutter_app/widget/url_widget.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'models/movie_providers_model.dart';
 import 'models/multi_select_model.dart';
 
 const String ADDITIONAL_FILTERS = "ask-additional-filters";
@@ -94,9 +99,10 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
-  void _getUrlByCountryCode(String countryCode, String movieId) {
+  void _getUrlByCountryCode(
+      String countryCode, String movieId, String movieName) {
     var parameters =
-        "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode' }";
+        "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode', 'movie_name': '$movieName' }";
     getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
   }
 
@@ -106,18 +112,6 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       getDialogFlowResponse(reply);
     } else {
       getDialogFlowResponse(ADDITIONAL_FILTERS);
-    }
-  }
-
-  Future<void> _openWebView(BuildContext context, String url) async {
-    if (await canLaunch(url)) {
-      await launch(
-        url,
-        forceSafariVC: false,
-        forceWebView: false,
-      );
-    } else {
-      throw 'Could not launch $url';
     }
   }
 
@@ -233,19 +227,56 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               _messages.insert(0, multiSelectModel);
             });
           } else {
-            var textMessages = response.getListMessage().firstWhere(
-                (element) => element.containsKey('text'),
-                orElse: () => null);
+            if (response.getWebHookPayload() != null &&
+                response.getWebHookPayload().containsKey('movieDetail')) {
+              var movieDetails = response.getWebHookPayload()['movieDetail'];
 
-            String url = textMessages['text']['text'].firstWhere(
-                (element) =>
-                    element != null &&
-                    element.toString().contains('url_webview'),
-                orElse: () => null);
-
-            if (url != null && url != "") {
-              _openWebView(context, url.replaceAll("url_webview: ", ""));
+              MovieProvidersModel movieProviders =
+                  new MovieProvidersModel(movieDetails);
+              setState(() {
+                if (movieProviders.title != null &&
+                    movieProviders.title != "") {
+                  _messages.insert(
+                      0,
+                      new ChatModel(
+                          name: "Bot",
+                          type: MessageType.CHAT_MESSAGE,
+                          text: movieProviders.title,
+                          chatType: false));
+                }
+                if (movieProviders.providers != null &&
+                    movieProviders.providers.length > 0) {
+                  movieProviders.providers.forEach((provider) {
+                    _messages.insert(
+                        0,
+                        new MovieProvider(
+                            text: provider.title,
+                            type: MessageType.MOVIE_PROVIDER,
+                            logos: provider.logos));
+                  });
+                }
+                if (movieProviders.urlTitle != null &&
+                    movieProviders.urlTitle != "" &&
+                    movieProviders.urlLink != null &&
+                    movieProviders.urlLink != "") {
+                  _messages.insert(
+                      0,
+                      new MovieProviderUrl(
+                          url: movieProviders.urlLink,
+                          type: MessageType.MOVIE_PROVIDER_URL,
+                          title: movieProviders.urlTitle));
+                }
+              });
             } else {
+              // String url = textMessages['text']['text'].firstWhere(
+              //     (element) =>
+              //         element != null &&
+              //         element.toString().contains('url_webview'),
+              //     orElse: () => null);
+
+              // if (url != null && url != "") {
+              //   _openWebView(context, url.replaceAll("url_webview: ", ""));
+              // }
               setState(() {
                 var chatModel = new ChatModel(
                     name: "Bot",
@@ -319,6 +350,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 return CarouselDialogSlider(
                     (message as CarouselModel).carouselSelect,
                     _getUrlByCountryCode);
+              }
+              if (message.type == MessageType.MOVIE_PROVIDER_URL) {
+                return UrlWidget(
+                    title: (message as MovieProviderUrl).name,
+                    url: (message as MovieProviderUrl).text);
+              }
+              if (message.type == MessageType.MOVIE_PROVIDER) {
+                return MovieProviderWidget(
+                    title: (message as MovieProvider).text,
+                    logos: (message as MovieProvider).logos);
               }
             }
             return Container();

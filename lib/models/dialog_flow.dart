@@ -12,6 +12,7 @@ class AIResponse {
   String _languageCode;
   DiagnosticInfo _diagnosticInfo;
   WebhookStatus _webhookStatus;
+  dynamic _webhookPayload;
 
   AIResponse({Map body}) {
     _responseId = body['responseId'];
@@ -23,6 +24,9 @@ class AIResponse {
         : null);
     _webhookStatus = body['webhookStatus'] != null
         ? new WebhookStatus(body['webhookStatus'])
+        : null;
+    _webhookPayload =  body['queryResult']['webhookPayload'] != null
+        ? body['queryResult']['webhookPayload']
         : null;
   }
 
@@ -36,6 +40,10 @@ class AIResponse {
 
   List<dynamic> getListMessage() {
     return _queryResult.fulfillmentMessages;
+  }
+
+  dynamic getWebHookPayload() {
+    return _webhookPayload;
   }
 
   num get intentDetectionConfidence {
@@ -86,7 +94,8 @@ class Dialogflow {
           HttpHeaders.authorizationHeader: "Bearer ${authGoogle.getToken}"
         },
         body:
-            "{'queryInput':{'event':{'name':'$eventName','language_code':'$language',  ${parameters}}}}");
+            "{'queryInput':{'event':{'name':'$eventName','language_code':'$language',  $parameters}}}");
     return AIResponse(body: json.decode(response.body));
   }
+
 }

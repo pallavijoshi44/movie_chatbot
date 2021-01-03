@@ -14,8 +14,6 @@ import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/dialogflow/dialog_flow.dart';
 import 'package:flutter_app/widget/text_composer.dart';
 import 'package:flutter_app/widget/url.dart';
-import 'package:flutter_dialogflow/utils/language.dart';
-import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'constants.dart';
 import 'models/movie_providers_model.dart';
@@ -29,7 +27,8 @@ class ChatBot extends StatelessWidget {
     return MaterialApp(
       title: APP_TITLE,
       theme: ThemeData(
-          primarySwatch: Colors.purple,
+          primarySwatch: Colors.lightGreen,
+          accentColor: Colors.blueGrey[600],
           errorColor: Colors.red,
           textTheme: ThemeData.light().textTheme.copyWith(
               title: TextStyle(
@@ -41,6 +40,7 @@ class ChatBot extends StatelessWidget {
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
                     title: TextStyle(
+                      color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
@@ -292,9 +292,10 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text(APP_TITLE),
+        title: new Text(APP_TITLE, style: Theme.of(context).appBarTheme.textTheme.title,),
       ),
       body: Column(children: <Widget>[
         Flexible(

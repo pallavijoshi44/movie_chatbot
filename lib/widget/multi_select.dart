@@ -35,8 +35,6 @@ class MultiSelect extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(this.name,
-                    style: Theme.of(context).textTheme.title),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.amber,

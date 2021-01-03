@@ -11,6 +11,7 @@ import 'package:flutter_app/widget/movie_provider.dart';
 import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/dialogflow/dialog_flow.dart';
+import 'package:flutter_app/widget/text_composer.dart';
 import 'package:flutter_app/widget/url.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
@@ -61,39 +62,6 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   List<String> _selectedGenres = [];
   bool _doNotShowTyping = true;
   final TextEditingController _textController = new TextEditingController();
-
-  Widget _buildTextComposer() {
-    return new IconTheme(
-      data: new IconThemeData(color: Theme.of(context).accentColor),
-      child: new Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: new Row(
-          children: <Widget>[
-            new Flexible(
-              child: new TextField(
-                controller: _textController,
-                onChanged: (String text) {
-                  setState(() {
-                    _doNotShowTyping = text.length > 0 || text == "";
-                  });
-                },
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    new InputDecoration.collapsed(hintText: HINT_TEXT),
-              ),
-            ),
-            new Container(
-                margin: new EdgeInsets.symmetric(horizontal: 4.0),
-                child: new IconButton(
-                    icon: new Icon(Icons.send),
-                    onPressed: _doNotShowTyping
-                        ? () => _handleSubmitted(_textController.text)
-                        : null)),
-          ],
-        ),
-      ),
-    );
-  }
 
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
@@ -315,6 +283,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     }
   }
 
+  void _textEditorChanged(String text) {
+    setState(() {
+      _doNotShowTyping = text.length > 0 || text == "";
+    });
+  }
+
+  void _textEditorSendButtonClicked(String text){
+    if (_doNotShowTyping) _handleSubmitted(text);
+  }
+
   @override
   void initState() {
     var parameters = "'parameters' : {}";
@@ -397,7 +375,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         Divider(height: 1.0),
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-          child: _buildTextComposer(),
+          child: TextComposer(
+              _textController, _textEditorChanged, _handleSubmitted, _textEditorSendButtonClicked),
         ),
       ]),
     );

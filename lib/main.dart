@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/dialogflow/detect_dialog_responses.dart';
 import 'package:flutter_app/models/carousel_model.dart';
 import 'package:flutter_app/models/chat_model.dart';
 import 'package:flutter_app/models/message_model.dart';
@@ -105,51 +106,25 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       query = query + " " + "[$_userMoviePreferences]";
       _selectedGenres = [];
     }
-    try {
-      AuthGoogle authGoogle = await getAuthGoogle();
-      Dialogflow dialogflow = getDialogFlow(authGoogle);
-      try {
-        AIResponse response = await dialogflow.detectIntent(query);
-        executeResponse(response);
-      } catch (error) {
-        print(error);
-      }
-    } catch (error) {
-      print(error);
-    }
+    DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
+        query: query, queryInputType: QUERY_INPUT_TYPE.QUERY, executeResponse: _executeResponse);
+
+    detectDialogResponses.callDialogFlow();
   }
 
-  void getDialogFlowResponseByEvent(
-      String eventName, dynamic parameters) async {
+  void getDialogFlowResponseByEvent(String eventName, dynamic parameters) async {
     _textController.clear();
-    try {
-      AuthGoogle authGoogle = await getAuthGoogle();
-      Dialogflow dialogflow = getDialogFlow(authGoogle);
-      try {
-        AIResponse response =
-            await dialogflow.detectIntentByEvent(eventName, parameters);
-        executeResponse(response);
-      } catch (error) {
-        print(error);
-      }
-    } catch (error) {
-      print(error);
-    }
+
+    DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
+        executeResponse: _executeResponse,
+        eventName: eventName,
+        parameters: parameters,
+        queryInputType: QUERY_INPUT_TYPE.EVENT);
+
+    detectDialogResponses.callDialogFlow();
   }
 
-  Future<AuthGoogle> getAuthGoogle() async {
-    AuthGoogle authGoogle =
-        await AuthGoogle(fileJson: "assets/credentials.json").build();
-    return authGoogle;
-  }
-
-  Dialogflow getDialogFlow(AuthGoogle authGoogle) {
-    Dialogflow dialogflow =
-        Dialogflow(authGoogle: authGoogle, language: Language.english);
-    return dialogflow;
-  }
-
-  void executeResponse(AIResponse response) {
+  void _executeResponse(AIResponse response) {
     if (response != null && response.getListMessage() != null) {
       var payload = response.getListMessage().firstWhere(
           (element) => element.containsKey('payload'),
@@ -289,7 +264,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     });
   }
 
-  void _textEditorSendButtonClicked(String text){
+  void _textEditorSendButtonClicked(String text) {
     if (_doNotShowTyping) _handleSubmitted(text);
   }
 
@@ -375,8 +350,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         Divider(height: 1.0),
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-          child: TextComposer(
-              _textController, _textEditorChanged, _handleSubmitted, _textEditorSendButtonClicked),
+          child: TextComposer(_textController, _textEditorChanged,
+              _handleSubmitted, _textEditorSendButtonClicked),
         ),
       ]),
     );

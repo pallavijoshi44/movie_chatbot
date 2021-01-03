@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/carousel_model.dart';
 import 'package:flutter_app/models/chat_model.dart';
@@ -17,11 +15,9 @@ import 'package:flutter_app/widget/url_widget.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
+import 'constants.dart';
 import 'models/movie_providers_model.dart';
 import 'models/multi_select_model.dart';
-
-const String ADDITIONAL_FILTERS = "ask-additional-filters";
-const String MOVIE_TAPPED_EVENT = "MOVIE_CARD_TAPPED";
 
 void main() => runApp(ChatBot());
 
@@ -29,7 +25,7 @@ class ChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Movie Chatbot',
+      title: APP_TITLE,
       theme: ThemeData(
           primarySwatch: Colors.purple,
           errorColor: Colors.red,
@@ -47,7 +43,7 @@ class ChatBot extends StatelessWidget {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ))),
-      home: ChatBotFlow(title: 'ChatBotFlow Home Page'),
+      home: ChatBotFlow(title: APP_TITLE),
     );
   }
 }
@@ -83,7 +79,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 },
                 onSubmitted: _handleSubmitted,
                 decoration:
-                    new InputDecoration.collapsed(hintText: "Send a message"),
+                    new InputDecoration.collapsed(hintText: HINT_TEXT),
               ),
             ),
             new Container(
@@ -291,7 +287,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 var chatModel = new ChatModel(
                     name: "Bot",
                     type: MessageType.CHAT_MESSAGE,
-                    text: response.getMessage() ?? response.getListMessage()[0]['text']['text'][0],
+                    text: response.getMessage() ??
+                        response.getListMessage()[0]['text']['text'][0],
                     chatType: false);
                 _messages.insert(0, chatModel);
               });
@@ -316,6 +313,14 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       });
       getDialogFlowResponse(text);
     }
+  }
+
+  @override
+  void initState() {
+    var parameters = "'parameters' : {}";
+    _doNotShowTyping = true;
+    getDialogFlowResponseByEvent(WELCOME_EVENT, parameters);
+    super.initState();
   }
 
   @override

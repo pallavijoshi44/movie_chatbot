@@ -62,59 +62,80 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   bool _doNotShowTyping = true;
+  bool _ignoreGenres = false;
+  int _pageNumber = 2;
   final TextEditingController _textController = new TextEditingController();
+
+  @override
+  void initState() {
+    _doNotShowTyping = true;
+    _getDialogFlowResponseByEvent(WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT);
+    super.initState();
+  }
 
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
-    setState(() {
-      _doNotShowTyping = false;
-    });
-    getDialogFlowResponse(ADDITIONAL_FILTERS);
+    _getDialogFlowResponseByEvent(
+        ADDITIONAL_FILTERS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT);
   }
 
   void _carouselItemClicked(
       String countryCode, String movieId, String movieName) {
     var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode', 'movie_name': '$movieName' }";
-    setState(() {
-      _doNotShowTyping = false;
-    });
-    getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
+    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
   }
 
   void _insertQuickReply(String reply) {
+    if (reply.toLowerCase() == SHOW_GENRES) {
+      _pageNumber = 2;
+      _getDialogFlowResponse(reply);
+      return;
+    }
+    if (reply.toLowerCase() == IGNORE_GENRES) {
+      _ignoreGenres = true;
+      _pageNumber = 2;
+      _getDialogFlowResponseByEvent(
+          ADDITIONAL_FILTERS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT);
+      return;
+    }
+    if (reply.toLowerCase() == SAME_CRITERIA) {
+      _getDialogFlowResponse(reply + '[$_pageNumber]');
+      _pageNumber = _pageNumber + 1;
+      return;
+    }
+    _getDialogFlowResponse(reply);
+  }
+
+  void _getDialogFlowResponse(query) async {
     _textController.clear();
     setState(() {
       _doNotShowTyping = false;
     });
-    if (reply.toLowerCase() == 'yes') {
-      getDialogFlowResponse(reply);
-    } else {
-      getDialogFlowResponse('$ADDITIONAL_FILTERS [Random]');
-    }
-  }
-
-  void getDialogFlowResponse(query) async {
-    _textController.clear();
-
-    if (_selectedGenres != null &&
-        _selectedGenres.isNotEmpty &&
-        query != ADDITIONAL_FILTERS) {
+    if (_selectedGenres != null && _selectedGenres.isNotEmpty) {
       var _userMoviePreferences = _selectedGenres
           .reduce((previousValue, element) => previousValue + " " + element);
-
       query = query + " " + "[$_userMoviePreferences]";
       _selectedGenres = [];
     }
+    if (_ignoreGenres == true) {
+      _ignoreGenres = false;
+      query = query + " " + "[$RANDOM]";
+    }
     DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
-        query: query, queryInputType: QUERY_INPUT_TYPE.QUERY, executeResponse: _executeResponse);
+        query: query,
+        queryInputType: QUERY_INPUT_TYPE.QUERY,
+        executeResponse: _executeResponse);
 
     detectDialogResponses.callDialogFlow();
   }
 
-  void getDialogFlowResponseByEvent(String eventName, dynamic parameters) async {
+  void _getDialogFlowResponseByEvent(
+      String eventName, dynamic parameters) async {
     _textController.clear();
-
+    setState(() {
+      _doNotShowTyping = false;
+    });
     DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
         executeResponse: _executeResponse,
         eventName: eventName,
@@ -254,7 +275,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             chatType: true);
         _messages.insert(0, chatModel);
       });
-      getDialogFlowResponse(text);
+      _getDialogFlowResponse(text);
     }
   }
 
@@ -269,19 +290,11 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   }
 
   @override
-  void initState() {
-    var parameters = "'parameters' : {}";
-    _doNotShowTyping = true;
-    getDialogFlowResponseByEvent(WELCOME_EVENT, parameters);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text("Movie Chatbot"),
+        title: new Text(APP_TITLE),
       ),
       body: Column(children: <Widget>[
         Flexible(

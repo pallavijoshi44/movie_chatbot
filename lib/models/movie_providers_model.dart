@@ -1,6 +1,6 @@
-import 'package:flutter_app/models/message.dart';
+import 'package:flutter_app/models/message_model.dart';
 
-class MovieProvidersModel extends Message {
+class MovieProvidersModel extends MessageModel {
   String title;
   List<dynamic> providers = [];
   String urlTitle;

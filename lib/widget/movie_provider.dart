@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MovieProviderWidget extends StatelessWidget {
-  MovieProviderWidget({this.title, this.logos});
+class MovieProvider extends StatelessWidget {
+  MovieProvider({this.title, this.logos});
 
   final String title;
   final List<dynamic> logos;

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/carousel_model.dart';
 import 'package:flutter_app/models/chat_model.dart';
-import 'package:flutter_app/models/message.dart';
-import 'package:flutter_app/models/movie_provider.dart';
-import 'package:flutter_app/models/movie_provider_url.dart';
+import 'package:flutter_app/models/message_model.dart';
+import 'package:flutter_app/models/movie_provider_model.dart';
+import 'package:flutter_app/models/movie_provider_url_model.dart';
 import 'package:flutter_app/models/reply_model.dart';
 import 'package:flutter_app/widget/carousel_dialog_slider.dart';
 import 'package:flutter_app/widget/chat_message.dart';
-import 'package:flutter_app/widget/movie_provider_widget.dart';
+import 'package:flutter_app/widget/movie_provider.dart';
 import 'package:flutter_app/widget/multi_select.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
-import 'package:flutter_app/models/dialog_flow.dart';
-import 'package:flutter_app/widget/url_widget.dart';
+import 'package:flutter_app/dialogflow/dialog_flow.dart';
+import 'package:flutter_app/widget/url.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
@@ -57,7 +57,7 @@ class ChatBotFlow extends StatefulWidget {
 }
 
 class _ChatBotFlowState extends State<ChatBotFlow> {
-  final List<Message> _messages = [];
+  final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   bool _doNotShowTyping = true;
   final TextEditingController _textController = new TextEditingController();
@@ -103,7 +103,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     getDialogFlowResponse(ADDITIONAL_FILTERS);
   }
 
-  void _getUrlByCountryCode(
+  void _carouselItemClicked(
       String countryCode, String movieId, String movieName) {
     var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode', 'movie_name': '$movieName' }";
@@ -263,7 +263,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   movieProviders.providers.forEach((provider) {
                     _messages.insert(
                         0,
-                        new MovieProvider(
+                        new MovieProviderModel(
                             text: provider.title,
                             type: MessageType.MOVIE_PROVIDER,
                             logos: provider.logos));
@@ -275,7 +275,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                     movieProviders.urlLink != "") {
                   _messages.insert(
                       0,
-                      new MovieProviderUrl(
+                      new MovieProviderUrlModel(
                           url: movieProviders.urlLink,
                           type: MessageType.MOVIE_PROVIDER_URL,
                           title: movieProviders.urlTitle));
@@ -366,17 +366,17 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               if (message.type == MessageType.CAROUSEL) {
                 return CarouselDialogSlider(
                     (message as CarouselModel).carouselSelect,
-                    _getUrlByCountryCode);
+                    _carouselItemClicked);
               }
               if (message.type == MessageType.MOVIE_PROVIDER_URL) {
-                return UrlWidget(
-                    title: (message as MovieProviderUrl).name,
-                    url: (message as MovieProviderUrl).text);
+                return Url(
+                    title: (message as MovieProviderUrlModel).name,
+                    url: (message as MovieProviderUrlModel).text);
               }
               if (message.type == MessageType.MOVIE_PROVIDER) {
-                return MovieProviderWidget(
-                    title: (message as MovieProvider).text,
-                    logos: (message as MovieProvider).logos);
+                return MovieProvider(
+                    title: (message as MovieProviderModel).text,
+                    logos: (message as MovieProviderModel).logos);
               }
             }
             return Container();

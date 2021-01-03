@@ -5,10 +5,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect, this.getURLByCountryCode);
+  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked);
 
   final CarouselSelect carouselSelect;
-  final Function getURLByCountryCode;
+  final Function carouselItemClicked;
 
   @override
   _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
@@ -44,7 +44,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                       }
                       var movieTitle = widget
                           .carouselSelect.items[imageList.indexOf(item)].title;
-                      widget.getURLByCountryCode(
+                      widget.carouselItemClicked(
                           _countryCode,
                           widget.carouselSelect.items[imageList.indexOf(item)]
                               .info['key'],

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_app/models/message.dart';
+import 'package:flutter_app/models/message_model.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 
-class CarouselModel extends Message {
+class CarouselModel extends MessageModel {
 
   final CarouselSelect carouselSelect;
 

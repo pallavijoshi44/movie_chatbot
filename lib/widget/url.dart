@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class UrlWidget extends StatelessWidget {
-  UrlWidget({this.title, this.url});
+class Url extends StatelessWidget {
+  Url({this.title, this.url});
 
   final String title;
   final String url;

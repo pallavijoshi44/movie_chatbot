@@ -1,4 +1,3 @@
-import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
 
 class MovieProviderWidget extends StatelessWidget {

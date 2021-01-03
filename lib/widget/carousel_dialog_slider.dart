@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
@@ -17,7 +15,6 @@ class CarouselDialogSlider extends StatefulWidget {
 }
 
 class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
-
   @override
   Widget build(BuildContext context) {
     final List<String> imageList =
@@ -45,10 +42,12 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                       if (placeMarks != null && placeMarks.length > 0) {
                         _countryCode = placeMarks[0].isoCountryCode;
                       }
-                      var movieTitle = widget.carouselSelect.items[imageList.indexOf(item)].title;
+                      var movieTitle = widget
+                          .carouselSelect.items[imageList.indexOf(item)].title;
                       widget.getURLByCountryCode(
                           _countryCode,
-                          widget.carouselSelect.items[imageList.indexOf(item)].info['key'],
+                          widget.carouselSelect.items[imageList.indexOf(item)]
+                              .info['key'],
                           movieTitle.substring(0, movieTitle.indexOf(' (')));
                       // return _inform(context,
                       // '${widget.carouselSelect.items[imageList.indexOf(item)].title}');
@@ -66,12 +65,14 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(15),
                                       topRight: Radius.circular(15)),
-                                  child: Stack(
-                                    children: <Widget>[
-                                      Image.network(item,
-                                          fit: BoxFit.cover, width: 1000.0),
-                                    ],
-                                  )),
+                                  child: item.contains('null')
+                                      ? Image.asset(
+                                          'assets/images/placeholder.png',
+                                          width: 1000.0,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.network(item,
+                                          fit: BoxFit.cover, width: 1000.0)),
                             ),
                           ),
                           SizedBox(

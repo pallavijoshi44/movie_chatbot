@@ -8,12 +8,11 @@ class MessageLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Expanded(
-        child: new Column(
+    return new Column(
       crossAxisAlignment:
           type ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: <Widget>[Message(text, type)],
-    ));
+    );
   }
 }
 

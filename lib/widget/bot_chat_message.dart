@@ -15,7 +15,7 @@ class BotChatMessage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Avatar(avatarText),
-        MessageLayout(text, false),
+        Expanded(child: MessageLayout(text, false)),
       ],
     );
   }

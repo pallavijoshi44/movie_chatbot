@@ -13,31 +13,41 @@ class QuickReply extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          BotChatMessage(text: title, avatarText: 'B',),
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            direction: Axis.horizontal,
-            children: quickReplies.map((quickReply) {
-              return Container(
-                margin: const EdgeInsets.all(10),
-                child: OutlineButton(
-                  child: Text(quickReply),
-                  borderSide: BorderSide(color: Colors.blue),
-                  textColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
-                  onPressed: () {
-                    return insertQuickReply(quickReply);
-                  },
-                ),
-              );
-            }).toList(),
+          Container(
+              margin: const EdgeInsets.only(top: 15.0),
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Avatar('B')),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Message(title, false),
+                Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    direction: Axis.horizontal,
+                    children: quickReplies.map((quickReply) {
+                      return Container(
+                        margin: const EdgeInsets.all(10),
+                        child: OutlineButton(
+                          child: Text(quickReply,  style: TextStyle(fontFamily: 'OpenSans', fontSize: 14)),
+                          borderSide: BorderSide(color:  Colors.lightGreen[900]),
+                          textColor: Colors.lightGreen[900],
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15))),
+                          onPressed: () {
+                            return insertQuickReply(quickReply);
+                          },
+                        ),
+                      );
+                    }).toList()),
+              ],
+            ),
           ),
-        ],
-      ),
-    );
+        ]);
+    //  BotChatMessage(text
   }
 }

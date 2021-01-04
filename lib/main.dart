@@ -27,7 +27,7 @@ class ChatBot extends StatelessWidget {
     return MaterialApp(
       title: APP_TITLE,
       theme: ThemeData(
-          primarySwatch: Colors.lightGreen,
+          primarySwatch: Colors.green,
           accentColor: Colors.blueGrey[600],
           errorColor: Colors.red,
           textTheme: ThemeData.light().textTheme.copyWith(
@@ -40,7 +40,7 @@ class ChatBot extends StatelessWidget {
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
                     title: TextStyle(
-                      color: Colors.white,
+                        color: Colors.white,
                         fontFamily: 'OpenSans',
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
@@ -285,17 +285,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     });
   }
 
-  void _textEditorSendButtonClicked(String text) {
-    if (_doNotShowTyping) _handleSubmitted(text);
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: new AppBar(
         centerTitle: true,
-        title: new Text(APP_TITLE, style: Theme.of(context).appBarTheme.textTheme.title,),
+        title: new Text(
+          APP_TITLE,
+          style: Theme.of(context).appBarTheme.textTheme.title,
+        ),
       ),
       body: Column(children: <Widget>[
         Flexible(
@@ -365,7 +364,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
           child: TextComposer(_textController, _textEditorChanged,
-              _handleSubmitted, _textEditorSendButtonClicked),
+              _handleSubmitted),
         ),
       ]),
     );

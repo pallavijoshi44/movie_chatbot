@@ -6,10 +6,8 @@ class TextComposer extends StatelessWidget {
   final TextEditingController textController;
   final Function textEditorChanged;
   final Function handleSubmitted;
-  final Function textEditorSendButtonClicked;
 
-  TextComposer(this.textController, this.textEditorChanged,
-      this.handleSubmitted, this.textEditorSendButtonClicked);
+  TextComposer(this.textController, this.textEditorChanged, this.handleSubmitted);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,7 @@ class TextComposer extends StatelessWidget {
                 margin: new EdgeInsets.symmetric(horizontal: 4.0),
                 child: new IconButton(
                     icon: new Icon(Icons.send),
-                    onPressed: textEditorSendButtonClicked(textController.text))),
+                    onPressed: ()=> handleSubmitted(textController.text))),
           ],
         ),
       ),

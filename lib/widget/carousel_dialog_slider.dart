@@ -104,7 +104,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 20.0),
                               child: Text(
-                                '${widget.carouselSelect.items[imageList.indexOf(item)].description}',
+                                '${widget.carouselSelect.items[imageList.indexOf(item)].description ?? ""}',
                                 maxLines: 5,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

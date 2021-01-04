@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/widget/avatar.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+import 'message_layout.dart';
 
 class MultiSelect extends StatelessWidget {
   MultiSelect(
@@ -21,33 +24,17 @@ class MultiSelect extends StatelessWidget {
         .toList();
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Column(
         children: <Widget>[
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(right: 16.0),
-                child: CircleAvatar(child: Text('B')),
-              ),
+              Avatar('B'),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(25),
-                          topLeft: Radius.circular(25),
-                          bottomLeft: Radius.circular(25),
-                        ),
-                      ),
-                      margin: const EdgeInsets.only(top: 5.0),
-                      padding: const EdgeInsets.all(15),
-                      child: Text(title,  style: Theme.of(context).textTheme.headline),
-                    ),
+                    Message(title, false),
                     Container(
                       decoration: BoxDecoration(
                           color: Colors.transparent,

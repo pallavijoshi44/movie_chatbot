@@ -11,7 +11,6 @@ class Url extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(children: [
         Container(
           margin: const EdgeInsets.only(right: 16.0),
@@ -26,14 +25,13 @@ class Url extends StatelessWidget {
           children: <Widget>[
             Container(
                 decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(25),
-                    topLeft: Radius.circular(25),
-                    bottomLeft: Radius.circular(25),
-                  ),
+                  color: Colors.lightGreen[200],
+                  borderRadius:  BorderRadius.only(
+                      topLeft: Radius.circular(30.0),
+                      topRight: Radius.circular(30.0),
+                      bottomRight: Radius.circular(30.0)),
                 ),
-                margin: const EdgeInsets.only(top: 5.0),
+                margin: const EdgeInsets.only(top: 15.0),
                 padding: const EdgeInsets.all(15),
                 child: RichText(
                   text: TextSpan(

@@ -312,6 +312,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 );
               }
               if (message.type == MessageType.QUICK_REPLY) {
+                FocusScope.of(context).requestFocus(new FocusNode());
                 return QuickReply(
                   title: (message as ReplyModel).text,
                   quickReplies: (message as ReplyModel).quickReplies,
@@ -320,6 +321,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 );
               }
               if (message.type == MessageType.MULTI_SELECT) {
+                FocusScope.of(context).requestFocus(new FocusNode());
                 return MultiSelect(
                   title: (message as MultiSelectModel).text,
                   buttons: (message as MultiSelectModel).buttons,
@@ -330,6 +332,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 );
               }
               if (message.type == MessageType.CAROUSEL) {
+                FocusScope.of(context).requestFocus(new FocusNode());
                 return CarouselDialogSlider(
                     (message as CarouselModel).carouselSelect,
                     _carouselItemClicked);

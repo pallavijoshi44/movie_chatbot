@@ -20,6 +20,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
     final List<String> imageList =
         widget.carouselSelect.items.map((item) => item.image.imageUri).toList();
     return Container(
+      margin: const EdgeInsets.only(top: 10.0),
         child: Column(
       children: <Widget>[
         CarouselSlider(
@@ -28,6 +29,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
             aspectRatio: 1.0,
             enlargeCenterPage: true,
             enableInfiniteScroll: false,
+            enlargeStrategy: CenterPageEnlargeStrategy.height
           ),
           items: imageList
               .map((item) => InkWell(

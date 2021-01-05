@@ -62,9 +62,9 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   bool _doNotShowTyping = true;
-  bool _ignoreGenres = false;
   int _pageNumber = 2;
   final TextEditingController _textController = new TextEditingController();
+  ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
@@ -75,15 +75,25 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
-    _getDialogFlowResponseByEvent(
-        ADDITIONAL_FILTERS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT);
+    var genres = selectedGenres.fold('[', (previousValue, element) => previousValue + '\'$element\'' + ',');
+    var parameters = "'parameters' : { 'movie_genres': $genres] }";
+    _getDialogFlowResponseByEvent(GENRES_SELECTED_OR_IGNORED, parameters);
   }
 
   void _carouselItemClicked(
       String countryCode, String movieId, String movieName) {
     var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode', 'movie_name': '$movieName' }";
+    _scrollToBottom();
     _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters);
+  }
+
+  void _scrollToBottom() {
+     _scrollController.animateTo(
+      0.0,
+      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 
   void _insertQuickReply(String reply) {
@@ -93,10 +103,9 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       return;
     }
     if (reply.toLowerCase() == IGNORE_GENRES) {
-      _ignoreGenres = true;
       _pageNumber = 2;
       _getDialogFlowResponseByEvent(
-          ADDITIONAL_FILTERS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT);
+          GENRES_SELECTED_OR_IGNORED, DEFAULT_PARAMETERS_FOR_EVENT);
       return;
     }
     if (reply.toLowerCase() == SAME_CRITERIA) {
@@ -113,14 +122,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       _doNotShowTyping = false;
     });
     if (_selectedGenres != null && _selectedGenres.isNotEmpty) {
-      var _userMoviePreferences = _selectedGenres
-          .reduce((previousValue, element) => previousValue + " " + element);
-      query = query + " " + "[$_userMoviePreferences]";
       _selectedGenres = [];
-    }
-    if (_ignoreGenres == true) {
-      _ignoreGenres = false;
-      query = query + " " + "[$RANDOM]";
     }
     DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
         query: query,
@@ -301,6 +303,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
             child: ListView.builder(
           padding: EdgeInsets.all(8.0),
           reverse: true,
+          controller: _scrollController,
           itemBuilder: (_, int index) {
             var message = _messages[index];
             if (message != null) {
@@ -366,8 +369,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         Divider(height: 1.0),
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-          child: TextComposer(_textController, _textEditorChanged,
-              _handleSubmitted),
+          child: TextComposer(
+              _textController, _textEditorChanged, _handleSubmitted),
         ),
       ]),
     );

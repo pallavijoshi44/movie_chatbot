@@ -43,6 +43,10 @@ class AIResponse {
     return _queryResult.fulfillmentMessages;
   }
 
+  String getAction(){
+    return _queryResult.action;
+  }
+
   dynamic getWebHookPayload() {
     return _webhookPayload;
   }

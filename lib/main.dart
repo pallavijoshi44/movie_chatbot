@@ -121,9 +121,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
     setState(() {
       _doNotShowTyping = false;
     });
-    if (_selectedGenres != null && _selectedGenres.isNotEmpty) {
-      _selectedGenres = [];
-    }
+
     DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
         query: query,
         queryInputType: QUERY_INPUT_TYPE.QUERY,
@@ -195,6 +193,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                 new CardDialogflow(response.getListMessage()[0]);
 
             setState(() {
+              _selectedGenres = [];
+
               var multiSelectModel = MultiSelectModel(
                 text: card.title,
                 name: "Bot",

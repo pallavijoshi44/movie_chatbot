@@ -11,3 +11,4 @@ const String SAME_CRITERIA = "same criteria";
 const String RANDOM = "Random";
 const String ACTION_START_OVER = "startOver";
 const String START_OVER_EVENT = "START_OVER";
+const String NO_NETWORK_MESSAGE = "There seems to be no internet connection on your device. Please enable the connection to continue";

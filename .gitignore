@@ -8,7 +8,6 @@
 .buildlog/
 .history
 .svn/
-.flutter-plugins-dependencies
 .last_build_id
 assets/credentials.json
 
@@ -25,6 +24,8 @@ assets/credentials.json
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
+.flutter-plugins-dependencies/
 .packages
 .pub-cache/
 .pub/

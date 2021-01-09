@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/dialogflow/detect_dialog_responses.dart';
 import 'package:flutter_app/dialogflow/dialog_flow.dart';
@@ -125,9 +127,10 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
-    var genres = selectedGenres.fold(
-        '[', (previousValue, element) => previousValue + '\'$element\'' + ',');
-    var parameters = "'parameters' : { 'movie_genres': $genres] }";
+   var genres = jsonEncode(selectedGenres.toList());
+    /*var genres = selectedGenres.fold(
+        '[', (previousValue, element) => previousValue + '\'$element\'' ); */
+    var parameters = "'parameters' : { 'movie-genres': $genres }";
     _getDialogFlowResponseByEvent(GENRES_SELECTED_OR_IGNORED, parameters, false);
   }
 

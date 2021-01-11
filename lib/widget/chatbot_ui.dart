@@ -29,6 +29,8 @@ class ChatBotUI extends StatefulWidget{
 
 class _ChatBotUIState extends State<ChatBotUI> {
   bool _doNotShowTyping = false;
+  bool _isTextFieldEnabled = true;
+  bool _isQuickReplyEnabled = true;
   final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   int _pageNumber = 2;
@@ -66,6 +68,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     insertQuickReply: (message as ReplyModel)
                         .updateQuickReply,
                     name: (message as ReplyModel).name,
+                    isEnabled: _isQuickReplyEnabled,
                   );
                 }
                 if (message.type == MessageType.MULTI_SELECT) {
@@ -120,7 +123,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
             .of(context)
             .cardColor),
         child: TextComposer(
-            _textController, _textEditorChanged, _handleSubmitted),
+            _textController, _textEditorChanged, _handleSubmitted, _isTextFieldEnabled),
       ),
     ]);
   }
@@ -128,8 +131,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
   void _insertMultiSelect(List<String> selectedGenres) {
     _selectedGenres = selectedGenres;
    var genres = jsonEncode(selectedGenres.toList());
-    /*var genres = selectedGenres.fold(
-        '[', (previousValue, element) => previousValue + '\'$element\'' ); */
     var parameters = "'parameters' : { 'movie-genres': $genres }";
     _getDialogFlowResponseByEvent(GENRES_SELECTED_OR_IGNORED, parameters, false);
   }
@@ -151,6 +152,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _insertQuickReply(String reply) {
+    setState(() {
+      _isQuickReplyEnabled = false;
+    });
     if (reply.toLowerCase() == SHOW_GENRES) {
       _pageNumber = 2;
       _getDialogFlowResponse(reply);
@@ -200,6 +204,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _executeResponse(AIResponse response) {
+    setState(() {
+      _isTextFieldEnabled = true;
+    });
     if (response != null) {
       var action = response.getAction();
       if (ACTION_START_OVER == action) {
@@ -214,6 +221,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
           QuickReplies replies = new QuickReplies(payload['payload']);
 
           setState(() {
+            _isQuickReplyEnabled = true;
+            _isTextFieldEnabled = false;
             var replyModel = ReplyModel(
               text: replies.title,
               name: "Bot",
@@ -253,7 +262,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
               setState(() {
                 _selectedGenres = [];
-
+                _isTextFieldEnabled = false;
                 var multiSelectModel = MultiSelectModel(
                   text: card.title,
                   name: "Bot",

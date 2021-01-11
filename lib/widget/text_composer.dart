@@ -6,8 +6,9 @@ class TextComposer extends StatelessWidget {
   final TextEditingController textController;
   final Function textEditorChanged;
   final Function handleSubmitted;
+  final bool isTextFieldEnabled;
 
-  TextComposer(this.textController, this.textEditorChanged, this.handleSubmitted);
+  TextComposer(this.textController, this.textEditorChanged, this.handleSubmitted, this.isTextFieldEnabled);
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +22,7 @@ class TextComposer extends StatelessWidget {
           children: <Widget>[
             new Flexible(
               child: new TextField(
+                enabled: isTextFieldEnabled,
                 controller: textController,
                 onChanged: (text) => textEditorChanged,
                 onSubmitted: handleSubmitted,

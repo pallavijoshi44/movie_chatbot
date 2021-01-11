@@ -123,6 +123,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _insertMultiSelect(List<String> selectedGenres) {
+    _scrollToBottom();
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());
     var parameters = "'parameters' : { 'movie-genres': $genres }";
@@ -201,6 +202,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _executeResponse(AIResponse response) {
+    _scrollToBottom();
+
     setState(() {
       _isTextFieldEnabled = true;
     });

@@ -1,3 +1,4 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
 class MessageLayout extends StatelessWidget {
@@ -39,7 +40,13 @@ class Message extends StatelessWidget {
       ),
       margin: const EdgeInsets.only(top: 15.0),
       padding: const EdgeInsets.all(15),
-      child: new Text(text, style: Theme.of(context).textTheme.headline),
+      child: ExpandableText(
+        text,
+        expandText: 'show more',
+        collapseText: 'show less',
+        maxLines: 6,
+        linkColor: Colors.blue,
+          style: Theme.of(context).textTheme.headline),
     );
   }
 }

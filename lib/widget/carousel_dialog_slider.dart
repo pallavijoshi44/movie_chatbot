@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:geocoding/geocoding.dart';
@@ -27,7 +28,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
               options: CarouselOptions(
                   autoPlay: true,
                   aspectRatio: 1.0,
-                  enlargeCenterPage: true,
+                  enlargeCenterPage: false,
                   enableInfiniteScroll: false,
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
               items: imageList
@@ -57,49 +58,52 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                           margin: EdgeInsets.all(5),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Flexible(
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                    ),
-                                    child: item.contains('null')
-                                        ? Image.asset(
-                                            'assets/images/placeholder.png',
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.network(item,
-                                             fit: BoxFit.scaleDown)),
-                              ),
-                              ListTile(
-                                title: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
                                     '${widget.carouselSelect.items[imageList.indexOf(item)].title}',
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ),
-                                subtitle: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5.0),
-                                  child: Text(
-                                    '${widget.carouselSelect.items[imageList.indexOf(item)].description ?? ""}',
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 15.0,
-                                    ),
+                                  SizedBox(
+                                    height: 10,
                                   ),
-                                ),
+                                  Flexible(
+                                    flex: 4,
+                                    child: item.contains('null')
+                                        ? Image.asset(
+                                            'assets/images/placeholder.png',
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.network(item, fit: BoxFit.contain),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Flexible(
+                                    flex: 2,
+                                    child: Text(
+                                      '${widget.carouselSelect.items[imageList.indexOf(item)].description ?? ""}',
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                  )
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ))

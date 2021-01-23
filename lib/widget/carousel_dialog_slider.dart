@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
@@ -60,49 +61,52 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                               borderRadius: BorderRadius.circular(15)),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${widget.carouselSelect.items[imageList.indexOf(item)].title}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${widget.carouselSelect.items[imageList.indexOf(item)].title}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Flexible(
-                                    flex: 4,
-                                    child: item.contains('null')
-                                        ? Image.asset(
-                                            'assets/images/placeholder.png',
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.network(item, fit: BoxFit.contain),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Flexible(
-                                    flex: 2,
-                                    child: Text(
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Flexible(
+                                  flex: 4,
+                                  child: item.contains('null')
+                                      ? Image.asset(
+                                          'assets/images/placeholder.png',
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.network(item,
+                                          fit: BoxFit.contain),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Flexible(
+                                  flex: 1,
+                                  child: SingleChildScrollView(
+                                    child: ExpandableText(
                                       '${widget.carouselSelect.items[imageList.indexOf(item)].description ?? ""}',
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
+                                      expandText: 'show more',
+                                      collapseText: 'show less',
+                                      maxLines: 3,
+                                      linkColor: Colors.blue,
                                       style: TextStyle(
                                         color: Colors.grey,
                                         fontSize: 15.0,
                                       ),
                                     ),
-                                  )
-                                ],
-                              ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                         ),

@@ -19,7 +19,7 @@ class MovieProvider extends StatelessWidget {
       ),
       Container(
           constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width - 30),
+              maxWidth: MediaQuery.of(context).size.width - 60),
           decoration: BoxDecoration(
             color: Colors.lightGreen[200],
             borderRadius: BorderRadius.only(

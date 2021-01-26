@@ -29,7 +29,7 @@ class ChatBot extends StatelessWidget {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ))),
-      home: ChatBotFlow(),
+          home: ChatBotFlow(),
     );
   }
 }
@@ -43,7 +43,11 @@ class ChatBotFlow extends StatelessWidget {
         centerTitle: true,
         title: new Text(
           APP_TITLE,
-          style: Theme.of(context).appBarTheme.textTheme.title,
+          style: Theme
+              .of(context)
+              .appBarTheme
+              .textTheme
+              .title,
         ),
       ),
       body: ConnectivityCheck(

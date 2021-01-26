@@ -13,3 +13,6 @@ const String ACTION_START_OVER = "startOver";
 const String START_OVER_EVENT = "START_OVER";
 const String SAME_CRITERIA_EVENT = "SAME_CRITERIA";
 const String NO_NETWORK_MESSAGE = "There seems to be no internet connection on your device. Please enable the connection to continue";
+const double BOTTOM_PADDING_PIP = 16;
+const double VIDEO_HEIGHT_PIP = 200;
+const double VIDEO_TITLE_HEIGHT_PIP = 70;

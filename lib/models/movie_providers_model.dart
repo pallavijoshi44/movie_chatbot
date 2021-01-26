@@ -1,12 +1,14 @@
 import 'package:flutter_app/models/message_model.dart';
 
-class MovieProvidersModel extends MessageModel {
+class MovieProvidersAndVideoModel extends MessageModel {
   String title;
   List<dynamic> providers = [];
   String urlTitle;
   String urlLink;
+  String videoUrl;
+  String videoThumbnail;
 
-  MovieProvidersModel(Map item) {
+  MovieProvidersAndVideoModel(Map item, Map videos) {
     this.title = item['title'];
     List<dynamic> providers = item['providers'];
     providers.forEach((element) {
@@ -15,6 +17,8 @@ class MovieProvidersModel extends MessageModel {
     });
     this.urlTitle = item['urlTitle'];
     this.urlLink = item['urlLink'];
+    this.videoUrl = videos['videoUrl'];
+    this.videoThumbnail = videos['videoThumbnail'];
   }
 }
 

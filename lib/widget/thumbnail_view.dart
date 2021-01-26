@@ -102,12 +102,12 @@ class _ThumbnailViewState extends State<ThumbnailView>
         width: double.infinity,
         color: widget.titleTextBackGroundColor,
         padding: EdgeInsets.all(16),
-        child: Text("title",
-            softWrap: false,
-            overflow: TextOverflow.fade,
-            style: widget.titleTextStyle != null
-                ? widget.titleTextStyle
-                : TextStyle(color: Colors.black54, fontSize: 16)));
+        child: Center(
+          child: Text("Watch Trailer",
+              softWrap: false,
+              overflow: TextOverflow.fade,
+              style: TextStyle(fontFamily: 'OpenSans', fontSize: 16)),
+        ));
   }
 
   @override

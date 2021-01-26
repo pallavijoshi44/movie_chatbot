@@ -12,7 +12,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
     if (item.isNotEmpty) {
       this.title = item['title'];
       List<dynamic> providers = item['providers'];
-      if (providers.isNotEmpty) {
+      if (providers != null && providers.length > 0) {
         providers.forEach((element) {
           Provider provider = new Provider(element);
           this.providers.add(provider);

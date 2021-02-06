@@ -32,7 +32,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                   enlargeCenterPage: false,
                   enableInfiniteScroll: false,
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
-              items: imageList
+              items:  widget.carouselSelect.items
                   .map((item) => InkWell(
                         onTap: () async {
                           var currentPosition =
@@ -47,8 +47,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                           }
                           widget.carouselItemClicked(
                               _countryCode,
-                              widget.carouselSelect
-                                  .items[imageList.indexOf(item)].info['key']);
+                             item.info['key']);
                         },
                         child: Card(
                           elevation: 5,
@@ -62,7 +61,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '${widget.carouselSelect.items[imageList.indexOf(item)].title}',
+                                  '${item.title}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -75,12 +74,12 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                 ),
                                 Flexible(
                                   flex: 4,
-                                  child: item.contains('null')
+                                  child: item.image.imageUri.contains('null')
                                       ? Image.asset(
                                           'assets/images/placeholder.jpg',
                                           fit: BoxFit.cover,
                                         )
-                                      : Image.network(item,
+                                      : Image.network(item.image.imageUri,
                                           fit: BoxFit.contain),
                                 ),
                                 SizedBox(
@@ -90,7 +89,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                   flex: 1,
                                   child: SingleChildScrollView(
                                     child: ExpandableText(
-                                      '${widget.carouselSelect.items[imageList.indexOf(item)].description ?? ""}',
+                                      '${item.description ?? ""}',
                                       expandText: 'show more',
                                       collapseText: 'show less',
                                       maxLines: 3,

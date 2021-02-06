@@ -77,7 +77,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                   flex: 4,
                                   child: item.contains('null')
                                       ? Image.asset(
-                                          'assets/images/placeholder.png',
+                                          'assets/images/placeholder.jpg',
                                           fit: BoxFit.cover,
                                         )
                                       : Image.network(item,

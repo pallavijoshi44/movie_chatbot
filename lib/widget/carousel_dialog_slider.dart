@@ -45,14 +45,10 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                           if (placeMarks != null && placeMarks.length > 0) {
                             _countryCode = placeMarks[0].isoCountryCode;
                           }
-                          var movieTitle = widget.carouselSelect
-                              .items[imageList.indexOf(item)].title;
                           widget.carouselItemClicked(
                               _countryCode,
                               widget.carouselSelect
-                                  .items[imageList.indexOf(item)].info['key'],
-                              movieTitle.substring(
-                                  0, movieTitle.indexOf(' (')));
+                                  .items[imageList.indexOf(item)].info['key']);
                         },
                         child: Card(
                           elevation: 5,

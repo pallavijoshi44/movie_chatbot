@@ -51,6 +51,7 @@ flutter:
   assets:
     - assets/credentials.json
     - assets/images/placeholder.jpg
+    - assets/images/thumbnail_default.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

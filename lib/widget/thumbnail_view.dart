@@ -27,7 +27,6 @@ class ThumbnailView extends StatefulWidget {
 
 class _ThumbnailViewState extends State<ThumbnailView>
     with AutomaticKeepAliveClientMixin {
-
   @override
   bool get wantKeepAlive => widget.keepAlive;
 
@@ -48,18 +47,11 @@ class _ThumbnailViewState extends State<ThumbnailView>
               children: <Widget>[
                 // loading indicator
                 widget.thumbNail == null || widget.thumbNail == ""
-                    ? Container(
-                        height: 150,
-                        color: Color(0xFFEEEEEE),
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          height: 2,
-                          child: Opacity(
-                            opacity: 0.5,
-                            child: LinearProgressIndicator(),
-                          ),
-                        ),
-                      )
+                    ? SizedBox(
+                        child: Image.asset(
+                        'assets/images/thumbnail_default.png',
+                        fit: BoxFit.cover,
+                      ))
                     : SizedBox(
                         child: Image.network(
                           widget.thumbNail,
@@ -78,15 +70,16 @@ class _ThumbnailViewState extends State<ThumbnailView>
                       ),
 
                 // play button
-                Container(
-                  child: widget.overlayChild ??
-                      ThumbnailCard(
-                        borderRadiusValue: 100,
-                        padding: EdgeInsets.all(8),
-                        child: Icon(Icons.play_arrow,
-                            color: Colors.grey[800], size: 32),
+                widget.thumbNail == null || widget.thumbNail == ""
+                    ? Container()
+                    : Container(
+                        child: ThumbnailCard(
+                          borderRadiusValue: 100,
+                          padding: EdgeInsets.all(8),
+                          child: Icon(Icons.play_arrow,
+                              color: Colors.grey[800], size: 32),
+                        ),
                       ),
-                ),
               ],
             ),
             // title

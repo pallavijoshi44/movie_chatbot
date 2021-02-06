@@ -27,7 +27,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
           children: <Widget>[
             CarouselSlider(
               options: CarouselOptions(
-                  autoPlay: true,
+                  autoPlay: false,
                   aspectRatio: 1.0,
                   enlargeCenterPage: false,
                   enableInfiniteScroll: false,

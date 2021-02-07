@@ -19,8 +19,6 @@ class CarouselDialogSlider extends StatefulWidget {
 class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   @override
   Widget build(BuildContext context) {
-    final List<String> imageList =
-        widget.carouselSelect.items.map((item) => item.image.imageUri).toList();
     return Container(
         margin: const EdgeInsets.only(top: 10.0),
         child: Column(

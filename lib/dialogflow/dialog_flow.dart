@@ -26,7 +26,7 @@ class AIResponse {
     _webhookStatus = body['webhookStatus'] != null
         ? new WebhookStatus(body['webhookStatus'])
         : null;
-    _webhookPayload =  body['queryResult']['webhookPayload'] != null
+    _webhookPayload = body['queryResult']['webhookPayload'] != null
         ? body['queryResult']['webhookPayload']
         : null;
   }
@@ -43,7 +43,7 @@ class AIResponse {
     return _queryResult.fulfillmentMessages;
   }
 
-  String getAction(){
+  String getAction() {
     return _queryResult.action;
   }
 
@@ -92,12 +92,13 @@ class Dialogflow {
   }
 
   Future<AIResponse> detectIntent(String query) async {
+   var replacedQuery =  query.replaceAll("'", "\\'");
     var response = await authGoogle.post(_getUrl(),
         headers: {
           HttpHeaders.authorizationHeader: "Bearer ${authGoogle.getToken}"
         },
         body:
-            "{'queryInput':{'text':{'text':'$query','language_code':'$language'}}}");
+            "{'queryInput':{'text':{'text':'$replacedQuery','language_code':'$language'}}}");
     return AIResponse(body: json.decode(response.body));
   }
 
@@ -111,5 +112,4 @@ class Dialogflow {
             "{'queryInput':{'event':{'name':'$eventName','language_code':'$language',  $parameters}}}");
     return AIResponse(body: json.decode(response.body));
   }
-
 }

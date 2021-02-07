@@ -199,7 +199,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
     DetectDialogResponses detectDialogResponses = new DetectDialogResponses(
         query: query,
         queryInputType: QUERY_INPUT_TYPE.QUERY,
-        executeResponse: _executeResponse);
+        executeResponse: _executeResponse,
+        defaultResponse: _defaultResponse);
 
     detectDialogResponses.callDialogFlow();
   }
@@ -214,9 +215,23 @@ class _ChatBotUIState extends State<ChatBotUI> {
         executeResponse: _executeResponse,
         eventName: eventName,
         parameters: parameters,
-        queryInputType: QUERY_INPUT_TYPE.EVENT);
+        queryInputType: QUERY_INPUT_TYPE.EVENT,
+        defaultResponse: _defaultResponse);
 
     detectDialogResponses.callDialogFlow();
+  }
+
+  void _defaultResponse() {
+    setState(() {
+      _isTextFieldEnabled = true;
+      _doNotShowTyping = true;
+      var chatModel = new ChatModel(
+          name: "Bot",
+          type: MessageType.CHAT_MESSAGE,
+          text: DEFAULT_RESPONSE,
+          chatType: false);
+      _messages.insert(0, chatModel);
+    });
   }
 
   void _executeResponse(AIResponse response) {

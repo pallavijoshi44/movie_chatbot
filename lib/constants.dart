@@ -16,3 +16,4 @@ const String NO_NETWORK_MESSAGE = "There seems to be no internet connection on y
 const double BOTTOM_PADDING_PIP = 16;
 const double VIDEO_HEIGHT_PIP = 200;
 const double VIDEO_TITLE_HEIGHT_PIP = 70;
+const String DEFAULT_RESPONSE = "Oops, I am sorry, something went wrong. Please try one more time or  ask me to 'Start Over' all again";

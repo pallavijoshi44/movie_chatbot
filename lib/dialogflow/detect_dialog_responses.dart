@@ -5,6 +5,7 @@ import 'dialog_flow.dart';
 
 class DetectDialogResponses {
   final Function executeResponse;
+  final Function defaultResponse;
   final QUERY_INPUT_TYPE queryInputType;
   final String eventName;
   final String query;
@@ -15,7 +16,8 @@ class DetectDialogResponses {
       this.queryInputType,
       this.eventName,
       this.parameters,
-      this.executeResponse});
+      this.executeResponse,
+      this.defaultResponse});
 
   Future<void> callDialogFlow() async {
     AIResponse response;
@@ -31,9 +33,11 @@ class DetectDialogResponses {
         }
         executeResponse.call(response);
       } catch (error) {
+        defaultResponse.call();
         print(error);
       }
     } catch (error) {
+      defaultResponse.call();
       print(error);
     }
   }

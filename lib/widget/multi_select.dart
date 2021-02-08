@@ -39,9 +39,11 @@ class MultiSelect extends StatelessWidget {
                       topRight: Radius.circular(30.0),
                       bottomRight: Radius.circular(30.0))),
               initialValue: previouslySelected,
-              initialChildSize: 0.4,
+              initialChildSize: 0.5,
+              maxChildSize: 0.5,
+              minChildSize: 0.5,
               listType: MultiSelectListType.CHIP,
-              searchable: true,
+              searchable: false,
               buttonText: Text("Select Genres Here",
                   style: Theme.of(context).textTheme.headline),
               title:

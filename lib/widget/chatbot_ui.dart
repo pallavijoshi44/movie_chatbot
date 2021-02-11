@@ -66,11 +66,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 if (message.type == MessageType.QUICK_REPLY) {
                   FocusScope.of(context).requestFocus(new FocusNode());
                   return QuickReply(
-                    title: (message as ReplyModel).text,
                     quickReplies: (message as ReplyModel).quickReplies,
                     insertQuickReply: (message as ReplyModel).updateQuickReply,
                     name: (message as ReplyModel).name,
-                    isEnabled: (message as ReplyModel).enabled,
                   );
                 }
                 if (message.type == MessageType.MULTI_SELECT) {
@@ -166,9 +164,18 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _insertQuickReply(String reply) {
-    if (_messages[0] is ReplyModel) {
-      (_messages[0] as ReplyModel).enabled = false;
-    }
+    setState(() {
+      _messages.removeAt(0);
+      _isTextFieldEnabled = true;
+      _doNotShowTyping = true;
+      var chatModel = new ChatModel(
+          name: "Pallavi",
+          type: MessageType.CHAT_MESSAGE,
+          text: reply,
+          chatType: true);
+      _messages.insert(0, chatModel);
+    });
+
     if (reply.toLowerCase() == SHOW_GENRES) {
       _pageNumber = 2;
       _getDialogFlowResponse(reply);
@@ -261,10 +268,16 @@ class _ChatBotUIState extends State<ChatBotUI> {
               quickReplies: replies.quickReplies,
               updateQuickReply: _insertQuickReply,
               type: MessageType.QUICK_REPLY,
-              enabled: true
             );
             _doNotShowTyping = true;
             _messages.insert(0, replyModel);
+            _messages.insert(
+                1,
+                new ChatModel(
+                    name: "Bot",
+                    type: MessageType.CHAT_MESSAGE,
+                    text: replies.title,
+                    chatType: false));
           });
         } else {
           var carouselSelect = response.getListMessage().firstWhere(

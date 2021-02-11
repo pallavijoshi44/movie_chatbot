@@ -32,7 +32,6 @@ class ChatBotUI extends StatefulWidget {
 class _ChatBotUIState extends State<ChatBotUI> {
   bool _doNotShowTyping = false;
   bool _isTextFieldEnabled = true;
-  bool _isQuickReplyEnabled = true;
   final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   int _pageNumber = 2;
@@ -71,7 +70,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     quickReplies: (message as ReplyModel).quickReplies,
                     insertQuickReply: (message as ReplyModel).updateQuickReply,
                     name: (message as ReplyModel).name,
-                    isEnabled: _isQuickReplyEnabled,
+                    isEnabled: (message as ReplyModel).enabled,
                   );
                 }
                 if (message.type == MessageType.MULTI_SELECT) {
@@ -167,9 +166,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _insertQuickReply(String reply) {
-    setState(() {
-      _isQuickReplyEnabled = false;
-    });
+    if (_messages[0] is ReplyModel) {
+      (_messages[0] as ReplyModel).enabled = false;
+    }
     if (reply.toLowerCase() == SHOW_GENRES) {
       _pageNumber = 2;
       _getDialogFlowResponse(reply);
@@ -255,7 +254,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
           QuickReplies replies = new QuickReplies(payload['payload']);
 
           setState(() {
-            _isQuickReplyEnabled = true;
             _isTextFieldEnabled = false;
             var replyModel = ReplyModel(
               text: replies.title,
@@ -263,6 +261,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
               quickReplies: replies.quickReplies,
               updateQuickReply: _insertQuickReply,
               type: MessageType.QUICK_REPLY,
+              enabled: true
             );
             _doNotShowTyping = true;
             _messages.insert(0, replyModel);

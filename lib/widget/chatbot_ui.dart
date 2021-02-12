@@ -270,14 +270,16 @@ class _ChatBotUIState extends State<ChatBotUI> {
               type: MessageType.QUICK_REPLY,
             );
             _doNotShowTyping = true;
-            _messages.insert(0, replyModel);
             _messages.insert(
-                1,
+                0,
                 new ChatModel(
                     name: "Bot",
                     type: MessageType.CHAT_MESSAGE,
                     text: replies.title,
                     chatType: false));
+
+            _messages.insert(0, replyModel);
+
           });
         } else {
           var carouselSelect = response.getListMessage().firstWhere(

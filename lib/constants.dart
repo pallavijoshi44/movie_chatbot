@@ -17,3 +17,5 @@ const double BOTTOM_PADDING_PIP = 16;
 const double VIDEO_HEIGHT_PIP = 200;
 const double VIDEO_TITLE_HEIGHT_PIP = 70;
 const String DEFAULT_RESPONSE = "Oops, I am sorry, something went wrong. Please try one more time or  ask me to 'Start Over' all again";
+const String MOVIE_RESPONSE = "I hope you like my recommendations. You can tap on any of the movie cards to check how can you watch that movie in your location and possibly watch a trailer.";
+const String ASK_FOR_MORE= "If you want more recommendations, just ask me to 'show more'";

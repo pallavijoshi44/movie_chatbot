@@ -166,15 +166,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
   void _insertQuickReply(String reply) {
     setState(() {
       _messages.removeAt(0);
-      _isTextFieldEnabled = true;
-      _doNotShowTyping = true;
-      var chatModel = new ChatModel(
-          name: "Pallavi",
-          type: MessageType.CHAT_MESSAGE,
-          text: reply,
-          chatType: true);
-      _messages.insert(0, chatModel);
     });
+    _showChatMessage(reply, true, "Pallavi", true);
 
     if (reply.toLowerCase() == SHOW_GENRES) {
       _pageNumber = 2;
@@ -228,14 +221,18 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _defaultResponse() {
-    setState(() {
+    _showChatMessage(DEFAULT_RESPONSE, false, "Bot", true);
+  }
+
+  void _showChatMessage(String text, bool chatType, String name, bool doNotShowTyping) {
+       setState(() {
       _isTextFieldEnabled = true;
-      _doNotShowTyping = true;
+      _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
-          name: "Bot",
+          name: name,
           type: MessageType.CHAT_MESSAGE,
-          text: DEFAULT_RESPONSE,
-          chatType: false);
+          text: text,
+          chatType: chatType);
       _messages.insert(0, chatModel);
     });
   }
@@ -296,8 +293,13 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 carouselSelect: carouselSelect,
                 type: MessageType.CAROUSEL,
               );
-              _doNotShowTyping = true;
               _messages.insert(0, carouselModel);
+            });
+            Future.delayed(const Duration(milliseconds: 2000), () {
+              _showChatMessage(MOVIE_RESPONSE, false, "Bot", false);
+              Future.delayed(const Duration(milliseconds: 2000), () {
+                _showChatMessage(ASK_FOR_MORE, false, "Bot", true);
+              });
             });
           } else {
             var multiSelect = response.getListMessage().firstWhere(

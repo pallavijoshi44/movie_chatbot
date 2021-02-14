@@ -8,12 +8,10 @@ class MultiSelect extends StatelessWidget {
       {this.buttons,
       this.insertMultiSelect,
       this.title,
-      this.name,
       this.previouslySelected});
 
   final List<ButtonDialogflow> buttons;
   final String title;
-  final String name;
   final Function insertMultiSelect;
   final List<String> previouslySelected;
 

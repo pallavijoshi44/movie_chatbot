@@ -59,7 +59,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 if (message.type == MessageType.CHAT_MESSAGE) {
                   return ChatMessage(
                     text: (message as ChatModel).text,
-                    name: (message as ChatModel).name,
                     type: (message as ChatModel).chatType,
                   );
                 }
@@ -68,7 +67,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                   return QuickReply(
                     quickReplies: (message as ReplyModel).quickReplies,
                     insertQuickReply: (message as ReplyModel).updateQuickReply,
-                    name: (message as ReplyModel).name,
                   );
                 }
                 if (message.type == MessageType.MULTI_SELECT) {
@@ -78,7 +76,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     buttons: (message as MultiSelectModel).buttons,
                     insertMultiSelect:
                     (message as MultiSelectModel).updateMultiSelect,
-                    name: (message as MultiSelectModel).name,
                     previouslySelected: _selectedGenres,
                   );
                 }
@@ -161,7 +158,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
     setState(() {
       _messages.removeAt(0);
     });
-    _showChatMessage(reply, true, "Pallavi", true);
+    _showChatMessage(reply, true, true);
 
     if (reply.toLowerCase() == SHOW_GENRES) {
       _pageNumber = 2;
@@ -215,15 +212,14 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _defaultResponse() {
-    _showChatMessage(DEFAULT_RESPONSE, false, "Bot", true);
+    _showChatMessage(DEFAULT_RESPONSE, false, true);
   }
 
-  void _showChatMessage(String text, bool chatType, String name, bool doNotShowTyping) {
+  void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
        setState(() {
       _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
-          name: name,
           type: MessageType.CHAT_MESSAGE,
           text: text,
           chatType: chatType);
@@ -255,7 +251,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
             _isTextFieldEnabled = false;
             var replyModel = ReplyModel(
               text: replies.title,
-              name: "Bot",
               quickReplies: replies.quickReplies,
               updateQuickReply: _insertQuickReply,
               type: MessageType.QUICK_REPLY,
@@ -264,7 +259,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
             _messages.insert(
                 0,
                 new ChatModel(
-                    name: "Bot",
                     type: MessageType.CHAT_MESSAGE,
                     text: replies.title,
                     chatType: false));
@@ -283,16 +277,15 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
             setState(() {
               var carouselModel = CarouselModel(
-                name: "Bot",
                 carouselSelect: carouselSelect,
                 type: MessageType.CAROUSEL,
               );
               _messages.insert(0, carouselModel);
             });
             Future.delayed(const Duration(milliseconds: 2000), () {
-              _showChatMessage(MOVIE_RESPONSE, false, "Bot", false);
+              _showChatMessage(MOVIE_RESPONSE, false, false);
               Future.delayed(const Duration(milliseconds: 2000), () {
-                _showChatMessage(ASK_FOR_MORE, false, "Bot", true);
+                _showChatMessage(ASK_FOR_MORE, false, true);
               });
             });
           } else {
@@ -309,7 +302,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 _isTextFieldEnabled = false;
                 var multiSelectModel = MultiSelectModel(
                   text: card.title,
-                  name: "Bot",
                   buttons: card.buttons,
                   updateMultiSelect: _insertMultiSelect,
                   type: MessageType.MULTI_SELECT,
@@ -332,7 +324,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     _messages.insert(
                         0,
                         new ChatModel(
-                            name: "Bot",
                             type: MessageType.CHAT_MESSAGE,
                             text: movieProviders.title,
                             chatType: false));
@@ -373,7 +364,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 setState(() {
                   _doNotShowTyping = true;
                   var chatModel = new ChatModel(
-                      name: "Bot",
                       type: MessageType.CHAT_MESSAGE,
                       text: response.getMessage() ??
                           response.getListMessage()[0]['text']['text'][0],
@@ -394,7 +384,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
       setState(() {
         _doNotShowTyping = false;
         var chatModel = new ChatModel(
-            name: "Pallavi",
             type: MessageType.CHAT_MESSAGE,
             text: text,
             chatType: true);

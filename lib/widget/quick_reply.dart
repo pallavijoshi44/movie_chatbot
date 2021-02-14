@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 class QuickReply extends StatelessWidget {
-  QuickReply({this.quickReplies, this.insertQuickReply, this.name});
+  QuickReply({this.quickReplies, this.insertQuickReply});
 
   final List<String> quickReplies;
-  final String name;
   final Function insertQuickReply;
 
   @override

@@ -3,10 +3,9 @@ import 'package:flutter_app/widget/message_layout.dart';
 import 'bot_chat_message.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text, this.name, this.type});
+  ChatMessage({this.text, this.type});
 
   final String text;
-  final String name;
   final bool type;
 
   @override

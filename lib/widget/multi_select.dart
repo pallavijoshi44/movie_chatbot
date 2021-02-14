@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/constants.dart';
 import 'package:flutter_app/widget/avatar.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -27,7 +28,7 @@ class MultiSelect extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Avatar('B'),
+          Avatar(BOT_PREFIX),
           Expanded(
             child: MultiSelectBottomSheetField(
               decoration: BoxDecoration(

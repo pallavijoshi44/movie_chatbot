@@ -144,12 +144,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _carouselItemClicked(String countryCode, String movieId) {
-    // "country_code": {
-    // "name": "Belgium",
-    // "alpha-2": "BE",
-    // "alpha-3": "BEL",
-    // "numeric": 56
-    // },
     var parameters = "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode'}";
     _scrollToBottom();
     _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);

@@ -17,6 +17,8 @@ import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/widget/text_composer.dart';
 import 'package:flutter_app/widget/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../constants.dart';
 import 'carousel_dialog_slider.dart';
@@ -50,62 +52,61 @@ class _ChatBotUIState extends State<ChatBotUI> {
     return Column(children: <Widget>[
       Flexible(
           child: ListView.builder(
-            padding: EdgeInsets.all(8.0),
-            reverse: true,
-            controller: _scrollController,
-            itemBuilder: (_, int index) {
-              var message = _messages[index];
-              if (message != null) {
-                if (message.type == MessageType.CHAT_MESSAGE) {
-                  return ChatMessage(
-                    text: (message as ChatModel).text,
-                    type: (message as ChatModel).chatType,
-                  );
-                }
-                if (message.type == MessageType.QUICK_REPLY) {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  return QuickReply(
-                    quickReplies: (message as ReplyModel).quickReplies,
-                    insertQuickReply: (message as ReplyModel).updateQuickReply,
-                  );
-                }
-                if (message.type == MessageType.MULTI_SELECT) {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  return MultiSelect(
-                    title: (message as MultiSelectModel).text,
-                    buttons: (message as MultiSelectModel).buttons,
-                    insertMultiSelect:
+        padding: EdgeInsets.all(8.0),
+        reverse: true,
+        controller: _scrollController,
+        itemBuilder: (_, int index) {
+          var message = _messages[index];
+          if (message != null) {
+            if (message.type == MessageType.CHAT_MESSAGE) {
+              return ChatMessage(
+                text: (message as ChatModel).text,
+                type: (message as ChatModel).chatType,
+              );
+            }
+            if (message.type == MessageType.QUICK_REPLY) {
+              FocusScope.of(context).requestFocus(new FocusNode());
+              return QuickReply(
+                quickReplies: (message as ReplyModel).quickReplies,
+                insertQuickReply: (message as ReplyModel).updateQuickReply,
+              );
+            }
+            if (message.type == MessageType.MULTI_SELECT) {
+              FocusScope.of(context).requestFocus(new FocusNode());
+              return MultiSelect(
+                title: (message as MultiSelectModel).text,
+                buttons: (message as MultiSelectModel).buttons,
+                insertMultiSelect:
                     (message as MultiSelectModel).updateMultiSelect,
-                    previouslySelected: _selectedGenres,
-                  );
-                }
-                if (message.type == MessageType.CAROUSEL) {
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                  return CarouselDialogSlider(
-                      (message as CarouselModel).carouselSelect,
-                      _carouselItemClicked);
-                }
-                if (message.type == MessageType.MOVIE_PROVIDER_URL) {
-                  return Url(
-                      title: (message as MovieProviderUrlModel).name,
-                      url: (message as MovieProviderUrlModel).text);
-                }
-                if (message.type == MessageType.MOVIE_PROVIDER) {
-                  return MovieProvider(
-                      title: (message as MovieProviderModel).text,
-                      logos: (message as MovieProviderModel).logos);
-                }
-                if (message.type == MessageType.MOVIE_TRAILER) {
-                  return MovieThumbnail(
-                      url: (message as MovieTrailerModel).url,
-                      thumbNail: (message as MovieTrailerModel).thumbNail
-                  );
-                }
-              }
-              return Container();
-            },
-            itemCount: _messages.length,
-          )),
+                previouslySelected: _selectedGenres,
+              );
+            }
+            if (message.type == MessageType.CAROUSEL) {
+              FocusScope.of(context).requestFocus(new FocusNode());
+              return CarouselDialogSlider(
+                  (message as CarouselModel).carouselSelect,
+                  _carouselItemClicked);
+            }
+            if (message.type == MessageType.MOVIE_PROVIDER_URL) {
+              return Url(
+                  title: (message as MovieProviderUrlModel).name,
+                  url: (message as MovieProviderUrlModel).text);
+            }
+            if (message.type == MessageType.MOVIE_PROVIDER) {
+              return MovieProvider(
+                  title: (message as MovieProviderModel).text,
+                  logos: (message as MovieProviderModel).logos);
+            }
+            if (message.type == MessageType.MOVIE_TRAILER) {
+              return MovieThumbnail(
+                  url: (message as MovieTrailerModel).url,
+                  thumbNail: (message as MovieTrailerModel).thumbNail);
+            }
+          }
+          return Container();
+        },
+        itemCount: _messages.length,
+      )),
       Visibility(
         visible: !_doNotShowTyping,
         child: Container(
@@ -113,18 +114,13 @@ class _ChatBotUIState extends State<ChatBotUI> {
           margin: EdgeInsets.all(10.0),
           child: Text(
             'Bot is typing...',
-            style: Theme
-                .of(context)
-                .textTheme
-                .headline,
+            style: Theme.of(context).textTheme.headline,
           ),
         ),
       ),
       Divider(height: 1.0),
       Container(
-        decoration: new BoxDecoration(color: Theme
-            .of(context)
-            .cardColor),
+        decoration: new BoxDecoration(color: Theme.of(context).cardColor),
         child: TextComposer(_textController, _textEditorChanged,
             _handleSubmitted, _isTextFieldEnabled),
       ),
@@ -140,10 +136,21 @@ class _ChatBotUIState extends State<ChatBotUI> {
         GENRES_SELECTED_OR_IGNORED, parameters, false);
   }
 
-  void _carouselItemClicked(String countryCode, String movieId) {
-    var parameters = "'parameters' : { 'movie_id':  $movieId, 'country_code': '$countryCode'}";
-    _scrollToBottom();
-    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
+  Future<void> _carouselItemClicked(String movieId) async {
+    try {
+      var _countryCode = 'US';
+      var currentPosition = await Geolocator.getCurrentPosition();
+      var placeMarks = await placemarkFromCoordinates(
+          currentPosition.latitude, currentPosition.longitude);
+      if (placeMarks != null && placeMarks.length > 0) {
+        _countryCode = placeMarks[0].isoCountryCode;
+      }
+      var parameters = "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
+      _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
+    } catch (error) {
+      _defaultResponse.call();
+      print(error);
+    }
   }
 
   void _scrollToBottom() {
@@ -195,8 +202,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
     detectDialogResponses.callDialogFlow();
   }
 
-  void _getDialogFlowResponseByEvent(String eventName, dynamic parameters,
-      bool firstTime) async {
+  void _getDialogFlowResponseByEvent(
+      String eventName, dynamic parameters, bool firstTime) async {
     _textController.clear();
     setState(() {
       _doNotShowTyping = firstTime ?? false;
@@ -216,20 +223,16 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
-       setState(() {
+    setState(() {
       _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
-          type: MessageType.CHAT_MESSAGE,
-          text: text,
-          chatType: chatType);
+          type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);
       _messages.insert(0, chatModel);
     });
   }
 
   void _executeResponse(AIResponse response) {
-    _scrollToBottom();
-
     setState(() {
       _isTextFieldEnabled = true;
     });
@@ -241,13 +244,14 @@ class _ChatBotUIState extends State<ChatBotUI> {
       }
       if (response.getListMessage() != null) {
         var payload = response.getListMessage().firstWhere(
-                (element) => element.containsKey('payload'),
+            (element) => element.containsKey('payload'),
             orElse: () => null);
 
         if (payload != null) {
           QuickReplies replies = new QuickReplies(payload['payload']);
 
           setState(() {
+            _scrollToBottom();
             _isTextFieldEnabled = false;
             var replyModel = ReplyModel(
               text: replies.title,
@@ -264,16 +268,15 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     chatType: false));
 
             _messages.insert(0, replyModel);
-
           });
         } else {
           var carouselSelect = response.getListMessage().firstWhere(
-                  (element) => element.containsKey('carouselSelect'),
+              (element) => element.containsKey('carouselSelect'),
               orElse: () => null);
 
           if (carouselSelect != null) {
             CarouselSelect carouselSelect =
-            new CarouselSelect(response.getListMessage()[0]);
+                new CarouselSelect(response.getListMessage()[0]);
 
             setState(() {
               var carouselModel = CarouselModel(
@@ -289,13 +292,14 @@ class _ChatBotUIState extends State<ChatBotUI> {
               });
             });
           } else {
+            _scrollToBottom();
             var multiSelect = response.getListMessage().firstWhere(
-                    (element) => element.containsKey('card'),
+                (element) => element.containsKey('card'),
                 orElse: () => null);
 
             if (multiSelect != null) {
               CardDialogflow card =
-              new CardDialogflow(response.getListMessage()[0]);
+                  new CardDialogflow(response.getListMessage()[0]);
 
               setState(() {
                 _selectedGenres = [];
@@ -316,7 +320,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 var videos = response.getWebHookPayload()['videos'];
 
                 MovieProvidersAndVideoModel movieProviders =
-                new MovieProvidersAndVideoModel(movieDetails, videos);
+                    new MovieProvidersAndVideoModel(movieDetails, videos);
                 setState(() {
                   _doNotShowTyping = true;
                   if (movieProviders.title != null &&
@@ -361,6 +365,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                   }
                 });
               } else {
+                _scrollToBottom();
                 setState(() {
                   _doNotShowTyping = true;
                   var chatModel = new ChatModel(
@@ -384,9 +389,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
       setState(() {
         _doNotShowTyping = false;
         var chatModel = new ChatModel(
-            type: MessageType.CHAT_MESSAGE,
-            text: text,
-            chatType: true);
+            type: MessageType.CHAT_MESSAGE, text: text, chatType: true);
         _messages.insert(0, chatModel);
       });
       _getDialogFlowResponse(text);

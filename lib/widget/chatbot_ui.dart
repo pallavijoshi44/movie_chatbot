@@ -34,6 +34,7 @@ class ChatBotUI extends StatefulWidget {
 class _ChatBotUIState extends State<ChatBotUI> {
   bool _doNotShowTyping = false;
   bool _isTextFieldEnabled = true;
+  int _movieSliderShownCount = 0;
   final List<MessageModel> _messages = [];
   List<String> _selectedGenres = [];
   int _pageNumber = 2;
@@ -145,7 +146,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
       if (placeMarks != null && placeMarks.length > 0) {
         _countryCode = placeMarks[0].isoCountryCode;
       }
-      var parameters = "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
+      var parameters =
+          "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
       _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
     } catch (error) {
       _defaultResponse.call();
@@ -285,12 +287,23 @@ class _ChatBotUIState extends State<ChatBotUI> {
               );
               _messages.insert(0, carouselModel);
             });
-            Future.delayed(const Duration(milliseconds: 2000), () {
-              _showChatMessage(MOVIE_RESPONSE, false, false);
+
+            if (_movieSliderShownCount == 0) {
+              _movieSliderShownCount++;
               Future.delayed(const Duration(milliseconds: 2000), () {
-                _showChatMessage(ASK_FOR_MORE, false, true);
+                _showChatMessage(MOVIE_RESPONSE, false, false);
+                Future.delayed(const Duration(milliseconds: 2000), () {
+                  _showChatMessage(ASK_FOR_MORE, false, true);
+                });
               });
-            });
+            } else {
+              _isTextFieldEnabled = true;
+              _doNotShowTyping = true;
+              if (_movieSliderShownCount < 5)
+                _movieSliderShownCount++;
+              else
+                _movieSliderShownCount = 0;
+            }
           } else {
             _scrollToBottom();
             var multiSelect = response.getListMessage().firstWhere(

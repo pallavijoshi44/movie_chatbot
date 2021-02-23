@@ -9,7 +9,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
   String videoThumbnail;
 
   MovieProvidersAndVideoModel(Map item, Map videos) {
-    if (item.isNotEmpty) {
+    if (item != null && item.isNotEmpty) {
       this.title = item['title'];
       List<dynamic> providers = item['providers'];
       if (providers != null && providers.length > 0) {
@@ -21,7 +21,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.urlTitle = item['urlTitle'];
       this.urlLink = item['urlLink'];
     }
-    if (videos.isNotEmpty) {
+    if (videos != null && videos.isNotEmpty) {
       this.videoUrl = videos['videoUrl'];
       this.videoThumbnail = videos['videoThumbnail'];
     }

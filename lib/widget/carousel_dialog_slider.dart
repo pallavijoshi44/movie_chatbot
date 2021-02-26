@@ -72,8 +72,8 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                   child: SingleChildScrollView(
                                     child: ExpandableText(
                                       '${item.description ?? ""}',
-                                      expandText: 'show more',
-                                      collapseText: 'show less',
+                                      expandText: 'more',
+                                      collapseText: 'less',
                                       maxLines: 3,
                                       linkColor: Colors.blue,
                                       style: TextStyle(

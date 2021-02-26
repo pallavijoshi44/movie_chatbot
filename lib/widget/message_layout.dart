@@ -42,8 +42,8 @@ class Message extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       child: ExpandableText(
         text,
-        expandText: 'show more',
-        collapseText: 'show less',
+        expandText: 'more',
+        collapseText: 'less',
         maxLines: 6,
         linkColor: Colors.blue,
           style: Theme.of(context).textTheme.headline),

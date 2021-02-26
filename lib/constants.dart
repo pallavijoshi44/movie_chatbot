@@ -20,3 +20,5 @@ const String DEFAULT_RESPONSE = "Oops, I am sorry, something went wrong. Please 
 const String MOVIE_RESPONSE = "I hope you like my recommendations. You can tap on any of the movie cards to check how can you watch that movie in your location and possibly watch a trailer.";
 const String ASK_FOR_MORE= "If you want more recommendations, just ask me to 'show more'";
 const String BOT_PREFIX = 'B';
+const String EXPAND_TEXT = 'more';
+const String COLLAPSE_TEXT = 'less';

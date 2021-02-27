@@ -22,3 +22,4 @@ const String ASK_FOR_MORE= "If you want more recommendations, just ask me to 'sh
 const String BOT_PREFIX = 'B';
 const String EXPAND_TEXT = 'more';
 const String COLLAPSE_TEXT = 'less';
+const String JUST_WATCH_TEXT = 'These results are powered by ';

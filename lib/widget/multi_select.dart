@@ -14,7 +14,7 @@ class MultiSelect extends StatelessWidget {
   final List<ButtonDialogflow> buttons;
   final String title;
   final Function insertMultiSelect;
-  final List<String> previouslySelected;
+  final List<dynamic> previouslySelected;
 
   @override
   Widget build(BuildContext context) {

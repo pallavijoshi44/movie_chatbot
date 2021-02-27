@@ -9,6 +9,7 @@ import 'package:flutter_app/models/message_model.dart';
 import 'package:flutter_app/models/movie_provider_model.dart';
 import 'package:flutter_app/models/movie_provider_url_model.dart';
 import 'package:flutter_app/models/movie_providers_model.dart';
+import 'package:flutter_app/models/movie_just_watch_model.dart';
 import 'package:flutter_app/models/movie_trailer_model.dart';
 import 'package:flutter_app/models/multi_select_model.dart';
 import 'package:flutter_app/models/reply_model.dart';
@@ -23,6 +24,7 @@ import 'package:geolocator/geolocator.dart';
 import '../constants.dart';
 import 'carousel_dialog_slider.dart';
 import 'chat_message.dart';
+import 'movie_just_watch.dart';
 import 'movie_provider.dart';
 import 'multi_select.dart';
 
@@ -35,8 +37,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
   bool _doNotShowTyping = false;
   bool _isTextFieldEnabled = true;
   int _movieSliderShownCount = 0;
+  int _tipsWaitingTime = 3000;
   final List<MessageModel> _messages = [];
-  List<String> _selectedGenres = [];
+  List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
@@ -103,6 +106,10 @@ class _ChatBotUIState extends State<ChatBotUI> {
                   url: (message as MovieTrailerModel).url,
                   thumbNail: (message as MovieTrailerModel).thumbNail);
             }
+            if (message.type == MessageType.MOVIE_JUST_WATCH) {
+              return MovieJustWatch(
+                  title: (message as MovieJustWatchModel).name);
+            }
           }
           return Container();
         },
@@ -128,7 +135,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
     ]);
   }
 
-  void _insertMultiSelect(List<String> selectedGenres) {
+  void _insertMultiSelect(List<dynamic> selectedGenres) {
     _scrollToBottom();
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());
@@ -340,10 +347,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
                       movieProviders.title != "") {
                     _messages.insert(
                         0,
-                        new ChatModel(
-                            type: MessageType.CHAT_MESSAGE,
-                            text: movieProviders.title,
-                            chatType: false));
+                        new MovieJustWatchModel(
+                            type: MessageType.MOVIE_JUST_WATCH,
+                            title: movieProviders.title));
                   }
                   if (movieProviders.providers != null &&
                       movieProviders.providers.length > 0) {

@@ -287,30 +287,53 @@ class _ChatBotUIState extends State<ChatBotUI> {
             CarouselSelect carouselSelect =
                 new CarouselSelect(response.getListMessage()[0]);
 
-            setState(() {
-              var carouselModel = CarouselModel(
-                carouselSelect: carouselSelect,
-                type: MessageType.CAROUSEL,
-              );
-              _messages.insert(0, carouselModel);
-            });
-
             if (_movieSliderShownCount == 0) {
               _movieSliderShownCount++;
-              Future.delayed(const Duration(milliseconds: 2000), () {
-                _showChatMessage(MOVIE_RESPONSE, false, false);
-                Future.delayed(const Duration(milliseconds: 2000), () {
-                  _showChatMessage(ASK_FOR_MORE, false, true);
-                });
+              setState(() {
+                var chatModel = new ChatModel(
+                    type: MessageType.CHAT_MESSAGE, text: MOVIE_RESPONSE, chatType: false);
+                _messages.insert(0, chatModel);
               });
+
+                Future.delayed(const Duration(milliseconds: 2000), () {
+                  setState(() {
+                    var chatModel = new ChatModel(
+                        type: MessageType.CHAT_MESSAGE, text: ASK_FOR_MORE, chatType: false);
+                    _messages.insert(0, chatModel);
+                  });
+                  Future.delayed(const Duration(milliseconds: 2000), () {
+
+                    setState(() {
+                      _doNotShowTyping = true;
+                      _isTextFieldEnabled = true;
+                      var carouselModel = CarouselModel(
+                        carouselSelect: carouselSelect,
+                        type: MessageType.CAROUSEL,
+                      );
+                      _messages.insert(0, carouselModel);
+                    });
+
+                  });
+                });
+
             } else {
-              _isTextFieldEnabled = true;
-              _doNotShowTyping = true;
               if (_movieSliderShownCount < 5)
                 _movieSliderShownCount++;
               else
                 _movieSliderShownCount = 0;
+
+              setState(() {
+                _doNotShowTyping = true;
+                _isTextFieldEnabled = true;
+                var carouselModel = CarouselModel(
+                  carouselSelect: carouselSelect,
+                  type: MessageType.CAROUSEL,
+                );
+                _messages.insert(0, carouselModel);
+              });
             }
+
+
           } else {
             _scrollToBottom();
             var multiSelect = response.getListMessage().firstWhere(
@@ -362,17 +385,17 @@ class _ChatBotUIState extends State<ChatBotUI> {
                               logos: provider.logos));
                     });
                   }
-                  if (movieProviders.urlTitle != null &&
-                      movieProviders.urlTitle != "" &&
-                      movieProviders.urlLink != null &&
-                      movieProviders.urlLink != "") {
-                    _messages.insert(
-                        0,
-                        new MovieProviderUrlModel(
-                            url: movieProviders.urlLink,
-                            type: MessageType.MOVIE_PROVIDER_URL,
-                            title: movieProviders.urlTitle));
-                  }
+                  // if (movieProviders.urlTitle != null &&
+                  //     movieProviders.urlTitle != "" &&
+                  //     movieProviders.urlLink != null &&
+                  //     movieProviders.urlLink != "") {
+                  //   _messages.insert(
+                  //       0,
+                  //       new MovieProviderUrlModel(
+                  //           url: movieProviders.urlLink,
+                  //           type: MessageType.MOVIE_PROVIDER_URL,
+                  //           title: movieProviders.urlTitle));
+                  // }
                   if (movieProviders.videoUrl != null) {
                     _messages.insert(
                         0,

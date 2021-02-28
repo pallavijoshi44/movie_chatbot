@@ -88,6 +88,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _handleUserInteraction,
+      behavior: HitTestBehavior.translucent,
       child: Column(children: <Widget>[
         Flexible(
             child: ListView.builder(
@@ -131,20 +132,20 @@ class _ChatBotUIState extends State<ChatBotUI> {
                         _movieItemClicked);
                   }
                 case MessageType.MOVIE_PROVIDER_URL:
-                    return Url(
-                        title: (message as MovieProviderUrlModel).name,
-                        url: (message as MovieProviderUrlModel).text);
+                  return Url(
+                      title: (message as MovieProviderUrlModel).name,
+                      url: (message as MovieProviderUrlModel).text);
                 case MessageType.MOVIE_PROVIDER:
-                    return MovieProvider(
-                        title: (message as MovieProviderModel).text,
-                        logos: (message as MovieProviderModel).logos);
+                  return MovieProvider(
+                      title: (message as MovieProviderModel).text,
+                      logos: (message as MovieProviderModel).logos);
                 case MessageType.MOVIE_TRAILER:
-                    return MovieThumbnail(
-                        url: (message as MovieTrailerModel).url,
-                        thumbNail: (message as MovieTrailerModel).thumbNail);
+                  return MovieThumbnail(
+                      url: (message as MovieTrailerModel).url,
+                      thumbNail: (message as MovieTrailerModel).thumbNail);
                 case MessageType.MOVIE_JUST_WATCH:
-                    return MovieJustWatch(
-                        title: (message as MovieJustWatchModel).name);
+                  return MovieJustWatch(
+                      title: (message as MovieJustWatchModel).name);
                 case MessageType.TIPS_MESSAGE:
                   return Tips(text: (message as TipsModel).text);
               }
@@ -498,6 +499,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _handleSubmitted(String text) {
+    stopUITimer();
+    stopAbsoluteTimer();
     if (text != "") {
       _textController.clear();
       setState(() {
@@ -508,7 +511,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
       });
       _getDialogFlowResponse(text);
     }
-    stopAbsoluteTimer();
   }
 
   void stopAbsoluteTimer() {
@@ -524,6 +526,9 @@ class _ChatBotUIState extends State<ChatBotUI> {
   }
 
   void _textEditorChanged(String text) {
+    stopUITimer();
+    stopAbsoluteTimer();
+
     setState(() {
       _doNotShowTyping = text.length > 0 || text == "";
     });

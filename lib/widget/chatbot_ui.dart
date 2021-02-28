@@ -41,7 +41,8 @@ class ChatBotUI extends StatefulWidget {
 }
 
 class _ChatBotUIState extends State<ChatBotUI> {
-  Timer _timer;
+  Timer _uiInactivityTimer;
+  Timer _absoluteInactivityTimer;
   bool _doNotShowTyping = false;
   int _unknownAction = 0;
   bool _isTextFieldEnabled = true;
@@ -59,22 +60,22 @@ class _ChatBotUIState extends State<ChatBotUI> {
     super.initState();
   }
 
-  _startTimeout() {
-    _timer = new Timer(Duration(seconds: TIPS_DURATION), _showTips);
+  _startUIInactivityTimer() {
+    if (widget.selectedTips) {
+      _uiInactivityTimer =
+      new Timer(Duration(seconds: TIPS_DURATION), _showTips);
+    }
+  }
+
+  _startAbsoluteInactivityTimer() {
+    if (widget.selectedTips) {
+      _absoluteInactivityTimer =
+      new Timer(Duration(seconds: ABSOLUTE_DURATION), _showTips);
+    }
   }
 
   void _handleUserInteraction() {
-    if (_timer != null) {
-      _timer.cancel();
-    }
-  }
-
-  @override
-  void dispose() {
-    if (_timer != null) {
-      _timer.cancel();
-    }
-    super.dispose();
+    stopUITimer();
   }
 
   void _showTips() {
@@ -298,25 +299,27 @@ class _ChatBotUIState extends State<ChatBotUI> {
                   response.getListMessage()[0]['text']['text'][0]);
           _messages.insert(0, chatModel);
         });
+        stopAbsoluteTimer();
+        stopUITimer();
         return;
       }
       if (ACTION_MOVIE_RECOMMENDATIONS == action ||
           ACTION_ADDITIONAL_FILTERS_PROMPTED == action) {
-        if (widget.selectedTips) {
-          _startTimeout();
-        }
+          _startUIInactivityTimer();
+          _startAbsoluteInactivityTimer();
       }
       if (ACTION_UNKNOWN == action) {
         _unknownAction++;
 
         if (widget.selectedTips && _unknownAction == 2) {
-         setState(() {
-           _unknownAction = 0;
-         });
-         _startTimeout();
+          setState(() {
+            _unknownAction = 0;
+          });
+          _startUIInactivityTimer();
+          _startAbsoluteInactivityTimer();
         }
       }
-      
+
       if (response.getListMessage() != null) {
         var payload = response.getListMessage().firstWhere(
             (element) => element.containsKey('payload'),
@@ -501,11 +504,31 @@ class _ChatBotUIState extends State<ChatBotUI> {
       });
       _getDialogFlowResponse(text);
     }
+    stopAbsoluteTimer();
+  }
+
+  void stopAbsoluteTimer() {
+    if (_absoluteInactivityTimer != null) {
+      _absoluteInactivityTimer.cancel();
+    }
+  }
+
+  void stopUITimer() {
+    if (_uiInactivityTimer != null) {
+      _uiInactivityTimer.cancel();
+    }
   }
 
   void _textEditorChanged(String text) {
     setState(() {
       _doNotShowTyping = text.length > 0 || text == "";
     });
+  }
+
+  @override
+  void dispose() {
+    stopUITimer();
+    stopAbsoluteTimer();
+    super.dispose();
   }
 }

@@ -29,6 +29,10 @@ import 'movie_provider.dart';
 import 'multi_select.dart';
 
 class ChatBotUI extends StatefulWidget {
+  final bool selectedTips;
+
+  ChatBotUI(this.selectedTips);
+
   @override
   _ChatBotUIState createState() => _ChatBotUIState();
 }

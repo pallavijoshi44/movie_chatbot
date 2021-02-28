@@ -33,6 +33,9 @@ const String TMDB_CONTENT =
 const String POWERED_BY_TMDB = 'The movie recommendations are powered by TMDb.';
 const String POWERED_BY_JUST_WATCH =
     'The watch providers data is powered by JustWatch.';
+const String SETTINGS = 'Settings';
+const String RECEIVE_TIPS = 'Receive tips';
+const String RECEIVE_TIPS_CONTENT = 'Select whether you want to receive tips';
 const String HELP = 'Help';
 const String DEFAULT_HELP_CONTENT =
     'I would love to help you out. Let me tell you how to make use of my ability to recommend the best movies for you to watch.' +

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/connectivity_check.dart';
 import 'package:flutter_app/widget/chatbot_ui.dart';
 import 'package:flutter_app/widget/help_widget.dart';
+import 'package:flutter_app/widget/settings_widget.dart';
 import 'constants.dart';
 import 'widget/about_app_widget.dart';
 
@@ -36,7 +37,14 @@ class ChatBot extends StatelessWidget {
   }
 }
 
-class ChatBotFlow extends StatelessWidget {
+class ChatBotFlow extends StatefulWidget {
+  @override
+  _ChatBotFlowState createState() => _ChatBotFlowState();
+}
+
+class _ChatBotFlowState extends State<ChatBotFlow> {
+  bool _selectedTips = false;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -66,8 +74,20 @@ class ChatBotFlow extends StatelessWidget {
                     ),
                   );
                 }
+                if (value == SETTINGS) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsWidget(_selectedTips, _onTipSelected),
+                    ),
+                  );
+                }
               },
               itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(SETTINGS),
+                  value: SETTINGS,
+                ),
                 PopupMenuItem(
                   child: Text(HELP),
                   value: HELP,
@@ -80,8 +100,14 @@ class ChatBotFlow extends StatelessWidget {
             ),
           ]),
       body: ConnectivityCheck(
-        child: ChatBotUI(),
+        child: ChatBotUI(_selectedTips),
       ),
     );
+  }
+
+  _onTipSelected(bool value) {
+    setState(() {
+      _selectedTips = value;
+    });
   }
 }

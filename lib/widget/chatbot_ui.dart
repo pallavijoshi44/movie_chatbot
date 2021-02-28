@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/dialogflow/detect_dialog_responses.dart';
 import 'package:flutter_app/dialogflow/dialog_flow.dart';
@@ -22,7 +21,6 @@ import 'package:flutter_app/widget/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-
 import '../constants.dart';
 import 'carousel_dialog_slider.dart';
 import 'chat_message.dart';
@@ -99,56 +97,56 @@ class _ChatBotUIState extends State<ChatBotUI> {
           itemBuilder: (_, int index) {
             var message = _messages[index];
             if (message != null) {
-              if (message.type == MessageType.CHAT_MESSAGE) {
-                return ChatMessage(
-                  text: (message as ChatModel).text,
-                  type: (message as ChatModel).chatType,
-                );
-              }
-              if (message.type == MessageType.QUICK_REPLY) {
-                FocusScope.of(context).requestFocus(new FocusNode());
-                return QuickReply(
-                  quickReplies: (message as ReplyModel).quickReplies,
-                  insertQuickReply: (message as ReplyModel).updateQuickReply,
-                );
-              }
-              if (message.type == MessageType.MULTI_SELECT) {
-                FocusScope.of(context).requestFocus(new FocusNode());
-                return MultiSelect(
-                  title: (message as MultiSelectModel).text,
-                  buttons: (message as MultiSelectModel).buttons,
-                  insertMultiSelect:
-                      (message as MultiSelectModel).updateMultiSelect,
-                  previouslySelected: _selectedGenres,
-                );
-              }
-              if (message.type == MessageType.CAROUSEL) {
-                FocusScope.of(context).requestFocus(new FocusNode());
-                return CarouselDialogSlider(
-                    (message as CarouselModel).carouselSelect,
-                    _carouselItemClicked);
-              }
-              if (message.type == MessageType.MOVIE_PROVIDER_URL) {
-                return Url(
-                    title: (message as MovieProviderUrlModel).name,
-                    url: (message as MovieProviderUrlModel).text);
-              }
-              if (message.type == MessageType.MOVIE_PROVIDER) {
-                return MovieProvider(
-                    title: (message as MovieProviderModel).text,
-                    logos: (message as MovieProviderModel).logos);
-              }
-              if (message.type == MessageType.MOVIE_TRAILER) {
-                return MovieThumbnail(
-                    url: (message as MovieTrailerModel).url,
-                    thumbNail: (message as MovieTrailerModel).thumbNail);
-              }
-              if (message.type == MessageType.MOVIE_JUST_WATCH) {
-                return MovieJustWatch(
-                    title: (message as MovieJustWatchModel).name);
-              }
-              if (message.type == MessageType.TIPS_MESSAGE) {
-                return Tips(text: (message as TipsModel).text);
+              switch (message.type) {
+                case MessageType.CHAT_MESSAGE:
+                  return ChatMessage(
+                    text: (message as ChatModel).text,
+                    type: (message as ChatModel).chatType,
+                  );
+                case MessageType.QUICK_REPLY:
+                  {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    return QuickReply(
+                      quickReplies: (message as ReplyModel).quickReplies,
+                      insertQuickReply:
+                          (message as ReplyModel).updateQuickReply,
+                    );
+                  }
+                case MessageType.MULTI_SELECT:
+                  {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    return MultiSelect(
+                      title: (message as MultiSelectModel).text,
+                      buttons: (message as MultiSelectModel).buttons,
+                      insertMultiSelect:
+                          (message as MultiSelectModel).updateMultiSelect,
+                      previouslySelected: _selectedGenres,
+                    );
+                  }
+                case MessageType.CAROUSEL:
+                  {
+                    FocusScope.of(context).requestFocus(new FocusNode());
+                    return CarouselDialogSlider(
+                        (message as CarouselModel).carouselSelect,
+                        _carouselItemClicked);
+                  }
+                case MessageType.MOVIE_PROVIDER_URL:
+                    return Url(
+                        title: (message as MovieProviderUrlModel).name,
+                        url: (message as MovieProviderUrlModel).text);
+                case MessageType.MOVIE_PROVIDER:
+                    return MovieProvider(
+                        title: (message as MovieProviderModel).text,
+                        logos: (message as MovieProviderModel).logos);
+                case MessageType.MOVIE_TRAILER:
+                    return MovieThumbnail(
+                        url: (message as MovieTrailerModel).url,
+                        thumbNail: (message as MovieTrailerModel).thumbNail);
+                case MessageType.MOVIE_JUST_WATCH:
+                    return MovieJustWatch(
+                        title: (message as MovieJustWatchModel).name);
+                case MessageType.TIPS_MESSAGE:
+                  return Tips(text: (message as TipsModel).text);
               }
             }
             return Container();

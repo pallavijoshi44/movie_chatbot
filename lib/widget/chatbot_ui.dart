@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_app/models/movie_just_watch_model.dart';
 import 'package:flutter_app/models/movie_trailer_model.dart';
 import 'package:flutter_app/models/multi_select_model.dart';
 import 'package:flutter_app/models/reply_model.dart';
+import 'package:flutter_app/models/tips_model.dart';
 import 'package:flutter_app/widget/movie_thumbnail.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/widget/text_composer.dart';
@@ -27,6 +29,7 @@ import 'chat_message.dart';
 import 'movie_just_watch.dart';
 import 'movie_provider.dart';
 import 'multi_select.dart';
+import 'tips.dart';
 
 class ChatBotUI extends StatefulWidget {
   final bool selectedTips;
@@ -38,10 +41,11 @@ class ChatBotUI extends StatefulWidget {
 }
 
 class _ChatBotUIState extends State<ChatBotUI> {
+  Timer _timer;
   bool _doNotShowTyping = false;
+  int _unknownAction = 0;
   bool _isTextFieldEnabled = true;
   int _movieSliderShownCount = 0;
-  int _tipsWaitingTime = 3000;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
@@ -55,88 +59,117 @@ class _ChatBotUIState extends State<ChatBotUI> {
     super.initState();
   }
 
+  _startTimeout() {
+    _timer = new Timer(Duration(seconds: TIPS_DURATION), _showTips);
+  }
+
+  void _handleUserInteraction() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+  }
+
+  @override
+  void dispose() {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    super.dispose();
+  }
+
+  void _showTips() {
+    _getDialogFlowResponseByEvent(
+        TIPS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Flexible(
-          child: ListView.builder(
-        padding: EdgeInsets.all(8.0),
-        reverse: true,
-        controller: _scrollController,
-        itemBuilder: (_, int index) {
-          var message = _messages[index];
-          if (message != null) {
-            if (message.type == MessageType.CHAT_MESSAGE) {
-              return ChatMessage(
-                text: (message as ChatModel).text,
-                type: (message as ChatModel).chatType,
-              );
+    return GestureDetector(
+      onTap: _handleUserInteraction,
+      child: Column(children: <Widget>[
+        Flexible(
+            child: ListView.builder(
+          padding: EdgeInsets.all(8.0),
+          reverse: true,
+          controller: _scrollController,
+          itemBuilder: (_, int index) {
+            var message = _messages[index];
+            if (message != null) {
+              if (message.type == MessageType.CHAT_MESSAGE) {
+                return ChatMessage(
+                  text: (message as ChatModel).text,
+                  type: (message as ChatModel).chatType,
+                );
+              }
+              if (message.type == MessageType.QUICK_REPLY) {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                return QuickReply(
+                  quickReplies: (message as ReplyModel).quickReplies,
+                  insertQuickReply: (message as ReplyModel).updateQuickReply,
+                );
+              }
+              if (message.type == MessageType.MULTI_SELECT) {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                return MultiSelect(
+                  title: (message as MultiSelectModel).text,
+                  buttons: (message as MultiSelectModel).buttons,
+                  insertMultiSelect:
+                      (message as MultiSelectModel).updateMultiSelect,
+                  previouslySelected: _selectedGenres,
+                );
+              }
+              if (message.type == MessageType.CAROUSEL) {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                return CarouselDialogSlider(
+                    (message as CarouselModel).carouselSelect,
+                    _carouselItemClicked);
+              }
+              if (message.type == MessageType.MOVIE_PROVIDER_URL) {
+                return Url(
+                    title: (message as MovieProviderUrlModel).name,
+                    url: (message as MovieProviderUrlModel).text);
+              }
+              if (message.type == MessageType.MOVIE_PROVIDER) {
+                return MovieProvider(
+                    title: (message as MovieProviderModel).text,
+                    logos: (message as MovieProviderModel).logos);
+              }
+              if (message.type == MessageType.MOVIE_TRAILER) {
+                return MovieThumbnail(
+                    url: (message as MovieTrailerModel).url,
+                    thumbNail: (message as MovieTrailerModel).thumbNail);
+              }
+              if (message.type == MessageType.MOVIE_JUST_WATCH) {
+                return MovieJustWatch(
+                    title: (message as MovieJustWatchModel).name);
+              }
+              if (message.type == MessageType.TIPS_MESSAGE) {
+                return Tips(text: (message as TipsModel).text);
+              }
             }
-            if (message.type == MessageType.QUICK_REPLY) {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              return QuickReply(
-                quickReplies: (message as ReplyModel).quickReplies,
-                insertQuickReply: (message as ReplyModel).updateQuickReply,
-              );
-            }
-            if (message.type == MessageType.MULTI_SELECT) {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              return MultiSelect(
-                title: (message as MultiSelectModel).text,
-                buttons: (message as MultiSelectModel).buttons,
-                insertMultiSelect:
-                    (message as MultiSelectModel).updateMultiSelect,
-                previouslySelected: _selectedGenres,
-              );
-            }
-            if (message.type == MessageType.CAROUSEL) {
-              FocusScope.of(context).requestFocus(new FocusNode());
-              return CarouselDialogSlider(
-                  (message as CarouselModel).carouselSelect,
-                  _carouselItemClicked);
-            }
-            if (message.type == MessageType.MOVIE_PROVIDER_URL) {
-              return Url(
-                  title: (message as MovieProviderUrlModel).name,
-                  url: (message as MovieProviderUrlModel).text);
-            }
-            if (message.type == MessageType.MOVIE_PROVIDER) {
-              return MovieProvider(
-                  title: (message as MovieProviderModel).text,
-                  logos: (message as MovieProviderModel).logos);
-            }
-            if (message.type == MessageType.MOVIE_TRAILER) {
-              return MovieThumbnail(
-                  url: (message as MovieTrailerModel).url,
-                  thumbNail: (message as MovieTrailerModel).thumbNail);
-            }
-            if (message.type == MessageType.MOVIE_JUST_WATCH) {
-              return MovieJustWatch(
-                  title: (message as MovieJustWatchModel).name);
-            }
-          }
-          return Container();
-        },
-        itemCount: _messages.length,
-      )),
-      Visibility(
-        visible: !_doNotShowTyping,
-        child: Container(
-          alignment: Alignment.topLeft,
-          margin: EdgeInsets.all(10.0),
-          child: Text(
-            'Bot is typing...',
-            style: Theme.of(context).textTheme.headline,
+            return Container();
+          },
+          itemCount: _messages.length,
+        )),
+        Visibility(
+          visible: !_doNotShowTyping,
+          child: Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.all(10.0),
+            child: Text(
+              'Bot is typing...',
+              style: Theme.of(context).textTheme.headline,
+            ),
           ),
         ),
-      ),
-      Divider(height: 1.0),
-      Container(
-        decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-        child: TextComposer(_textController, _textEditorChanged,
-            _handleSubmitted, _isTextFieldEnabled),
-      ),
-    ]);
+        Divider(height: 1.0),
+        Container(
+          decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+          child: TextComposer(_textController, _textEditorChanged,
+              _handleSubmitted, _isTextFieldEnabled),
+        ),
+      ]),
+    );
   }
 
   void _insertMultiSelect(List<dynamic> selectedGenres) {
@@ -255,6 +288,35 @@ class _ChatBotUIState extends State<ChatBotUI> {
         _getDialogFlowResponseByEvent(
             START_OVER_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, false);
       }
+      if (ACTION_TRIGGER_TIPS == action) {
+        _scrollToBottom();
+        setState(() {
+          _doNotShowTyping = true;
+          var chatModel = new TipsModel(
+              type: MessageType.TIPS_MESSAGE,
+              text: response.getMessage() ??
+                  response.getListMessage()[0]['text']['text'][0]);
+          _messages.insert(0, chatModel);
+        });
+        return;
+      }
+      if (ACTION_MOVIE_RECOMMENDATIONS == action ||
+          ACTION_ADDITIONAL_FILTERS_PROMPTED == action) {
+        if (widget.selectedTips) {
+          _startTimeout();
+        }
+      }
+      if (ACTION_UNKNOWN == action) {
+        _unknownAction++;
+
+        if (widget.selectedTips && _unknownAction == 2) {
+         setState(() {
+           _unknownAction = 0;
+         });
+         _startTimeout();
+        }
+      }
+      
       if (response.getListMessage() != null) {
         var payload = response.getListMessage().firstWhere(
             (element) => element.containsKey('payload'),
@@ -295,31 +357,32 @@ class _ChatBotUIState extends State<ChatBotUI> {
               _movieSliderShownCount++;
               setState(() {
                 var chatModel = new ChatModel(
-                    type: MessageType.CHAT_MESSAGE, text: MOVIE_RESPONSE, chatType: false);
+                    type: MessageType.CHAT_MESSAGE,
+                    text: MOVIE_RESPONSE,
+                    chatType: false);
                 _messages.insert(0, chatModel);
               });
 
+              Future.delayed(const Duration(milliseconds: 2000), () {
+                setState(() {
+                  var chatModel = new ChatModel(
+                      type: MessageType.CHAT_MESSAGE,
+                      text: ASK_FOR_MORE,
+                      chatType: false);
+                  _messages.insert(0, chatModel);
+                });
                 Future.delayed(const Duration(milliseconds: 2000), () {
                   setState(() {
-                    var chatModel = new ChatModel(
-                        type: MessageType.CHAT_MESSAGE, text: ASK_FOR_MORE, chatType: false);
-                    _messages.insert(0, chatModel);
-                  });
-                  Future.delayed(const Duration(milliseconds: 2000), () {
-
-                    setState(() {
-                      _doNotShowTyping = true;
-                      _isTextFieldEnabled = true;
-                      var carouselModel = CarouselModel(
-                        carouselSelect: carouselSelect,
-                        type: MessageType.CAROUSEL,
-                      );
-                      _messages.insert(0, carouselModel);
-                    });
-
+                    _doNotShowTyping = true;
+                    _isTextFieldEnabled = true;
+                    var carouselModel = CarouselModel(
+                      carouselSelect: carouselSelect,
+                      type: MessageType.CAROUSEL,
+                    );
+                    _messages.insert(0, carouselModel);
                   });
                 });
-
+              });
             } else {
               if (_movieSliderShownCount < 5)
                 _movieSliderShownCount++;
@@ -336,8 +399,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 _messages.insert(0, carouselModel);
               });
             }
-
-
           } else {
             _scrollToBottom();
             var multiSelect = response.getListMessage().firstWhere(

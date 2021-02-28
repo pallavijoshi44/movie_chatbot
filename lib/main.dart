@@ -43,7 +43,7 @@ class ChatBotFlow extends StatefulWidget {
 }
 
 class _ChatBotFlowState extends State<ChatBotFlow> {
-  bool _selectedTips = false;
+  bool _selectedTips = true;
 
   @override
   Widget build(BuildContext context) {

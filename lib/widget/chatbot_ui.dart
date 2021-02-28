@@ -60,27 +60,30 @@ class _ChatBotUIState extends State<ChatBotUI> {
     super.initState();
   }
 
-  _startUIInactivityTimer() {
+  _startUIInactivityTimer(String eventName) {
     if (widget.selectedTips) {
-      _uiInactivityTimer =
-      new Timer(Duration(seconds: TIPS_DURATION), _showTips);
+      _uiInactivityTimer = new Timer(Duration(seconds: TIPS_DURATION), () {
+        _showTips(eventName);
+      });
     }
   }
 
-  _startAbsoluteInactivityTimer() {
+  _startAbsoluteInactivityTimer(String eventName) {
     if (widget.selectedTips) {
       _absoluteInactivityTimer =
-      new Timer(Duration(seconds: ABSOLUTE_DURATION), _showTips);
+          new Timer(Duration(seconds: ABSOLUTE_DURATION), () {
+        _showTips(eventName);
+      });
     }
+  }
+
+  void _showTips(String eventName) {
+    _getDialogFlowResponseByEvent(
+        eventName, DEFAULT_PARAMETERS_FOR_EVENT, false);
   }
 
   void _handleUserInteraction() {
     stopUITimer();
-  }
-
-  void _showTips() {
-    _getDialogFlowResponseByEvent(
-        TIPS_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, false);
   }
 
   @override
@@ -303,10 +306,13 @@ class _ChatBotUIState extends State<ChatBotUI> {
         stopUITimer();
         return;
       }
-      if (ACTION_MOVIE_RECOMMENDATIONS == action ||
-          ACTION_ADDITIONAL_FILTERS_PROMPTED == action) {
-          _startUIInactivityTimer();
-          _startAbsoluteInactivityTimer();
+      if (ACTION_MOVIE_RECOMMENDATIONS == action) {
+        _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+        _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+      }
+      if (ACTION_ADDITIONAL_FILTERS_PROMPTED == action) {
+        _startUIInactivityTimer(QUERY_TIPS_EVENT);
+        _startAbsoluteInactivityTimer(QUERY_TIPS_EVENT);
       }
       if (ACTION_UNKNOWN == action) {
         _unknownAction++;
@@ -315,8 +321,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
           setState(() {
             _unknownAction = 0;
           });
-          _startUIInactivityTimer();
-          _startAbsoluteInactivityTimer();
+          _startUIInactivityTimer(POST_ERROR_TIPS_EVENT);
+          _startAbsoluteInactivityTimer(POST_ERROR_TIPS_EVENT);
         }
       }
 

@@ -128,7 +128,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                     FocusScope.of(context).requestFocus(new FocusNode());
                     return CarouselDialogSlider(
                         (message as CarouselModel).carouselSelect,
-                        _carouselItemClicked);
+                        _movieItemClicked);
                   }
                 case MessageType.MOVIE_PROVIDER_URL:
                     return Url(
@@ -183,7 +183,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
         GENRES_SELECTED_OR_IGNORED, parameters, false);
   }
 
-  Future<void> _carouselItemClicked(String movieId) async {
+  Future<void> _movieItemClicked(String movieId) async {
     try {
       var _countryCode = 'US';
       var currentPosition = await Geolocator.getCurrentPosition();

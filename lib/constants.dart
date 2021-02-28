@@ -23,3 +23,5 @@ const String BOT_PREFIX = 'B';
 const String EXPAND_TEXT = 'more';
 const String COLLAPSE_TEXT = 'less';
 const String JUST_WATCH_TEXT = 'These results are powered by ';
+const String ABOUT_APP = 'About';
+const String ABOUT_APP_CONTENT = 'This product uses the TMDb API but is not endorsed or certified by TMDb.';

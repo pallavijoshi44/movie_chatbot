@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/connectivity_check.dart';
 import 'package:flutter_app/widget/chatbot_ui.dart';
 import 'constants.dart';
+import 'widget/about_app_widget.dart';
 
 void main() => runApp(ChatBot());
 
@@ -29,7 +30,7 @@ class ChatBot extends StatelessWidget {
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ))),
-          home: ChatBotFlow(),
+      home: ChatBotFlow(),
     );
   }
 }
@@ -40,16 +41,31 @@ class ChatBotFlow extends StatelessWidget {
     return new Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: new AppBar(
-        centerTitle: true,
-        title: new Text(
-          APP_TITLE,
-          style: Theme
-              .of(context)
-              .appBarTheme
-              .textTheme
-              .title,
-        ),
-      ),
+          centerTitle: true,
+          title: new Text(
+            APP_TITLE,
+            style: Theme.of(context).appBarTheme.textTheme.title,
+          ),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == ABOUT_APP) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AboutAppWidget(),
+                    ),
+                  );
+                }
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(ABOUT_APP),
+                  value: ABOUT_APP,
+                ),
+              ],
+            ),
+          ]),
       body: ConnectivityCheck(
         child: ChatBotUI(),
       ),

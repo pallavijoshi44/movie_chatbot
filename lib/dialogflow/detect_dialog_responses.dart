@@ -42,6 +42,18 @@ class DetectDialogResponses {
     }
   }
 
+  Future<AIResponse> callDialogFlowForGeneralReasons() async {
+    AIResponse response;
+    AuthGoogle authGoogle = await getAuthGoogle();
+    Dialogflow dialogflow = getDialogFlow(authGoogle);
+    if (queryInputType == QUERY_INPUT_TYPE.QUERY) {
+      response = await dialogflow.detectIntent(query);
+    } else {
+      response = await dialogflow.detectIntentByEvent(eventName, parameters);
+    }
+    return response;
+  }
+
   Future<AuthGoogle> getAuthGoogle() async {
     AuthGoogle authGoogle =
         await AuthGoogle(fileJson: "assets/credentials.json").build();

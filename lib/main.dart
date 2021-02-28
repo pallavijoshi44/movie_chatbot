@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/connectivity_check.dart';
 import 'package:flutter_app/widget/chatbot_ui.dart';
+import 'package:flutter_app/widget/help_widget.dart';
 import 'constants.dart';
 import 'widget/about_app_widget.dart';
 
@@ -57,8 +58,20 @@ class ChatBotFlow extends StatelessWidget {
                     ),
                   );
                 }
+                if (value == HELP) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HelpWidget(),
+                    ),
+                  );
+                }
               },
               itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(HELP),
+                  value: HELP,
+                ),
                 PopupMenuItem(
                   child: Text(ABOUT_APP),
                   value: ABOUT_APP,

@@ -52,7 +52,8 @@ flutter:
     - assets/credentials.json
     - assets/images/placeholder.jpg
     - assets/images/thumbnail_default.png
-    - assets/images/about_app.png
+    - assets/images/tmdb_logo.png
+    - assets/images/just_watch_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

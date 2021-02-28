@@ -27,7 +27,7 @@ class Content extends StatelessWidget {
           margin: EdgeInsets.all(15.0),
           padding: EdgeInsets.only(bottom: 15.0),
           child: Text(
-            ABOUT_APP_CONTENT,
+            POWERED_BY_TMDB,
             style: TextStyle(
               fontFamily: 'OpenSans',
               fontSize: 16,
@@ -37,10 +37,44 @@ class Content extends StatelessWidget {
           ),
         ),
         Image.asset(
-          'assets/images/about_app.png',
+          'assets/images/tmdb_logo.png',
           fit: BoxFit.cover,
           width: width - 200 ,
-        )
+        ),
+        Container(
+          margin: EdgeInsets.all(15.0),
+          padding: EdgeInsets.only(bottom: 15.0),
+          child: Text(
+            TMDB_CONTENT,
+            style: TextStyle(
+              fontFamily: 'OpenSans',
+              fontSize: 16,
+              color: Color.fromRGBO(13, 37, 63, 1),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Divider(
+            color: Colors.black
+        ),
+        Container(
+          margin: EdgeInsets.all(15.0),
+          padding: EdgeInsets.only(bottom: 15.0),
+          child: Text(
+            POWERED_BY_JUST_WATCH,
+            style: TextStyle(
+              fontFamily: 'OpenSans',
+              fontSize: 16,
+              color: Color.fromRGBO(13, 37, 63, 1),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Image.asset(
+          'assets/images/just_watch_logo.png',
+          fit: BoxFit.cover,
+          width: width - 150 ,
+        ),
       ],
     );
   }

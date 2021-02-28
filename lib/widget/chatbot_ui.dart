@@ -174,7 +174,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
     );
   }
 
-  void _insertMultiSelect(List<dynamic> selectedGenres) {
+  void _selectGenres(List<dynamic> selectedGenres) {
     _scrollToBottom();
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());
@@ -422,7 +422,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
                 var multiSelectModel = MultiSelectModel(
                   text: card.title,
                   buttons: card.buttons,
-                  updateMultiSelect: _insertMultiSelect,
+                  updateMultiSelect: _selectGenres,
                   type: MessageType.MULTI_SELECT,
                 );
                 _doNotShowTyping = true;

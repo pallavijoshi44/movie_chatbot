@@ -45,7 +45,7 @@ class MovieJustWatch extends StatelessWidget {
                             style: Theme.of(context).textTheme.headline,
                           ),
                           TextSpan(
-                            text: "Just Watch",
+                            text: "JustWatch",
                             style: TextStyle(
                                 fontFamily: 'OpenSans',
                                 fontSize: 14,

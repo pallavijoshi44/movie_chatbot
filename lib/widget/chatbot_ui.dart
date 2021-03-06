@@ -14,9 +14,11 @@ import 'package:flutter_app/models/movie_trailer_model.dart';
 import 'package:flutter_app/models/multi_select_model.dart';
 import 'package:flutter_app/models/reply_model.dart';
 import 'package:flutter_app/models/tips_model.dart';
+import 'package:flutter_app/models/unread_message_model.dart';
 import 'package:flutter_app/widget/movie_thumbnail.dart';
 import 'package:flutter_app/widget/quick_reply.dart';
 import 'package:flutter_app/widget/text_composer.dart';
+import 'package:flutter_app/widget/unread_message.dart';
 import 'package:flutter_app/widget/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:geocoding/geocoding.dart';
@@ -29,7 +31,7 @@ import 'movie_provider.dart';
 import 'multi_select.dart';
 import 'tips.dart';
 
-class ChatBotUI extends StatefulWidget {
+class ChatBotUI extends StatefulWidget{
   final bool selectedTips;
 
   ChatBotUI(this.selectedTips);
@@ -38,7 +40,7 @@ class ChatBotUI extends StatefulWidget {
   _ChatBotUIState createState() => _ChatBotUIState();
 }
 
-class _ChatBotUIState extends State<ChatBotUI> {
+class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Timer _uiInactivityTimer;
   Timer _absoluteInactivityTimer;
   bool _doNotShowTyping = false;
@@ -53,9 +55,17 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     _getDialogFlowResponseByEvent(
         WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, true);
     super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _messages.removeWhere((element) => element is UnreadMessageModel );
+    });
   }
 
   _startUIInactivityTimer(String eventName) {
@@ -148,6 +158,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
                       title: (message as MovieJustWatchModel).name);
                 case MessageType.TIPS_MESSAGE:
                   return Tips(text: (message as TipsModel).text);
+                case MessageType.UNREAD_MESSAGE:
+                  return UnreadMessage((message as UnreadMessageModel).messageUnreadStatus);
               }
             }
             return Container();
@@ -284,6 +296,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
   void _executeResponse(AIResponse response) {
     setState(() {
       _isTextFieldEnabled = true;
+      _messages.removeWhere((element) => element is UnreadMessageModel );
     });
     if (response != null) {
       var action = response.getAction();
@@ -308,10 +321,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
       if (ACTION_MOVIE_RECOMMENDATIONS == action) {
         _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
         _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-      }
-      if (ACTION_ADDITIONAL_FILTERS_PROMPTED == action) {
-        _startUIInactivityTimer(QUERY_TIPS_EVENT);
-        _startAbsoluteInactivityTimer(QUERY_TIPS_EVENT);
       }
       if (ACTION_UNKNOWN == action) {
         _unknownAction++;
@@ -432,6 +441,13 @@ class _ChatBotUIState extends State<ChatBotUI> {
             } else {
               if (response.getWebHookPayload() != null &&
                   response.getWebHookPayload().containsKey('movieDetail')) {
+                setState(() {
+                  var unreadMessageModel = new UnreadMessageModel(
+                      type: MessageType.UNREAD_MESSAGE,
+                      messageUnreadStatus: true);
+                  _messages.insert(0, unreadMessageModel);
+                });
+
                 var movieDetails = response.getWebHookPayload()['movieDetail'];
                 var videos = response.getWebHookPayload()['videos'];
 
@@ -458,17 +474,6 @@ class _ChatBotUIState extends State<ChatBotUI> {
                               logos: provider.logos));
                     });
                   }
-                  // if (movieProviders.urlTitle != null &&
-                  //     movieProviders.urlTitle != "" &&
-                  //     movieProviders.urlLink != null &&
-                  //     movieProviders.urlLink != "") {
-                  //   _messages.insert(
-                  //       0,
-                  //       new MovieProviderUrlModel(
-                  //           url: movieProviders.urlLink,
-                  //           type: MessageType.MOVIE_PROVIDER_URL,
-                  //           title: movieProviders.urlTitle));
-                  // }
                   if (movieProviders.videoUrl != null) {
                     _messages.insert(
                         0,
@@ -532,6 +537,8 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     stopUITimer();
     stopAbsoluteTimer();
     super.dispose();

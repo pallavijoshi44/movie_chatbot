@@ -45,6 +45,7 @@ const String POWERED_BY_JUST_WATCH =
     'The watch providers data is powered by JustWatch.';
 const String SETTINGS = 'Settings';
 const String RECEIVE_TIPS = 'Receive tips';
+const String UNREAD_MESSAGE = 'UNREAD MESSAGES';
 const String RECEIVE_TIPS_CONTENT = 'Select whether you want to receive tips';
 const String HELP = 'Help';
 const String DEFAULT_HELP_CONTENT =

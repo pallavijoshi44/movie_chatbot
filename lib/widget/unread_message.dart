@@ -4,14 +4,9 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class UnreadMessage extends StatelessWidget {
-  final bool messageUnreadStatus;
-
-  UnreadMessage(this.messageUnreadStatus);
-
   @override
   Widget build(BuildContext context) {
-    return messageUnreadStatus
-        ? Container(
+    return Container(
             margin: EdgeInsets.only(top: 15.0, bottom: 15.0),
             child: Row(children: <Widget>[
               Expanded(
@@ -31,8 +26,7 @@ class UnreadMessage extends StatelessWidget {
                 thickness: 1,
                 color: Colors.green,
               )),
-            ]),
-          )
-        : Container();
+            ])
+    );
   }
 }

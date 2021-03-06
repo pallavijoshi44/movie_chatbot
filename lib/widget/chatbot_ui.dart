@@ -159,8 +159,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 case MessageType.TIPS_MESSAGE:
                   return Tips(text: (message as TipsModel).text);
                 case MessageType.UNREAD_MESSAGE:
-                  return UnreadMessage(
-                      (message as UnreadMessageModel).messageUnreadStatus);
+                  return UnreadMessage();
               }
             }
             return Container();
@@ -444,8 +443,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   response.getWebHookPayload().containsKey('movieDetail')) {
                 setState(() {
                   var unreadMessageModel = new UnreadMessageModel(
-                      type: MessageType.UNREAD_MESSAGE,
-                      messageUnreadStatus: true);
+                      type: MessageType.UNREAD_MESSAGE);
                   _messages.insert(0, unreadMessageModel);
                 });
 

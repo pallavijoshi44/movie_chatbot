@@ -31,7 +31,7 @@ import 'movie_provider.dart';
 import 'multi_select.dart';
 import 'tips.dart';
 
-class ChatBotUI extends StatefulWidget{
+class ChatBotUI extends StatefulWidget {
   final bool selectedTips;
 
   ChatBotUI(this.selectedTips);
@@ -64,7 +64,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     setState(() {
-      _messages.removeWhere((element) => element is UnreadMessageModel );
+      _messages.removeWhere((element) => element is UnreadMessageModel);
     });
   }
 
@@ -159,7 +159,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 case MessageType.TIPS_MESSAGE:
                   return Tips(text: (message as TipsModel).text);
                 case MessageType.UNREAD_MESSAGE:
-                  return UnreadMessage((message as UnreadMessageModel).messageUnreadStatus);
+                  return UnreadMessage(
+                      (message as UnreadMessageModel).messageUnreadStatus);
               }
             }
             return Container();
@@ -296,7 +297,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _executeResponse(AIResponse response) {
     setState(() {
       _isTextFieldEnabled = true;
-      _messages.removeWhere((element) => element is UnreadMessageModel );
+      _messages.removeWhere((element) => element is UnreadMessageModel);
     });
     if (response != null) {
       var action = response.getAction();

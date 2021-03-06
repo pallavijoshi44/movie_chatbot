@@ -1,4 +1,4 @@
-package com.chatbot.flutter_app
+package com.chatbot.mobo
 
 import io.flutter.embedding.android.FlutterActivity;
 

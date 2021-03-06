@@ -169,7 +169,7 @@ class _ChatBotUIState extends State<ChatBotUI> {
         Container(
           decoration: new BoxDecoration(color: Theme.of(context).cardColor),
           child: TextComposer(_textController, _textEditorChanged,
-              _handleSubmitted, _isTextFieldEnabled),
+              _handleSubmitted, _isTextFieldEnabled, _textEditorTapped),
         ),
       ]),
     );
@@ -531,6 +531,15 @@ class _ChatBotUIState extends State<ChatBotUI> {
 
     setState(() {
       _doNotShowTyping = text.length > 0 || text == "";
+    });
+  }
+
+  void _textEditorTapped() {
+    stopUITimer();
+    stopAbsoluteTimer();
+
+    setState(() {
+      _doNotShowTyping = true;
     });
   }
 

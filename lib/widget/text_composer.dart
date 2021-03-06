@@ -6,16 +6,16 @@ class TextComposer extends StatelessWidget {
   final TextEditingController textController;
   final Function textEditorChanged;
   final Function handleSubmitted;
+  final Function textEditorTapped;
   final bool isTextFieldEnabled;
 
-  TextComposer(this.textController, this.textEditorChanged, this.handleSubmitted, this.isTextFieldEnabled);
+  TextComposer(this.textController, this.textEditorChanged,
+      this.handleSubmitted, this.isTextFieldEnabled, this.textEditorTapped);
 
   @override
   Widget build(BuildContext context) {
     return new IconTheme(
-      data: new IconThemeData(color: Theme
-          .of(context)
-          .accentColor),
+      data: new IconThemeData(color: Theme.of(context).accentColor),
       child: new Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
@@ -25,6 +25,7 @@ class TextComposer extends StatelessWidget {
                 enabled: isTextFieldEnabled,
                 controller: textController,
                 onChanged: (text) => textEditorChanged,
+                onTap: () => textEditorTapped,
                 onSubmitted: handleSubmitted,
                 decoration: new InputDecoration.collapsed(hintText: HINT_TEXT),
               ),
@@ -33,7 +34,7 @@ class TextComposer extends StatelessWidget {
                 margin: new EdgeInsets.symmetric(horizontal: 4.0),
                 child: new IconButton(
                     icon: new Icon(Icons.send),
-                    onPressed: ()=> handleSubmitted(textController.text))),
+                    onPressed: () => handleSubmitted(textController.text))),
           ],
         ),
       ),

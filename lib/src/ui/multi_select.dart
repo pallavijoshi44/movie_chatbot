@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/constants.dart';
-import 'package:flutter_app/widget/avatar.dart';
+import 'package:flutter_app/src/resources/constants.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+import 'avatar.dart';
 
 class MultiSelect extends StatelessWidget {
   MultiSelect(

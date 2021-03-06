@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widget/thumbnail_view.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'thumbnail_view.dart';
 
 class MovieThumbnail extends StatelessWidget {
   final String url;

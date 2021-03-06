@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/connectivity_check.dart';
-import 'package:flutter_app/widget/chatbot_ui.dart';
-import 'package:flutter_app/widget/help_widget.dart';
-import 'package:flutter_app/widget/settings_widget.dart';
-import 'constants.dart';
-import 'widget/about_app_widget.dart';
+import 'package:flutter_app/src/ui/connectivity_check.dart';
+import 'package:flutter_app/src/chatbot_ui.dart';
+import 'package:flutter_app/src/ui/help_widget.dart';
+import 'package:flutter_app/src/ui/settings_widget.dart';
+import 'src/resources/constants.dart';
+import 'src/ui/about_app_widget.dart';
 
 void main() => runApp(ChatBot());
 

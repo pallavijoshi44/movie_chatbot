@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widget/thumbnail_card.dart';
+
+import 'thumbnail_card.dart';
 
 class ThumbnailView extends StatefulWidget {
   const ThumbnailView({

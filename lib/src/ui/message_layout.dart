@@ -1,6 +1,6 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/constants.dart';
+import 'package:flutter_app/src/resources/constants.dart';
 
 class MessageLayout extends StatelessWidget {
   final String text;

@@ -1,4 +1,4 @@
-import 'package:flutter_app/models/message_model.dart';
+import 'package:flutter_app/src/models/message_model.dart';
 
 class MovieProvidersAndVideoModel extends MessageModel {
   String title;

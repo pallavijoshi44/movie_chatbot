@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widget/message_layout.dart';
-import '../constants.dart';
+
+import '../resources/constants.dart';
 import 'bot_chat_message.dart';
+import 'message_layout.dart';
 
 class ChatMessage extends StatelessWidget {
   ChatMessage({this.text, this.type});

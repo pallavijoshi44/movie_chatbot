@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_app/models/message_model.dart';
+import 'package:flutter_app/src/models/message_model.dart';
 
 class MovieProviderModel extends MessageModel {
   final List<dynamic> logos;

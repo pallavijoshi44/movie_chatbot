@@ -6,11 +6,10 @@ class TextComposer extends StatelessWidget {
   final TextEditingController textController;
   final Function textEditorChanged;
   final Function handleSubmitted;
-  final Function textEditorTapped;
   final bool isTextFieldEnabled;
 
   TextComposer(this.textController, this.textEditorChanged,
-      this.handleSubmitted, this.isTextFieldEnabled, this.textEditorTapped);
+      this.handleSubmitted, this.isTextFieldEnabled);
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +23,7 @@ class TextComposer extends StatelessWidget {
               child: new TextField(
                 enabled: isTextFieldEnabled,
                 controller: textController,
-                onChanged: (text) => textEditorChanged,
-                onTap: () => textEditorTapped,
+                onChanged: textEditorChanged,
                 onSubmitted: handleSubmitted,
                 decoration: new InputDecoration.collapsed(hintText: HINT_TEXT),
               ),

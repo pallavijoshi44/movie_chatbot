@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:share/share.dart';
 
 class AboutAppWidget extends StatelessWidget {
   @override
@@ -10,6 +11,17 @@ class AboutAppWidget extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(ABOUT_APP),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                _onShare(context);
+              },
+            )
+          ],
         ),
         body: Content());
   }
@@ -18,7 +30,7 @@ class AboutAppWidget extends StatelessWidget {
 class Content extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var width =  MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.width;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -39,7 +51,7 @@ class Content extends StatelessWidget {
         Image.asset(
           'assets/images/tmdb_logo.png',
           fit: BoxFit.cover,
-          width: width - 200 ,
+          width: width - 200,
         ),
         Container(
           margin: EdgeInsets.all(15.0),
@@ -54,9 +66,7 @@ class Content extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        Divider(
-            color: Colors.black
-        ),
+        Divider(color: Colors.black),
         Container(
           margin: EdgeInsets.all(15.0),
           padding: EdgeInsets.only(bottom: 15.0),
@@ -73,9 +83,23 @@ class Content extends StatelessWidget {
         Image.asset(
           'assets/images/just_watch_logo.png',
           fit: BoxFit.cover,
-          width: width - 150 ,
+          width: width - 150,
         ),
       ],
     );
   }
+}
+
+_onShare(BuildContext context) async {
+  String url;
+  final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+  if (isIOS) {
+    url = "itms-apps://itunes.apple.com/app/id<Apple ID>";
+  } else {
+    url = "http://play.google.com/store/apps/details?id=com.chatbot.mobo";
+  }
+  final RenderBox box = context.findRenderObject() as RenderBox;
+  await Share.share(url,
+      subject: SHARE_APP,
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
 }

@@ -371,6 +371,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 new CarouselSelect(response.getListMessage()[0]);
 
             if (_movieSliderShownCount == 0) {
+              stopUITimer();
+              stopAbsoluteTimer();
               _movieSliderShownCount++;
               setState(() {
                 var chatModel = new ChatModel(

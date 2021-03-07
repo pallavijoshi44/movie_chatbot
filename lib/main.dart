@@ -13,6 +13,7 @@ class ChatBot extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: APP_TITLE,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.green,
           accentColor: Colors.blueGrey[600],

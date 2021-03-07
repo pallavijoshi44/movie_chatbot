@@ -36,7 +36,8 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
               items:  widget.carouselSelect.items
                   .map((item) => InkWell(
-                        onTap: _enabled ? () {
+                splashColor: Theme.of(context).primaryColorLight,
+                onTap: _enabled ? () {
                           return _handleTap(item);
                         } : null,
                         child: Card(

@@ -37,6 +37,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
               items:  widget.carouselSelect.items
                   .map((item) => InkWell(
                 splashColor: Theme.of(context).primaryColorLight,
+                highlightColor: Colors.green,
                 onTap: _enabled ? () {
                           return _handleTap(item);
                         } : null,

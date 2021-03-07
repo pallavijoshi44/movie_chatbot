@@ -4,7 +4,6 @@
 
     <item>
         <bitmap
-            android:gravity= "center"
-            android:src= "@drawable/app_icon" />
+            android:src= "@drawable/screen" />
     </item>
 </layer-list>

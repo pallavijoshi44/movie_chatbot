@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../resources/constants.dart';
+import '../domain/constants.dart';
 import 'bot_chat_message.dart';
 import 'message_layout.dart';
 

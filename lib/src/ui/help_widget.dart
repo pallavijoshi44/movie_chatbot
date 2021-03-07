@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
-import 'package:flutter_app/src/resources/constants.dart';
-import 'package:flutter_app/dialogflow/detect_dialog_responses.dart';
-import 'package:flutter_app/dialogflow/dialog_flow.dart';
+import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
+import 'package:flutter_app/src/domain/ai_response.dart';
 
 class HelpWidget extends StatelessWidget {
   @override

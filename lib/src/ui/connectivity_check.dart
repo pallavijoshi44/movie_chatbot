@@ -4,7 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../resources/constants.dart';
+import '../domain/constants.dart';
 
 class ConnectivityCheck extends StatefulWidget {
   final Widget child;

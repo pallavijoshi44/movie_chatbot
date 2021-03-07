@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/resources/constants.dart';
+import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class CarouselDialogSlider extends StatefulWidget {

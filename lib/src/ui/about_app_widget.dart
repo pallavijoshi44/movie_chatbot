@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/resources/constants.dart';
+import 'package:flutter_app/src/domain/constants.dart';
 
 class AboutAppWidget extends StatelessWidget {
   @override

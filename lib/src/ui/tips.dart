@@ -1,7 +1,7 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 
-import '../resources/constants.dart';
+import '../domain/constants.dart';
 
 class Tips extends StatelessWidget {
   Tips({this.text});

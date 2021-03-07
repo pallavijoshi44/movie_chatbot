@@ -1,7 +1,8 @@
+import 'package:flutter_app/src/resources/dialog_flow.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
 import 'package:flutter_dialogflow/v2/auth_google.dart';
 
-import 'dialog_flow.dart';
+import '../domain/ai_response.dart';
 
 class DetectDialogResponses {
   final Function executeResponse;
@@ -23,7 +24,7 @@ class DetectDialogResponses {
     AIResponse response;
     try {
       AuthGoogle authGoogle = await getAuthGoogle();
-      Dialogflow dialogflow = getDialogFlow(authGoogle);
+      DialogFlow dialogflow = getDialogFlow(authGoogle);
       try {
         if (queryInputType == QUERY_INPUT_TYPE.QUERY) {
           response = await dialogflow.detectIntent(query);
@@ -45,7 +46,7 @@ class DetectDialogResponses {
   Future<AIResponse> callDialogFlowForGeneralReasons() async {
     AIResponse response;
     AuthGoogle authGoogle = await getAuthGoogle();
-    Dialogflow dialogflow = getDialogFlow(authGoogle);
+    DialogFlow dialogflow = getDialogFlow(authGoogle);
     if (queryInputType == QUERY_INPUT_TYPE.QUERY) {
       response = await dialogflow.detectIntent(query);
     } else {
@@ -60,9 +61,9 @@ class DetectDialogResponses {
     return authGoogle;
   }
 
-  Dialogflow getDialogFlow(AuthGoogle authGoogle) {
-    Dialogflow dialogflow =
-        Dialogflow(authGoogle: authGoogle, language: Language.english);
+  DialogFlow getDialogFlow(AuthGoogle authGoogle) {
+    DialogFlow dialogflow =
+        DialogFlow(authGoogle: authGoogle, language: Language.english);
     return dialogflow;
   }
 }

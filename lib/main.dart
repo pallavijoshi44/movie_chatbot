@@ -3,7 +3,7 @@ import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
-import 'src/resources/constants.dart';
+import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
 
 void main() => runApp(ChatBot());

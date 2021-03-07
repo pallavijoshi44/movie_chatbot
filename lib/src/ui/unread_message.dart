@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../resources/constants.dart';
+import '../domain/constants.dart';
 
 class UnreadMessage extends StatelessWidget {
   @override

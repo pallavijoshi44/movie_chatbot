@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../resources/constants.dart';
+import '../domain/constants.dart';
 
 class TextComposer extends StatelessWidget {
   final TextEditingController textController;

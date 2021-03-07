@@ -15,8 +15,7 @@ class QuickReply extends StatelessWidget {
         child: CircleAvatar(
           child: Text(''),
           backgroundColor: Colors.transparent,
-        ),
-      ),
+        ),      ),
       Expanded(
         child: Wrap(
             alignment: WrapAlignment.spaceEvenly,

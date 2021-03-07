@@ -14,10 +14,7 @@ class MovieJustWatch extends StatelessWidget {
       child: Row(children: [
         Container(
           margin: const EdgeInsets.only(right: 16.0),
-          child: CircleAvatar(
-            child: Text(''),
-            backgroundColor: Colors.transparent,
-          ),
+          child: Image.asset('assets/icon/app_icon.png', width: 30, height: 30, fit: BoxFit.cover,),
         ),
         Expanded(
             child: Container(

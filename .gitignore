@@ -28,6 +28,7 @@ assets/credentials.json
 .flutter-plugins-dependencies/
 .packages
 .pub-cache/
+pubspec.lock
 .pub/
 /build/
 **/ios/Flutter/flutter_export_environment.sh

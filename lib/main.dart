@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
 
+
 void main() => runApp(ChatBot());
 
 class ChatBot extends StatelessWidget {

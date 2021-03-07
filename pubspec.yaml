@@ -34,9 +34,13 @@ dependencies:
   share: ^2.0.0
   shared_preferences: ^2.0.3
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  image_path: "assets/icon/app_icon.png"
 
 flutter:
   uses-material-design: true
@@ -47,6 +51,7 @@ flutter:
     - assets/images/tmdb_logo.png
     - assets/images/just_watch_logo.png
     - assets/flags/
+    - assets/icon/app_icon.png
   fonts:
     - family: OpenSans
       fonts:

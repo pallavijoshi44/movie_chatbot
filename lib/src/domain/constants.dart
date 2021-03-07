@@ -36,7 +36,6 @@ const String MOVIE_RESPONSE =
     "I am looking for the best recommendations for you. You can tap on any of the movie cards to look for the legal means to watch that movie in your location. I will also try to show you the trailer.";
 const String ASK_FOR_MORE =
     "If you want more recommendations, just ask me to 'show more'";
-const String BOT_PREFIX = 'M';
 const String COUNTRY_CODE = 'country_code';
 const String TIP_TEXT = 'Tip';
 const String EXPAND_TEXT = 'more';

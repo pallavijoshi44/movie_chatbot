@@ -27,9 +27,9 @@ class MultiSelect extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(top: 15.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          Avatar(BOT_PREFIX),
+          Avatar(),
           Expanded(
             child: MultiSelectBottomSheetField(
               decoration: BoxDecoration(
@@ -59,7 +59,6 @@ class MultiSelect extends StatelessWidget {
               selectedItemsTextStyle: TextStyle(color: Colors.lightGreen[900]),
               onConfirm: (values) {
                 insertMultiSelect(values);
-                //  widget.insertQuickReply(_selectedItems.reduce((previousValue, element) => previousValue + " " + element));
               },
             ),
           ),

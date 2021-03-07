@@ -5,16 +5,15 @@ import 'message_layout.dart';
 
 class BotChatMessage extends StatelessWidget {
   final String text;
-  final String avatarText;
 
-  const BotChatMessage({this.text, this.avatarText});
+  const BotChatMessage({this.text});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
-        Avatar(avatarText),
+        Avatar(),
         Expanded(child: MessageLayout(text, false)),
       ],
     );

@@ -14,6 +14,6 @@ class ChatMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return this.type
         ? MessageLayout(this.text, this.type)
-        : BotChatMessage(text: this.text, avatarText: BOT_PREFIX,);
+        : BotChatMessage(text: this.text);
   }
 }

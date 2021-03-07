@@ -1,11 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/domain/constants.dart';
-import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
-import 'package:flutter_app/src/domain/ai_response.dart';
+import 'country/country_list_pick.dart';
 
 class SettingsWidget extends StatefulWidget {
   final currentTipStatus;
@@ -42,24 +38,58 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     );
   }
 
+  Widget _buildCountryCode() {
+    return ListTile(
+      title: Text(SET_COUNTRY),
+      subtitle: Text(
+        SET_COUNTRY_LOCATION_CONTENT,
+      ),
+      trailing: CountryListPick(
+        appBar: AppBar(
+          title: Text('Choose Country'),
+        ),
+        theme: CountryTheme(
+          isShowFlag: true,
+          isShowTitle: true,
+          isShowCode: false,
+          isDownIcon: false,
+          showEnglishName: true,
+          searchHintText: "searchh"
+        ),
+        initialSelection: 'IN',
+        onChanged: (CountryCode code) {
+          print(code.name);
+          print(code.code);
+          print(code.dialCode);
+          print(code.flagUri);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text(SETTINGS),
         ),
-        body:  _buildSwitchListTile(
-          RECEIVE_TIPS,
-          RECEIVE_TIPS_CONTENT,
-          _tipsOn,
+        body: Column(
+          children: [
+            _buildSwitchListTile(
+              RECEIVE_TIPS,
+              RECEIVE_TIPS_CONTENT,
+              _tipsOn,
               (newValue) {
-            setState(
+                setState(
                   () {
-                _tipsOn = newValue;
-                widget.saveTips(newValue);
+                    _tipsOn = newValue;
+                    widget.saveTips(newValue);
+                  },
+                );
               },
-            );
-          },
+            ),
+            _buildCountryCode(),
+          ],
         ));
   }
 }

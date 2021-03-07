@@ -17,7 +17,9 @@ const String RANDOM = "Random";
 const String ACTION_START_OVER = "startOver";
 const String ACTION_TRIGGER_TIPS = "triggerTips";
 const String ACTION_MOVIE_RECOMMENDATIONS = "fetchMovieRecommendations";
+const String ACTION_MORE_MOVIE_RECOMMENDATIONS = "fetchAdditionalMovieRecommendations";
 const String ACTION_MOVIE_TRAILER_VIDEOS = "fetchMovieWatchProvidersAndVideos";
+const String ACTION_LOCATION_DETERMINED = "userCountryDetermined";
 const String ACTION_UNKNOWN = "input.unknown";
 const String ACTION_ADDITIONAL_FILTERS_PROMPTED = "additionalFiltersPrompted";
 const String START_OVER_EVENT = "START_OVER";
@@ -34,6 +36,7 @@ const String MOVIE_RESPONSE =
 const String ASK_FOR_MORE =
     "If you want more recommendations, just ask me to 'show more'";
 const String BOT_PREFIX = 'B';
+const String COUNTRY_CODE = 'country_code';
 const String TIP_TEXT = 'Tip';
 const String EXPAND_TEXT = 'more';
 const String COLLAPSE_TEXT = 'less';
@@ -49,6 +52,8 @@ const String RECEIVE_TIPS = 'Receive tips';
 const String UNREAD_MESSAGE = 'UNREAD MESSAGES';
 const String SHARE_APP = 'Checkout my app here: ';
 const String RECEIVE_TIPS_CONTENT = 'Select whether you want to receive tips';
+const String SET_COUNTRY = 'Set country';
+const String SET_COUNTRY_LOCATION_CONTENT = 'Choose country to receive watch providers';
 const String HELP = 'Help';
 const String DEFAULT_HELP_CONTENT =
     'I would love to help you out. Let me tell you how to make use of my ability to recommend the best movies for you to watch.' +

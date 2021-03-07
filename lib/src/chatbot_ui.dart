@@ -210,7 +210,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
       _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
     } catch (error) {
-      _defaultResponse.call();
+      var parameters =
+          "'parameters' : { 'movie_id':  $movieId, 'country_code': 'US'}";
+      _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
       print(error);
     }
   }
@@ -323,7 +325,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _stopAllTimers();
         return;
       }
-      if (ACTION_MOVIE_RECOMMENDATIONS == action) {
+      if (ACTION_MOVIE_RECOMMENDATIONS == action ||
+          ACTION_MORE_MOVIE_RECOMMENDATIONS == action) {
         _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
         _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
       }
@@ -383,6 +386,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               _stopAllTimers();
               _movieSliderShownCount++;
               setState(() {
+                _isTextFieldEnabled = false;
                 var chatModel = new ChatModel(
                     type: MessageType.CHAT_MESSAGE,
                     text: MOVIE_RESPONSE,
@@ -392,6 +396,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
               Future.delayed(const Duration(milliseconds: 2000), () {
                 setState(() {
+                  _isTextFieldEnabled = false;
                   var chatModel = new ChatModel(
                       type: MessageType.CHAT_MESSAGE,
                       text: ASK_FOR_MORE,
@@ -452,8 +457,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               if (response.getWebHookPayload() != null &&
                   response.getWebHookPayload().containsKey('movieDetail')) {
                 setState(() {
-                  var unreadMessageModel = new UnreadMessageModel(
-                      type: MessageType.UNREAD_MESSAGE);
+                  var unreadMessageModel =
+                      new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
                   _messages.insert(0, unreadMessageModel);
                 });
 

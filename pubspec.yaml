@@ -51,7 +51,7 @@ flutter:
     - assets/images/thumbnail_default.png
     - assets/images/tmdb_logo.png
     - assets/images/just_watch_logo.png
-    -
+    - assets/flags/
   fonts:
     - family: OpenSans
       fonts:

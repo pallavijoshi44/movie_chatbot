@@ -34,15 +34,9 @@ dependencies:
   share: ^2.0.0
   shared_preferences: ^2.0.3
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-flutter_icons:
-  image_path: "assets/icon/app_icon.png"
-  android: "launcher_icon"
-  ios: true
 
 flutter:
   uses-material-design: true

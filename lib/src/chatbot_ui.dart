@@ -173,7 +173,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             alignment: Alignment.topLeft,
             margin: EdgeInsets.all(10.0),
             child: Text(
-              'Bot is typing...',
+              WAITING_MESSAGE,
               style: Theme.of(context).textTheme.headline,
             ),
           ),

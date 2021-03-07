@@ -32,6 +32,7 @@ dependencies:
   rxdart: ^0.26.0
   cupertino_icons: ^1.0.2
   share: ^2.0.0
+  shared_preferences: ^2.0.3
 
 
 dev_dependencies:

@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'country/country_list_pick.dart';
 
 class SettingsWidget extends StatefulWidget {
   final currentTipStatus;
   final Function saveTips;
+  final SharedPreferences prefs;
 
-  SettingsWidget(this.currentTipStatus, this.saveTips);
+  SettingsWidget(this.currentTipStatus, this.saveTips, this.prefs);
 
   @override
   _SettingsWidgetState createState() => _SettingsWidgetState();
@@ -54,14 +56,11 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isShowCode: false,
           isDownIcon: false,
           showEnglishName: true,
-          searchHintText: "searchh"
         ),
-        initialSelection: 'IN',
-        onChanged: (CountryCode code) {
-          print(code.name);
-          print(code.code);
-          print(code.dialCode);
-          print(code.flagUri);
+        initialSelection:  widget.prefs.getString(COUNTRY_CODE) ?? 'IN',
+        onChanged: (CountryCode code) async {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString(COUNTRY_CODE, code.code);
         },
       ),
     );

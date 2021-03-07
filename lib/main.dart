@@ -3,6 +3,7 @@ import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
 
@@ -58,7 +59,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
           ),
           actions: <Widget>[
             PopupMenuButton<String>(
-              onSelected: (value) {
+              onSelected: (value) async {
                 if (value == ABOUT_APP) {
                   Navigator.push(
                     context,
@@ -76,10 +77,11 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   );
                 }
                 if (value == SETTINGS) {
+                  SharedPreferences prefs =  await SharedPreferences.getInstance();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SettingsWidget(_selectedTips, _onTipSelected),
+                      builder: (context) => SettingsWidget(_selectedTips, _onTipSelected, prefs),
                     ),
                   );
                 }

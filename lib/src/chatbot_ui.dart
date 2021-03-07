@@ -22,6 +22,7 @@ import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
@@ -198,23 +199,33 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> _movieItemClicked(String movieId) async {
     _stopAllTimers();
-    try {
-      var _countryCode = 'US';
-      var currentPosition = await Geolocator.getCurrentPosition();
-      var placeMarks = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
-      if (placeMarks != null && placeMarks.length > 0) {
-        _countryCode = placeMarks[0].isoCountryCode;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String _countryCode = prefs.getString(COUNTRY_CODE);
+     
+    if (_countryCode != null && _countryCode.isNotEmpty) {
+      await _getWatchProvidersAndVideos(movieId, _countryCode);
+    } else {
+      try {
+        var currentPosition = await Geolocator.getCurrentPosition();
+        var placeMarks = await placemarkFromCoordinates(
+            currentPosition.latitude, currentPosition.longitude);
+        if (placeMarks != null && placeMarks.length > 0) {
+          _countryCode = placeMarks[0].isoCountryCode;
+        }
+      } catch (error) {
+        _countryCode = "IN";
+      } finally {
+        await _getWatchProvidersAndVideos(movieId, _countryCode);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString(COUNTRY_CODE, _countryCode);
       }
-      var parameters =
-          "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
-      _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
-    } catch (error) {
-      var parameters =
-          "'parameters' : { 'movie_id':  $movieId, 'country_code': 'US'}";
-      _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
-      print(error);
     }
+  }
+
+  Future _getWatchProvidersAndVideos(String movieId, String _countryCode) async {
+     var parameters =
+        "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
+    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
   }
 
   void _stopAllTimers() {

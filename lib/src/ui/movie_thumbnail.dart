@@ -24,7 +24,7 @@ class MovieThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
       Container(
         margin: const EdgeInsets.only(right: 16.0),
         child: Image.asset('assets/icon/app_icon.png', width: 30, height: 30, fit: BoxFit.cover,),

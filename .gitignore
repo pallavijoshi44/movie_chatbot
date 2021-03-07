@@ -10,6 +10,7 @@
 .svn/
 .last_build_id
 assets/credentials.json
+android/key.properties
 
 # IntelliJ related
 *.iml

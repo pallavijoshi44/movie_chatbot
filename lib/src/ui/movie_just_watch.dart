@@ -11,7 +11,9 @@ class MovieJustWatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(children: [
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
         Container(
           margin: const EdgeInsets.only(right: 16.0),
           child: Image.asset('assets/icon/app_icon.png', width: 30, height: 30, fit: BoxFit.cover,),

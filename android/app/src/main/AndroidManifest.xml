@@ -2,9 +2,10 @@
     package="com.chatbot.mobo">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="Movie Chatbot"
+        android:label="Mobo - The Movie Chatbot"
         android:icon="@mipmap/ic_launcher">
 
         <activity

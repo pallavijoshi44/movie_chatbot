@@ -546,6 +546,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void dispose() {
     _scrollController.dispose();
+    _textController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _stopAllTimers();
     super.dispose();

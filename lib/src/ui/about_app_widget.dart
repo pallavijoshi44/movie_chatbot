@@ -96,7 +96,7 @@ _onShare(BuildContext context) async {
   if (isIOS) {
     url = "itms-apps://itunes.apple.com/app/id<Apple ID>";
   } else {
-    url = "http://play.google.com/store/apps/details?id=com.chatbot.mobo";
+    url = "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";
   }
   final RenderBox box = context.findRenderObject() as RenderBox;
   await Share.share(url,

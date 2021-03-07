@@ -341,9 +341,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
         _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
       }
-      if (ACTION_MOVIE_TRAILER_VIDEOS == action) {
-        _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-        _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+      if (ACTION_MOVIE_WATCH_PROVIDERS_TRAILER_VIDEOS == action) {
+        _startUIInactivityTimer(POST_WATCH_PROVIDERS_TIPS_EVENT);
+        _startAbsoluteInactivityTimer(POST_WATCH_PROVIDERS_TIPS_EVENT);
       }
       if (ACTION_UNKNOWN == action) {
         _unknownAction++;

@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="Mobo - The Movie Chatbot"
+        android:label="Movie Chatbot"
         android:icon="@mipmap/ic_launcher">
 
         <activity
@@ -26,6 +26,7 @@ layoutDirection|fontScale|screenLayout|density|smallestScreenSize|orientation"
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
+
 
             <!-- Theme to apply as soon as Flutter begins rendering frames -->
             <meta-data

@@ -10,7 +10,6 @@
 .svn/
 .last_build_id
 assets/credentials.json
-android/key.properties
 
 # IntelliJ related
 *.iml
@@ -42,6 +41,7 @@ pubspec.lock
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
 
 # iOS/XCode related
 **/ios/**/*.mode1v3

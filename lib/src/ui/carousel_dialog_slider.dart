@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,6 +18,9 @@ class CarouselDialogSlider extends StatefulWidget {
 }
 
 class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
+  bool _enabled = true;
+  Timer _timer;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +36,9 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
               items:  widget.carouselSelect.items
                   .map((item) => InkWell(
-                        onTap: () => widget.carouselItemClicked(item.info['key']),
+                        onTap: _enabled ? () {
+                          return _handleTap(item);
+                        } : null,
                         child: Card(
                           elevation: 5,
                           margin: EdgeInsets.all(5),
@@ -93,5 +100,21 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
             ),
           ],
         ));
+  }
+
+  _handleTap(ItemCarousel item) {
+     setState(() {
+      _enabled = false;
+    });
+    _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
+     return widget.carouselItemClicked(item.info['key']);
+  }
+
+  @override
+  void dispose() {
+     if(_timer != null) {
+       _timer.cancel();
+     }
+     super.dispose();
   }
 }

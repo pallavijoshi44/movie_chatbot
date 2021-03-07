@@ -17,6 +17,7 @@ const String RANDOM = "Random";
 const String ACTION_START_OVER = "startOver";
 const String ACTION_TRIGGER_TIPS = "triggerTips";
 const String ACTION_MOVIE_RECOMMENDATIONS = "fetchMovieRecommendations";
+const String ACTION_MOVIE_TRAILER_VIDEOS = "fetchMovieWatchProvidersAndVideos";
 const String ACTION_UNKNOWN = "input.unknown";
 const String ACTION_ADDITIONAL_FILTERS_PROMPTED = "additionalFiltersPrompted";
 const String START_OVER_EVENT = "START_OVER";

@@ -20,7 +20,7 @@ class Tips extends StatelessWidget {
               TIP_TEXT,
               style: Theme.of(context).textTheme.headline,
             ),
-            backgroundColor: Colors.purple[200],
+            backgroundColor: Colors.red[200],
           ),
         ),
         Expanded(
@@ -29,7 +29,7 @@ class Tips extends StatelessWidget {
           children: <Widget>[
             new Container(
               decoration: BoxDecoration(
-                color: Colors.purple[200],
+                color: Colors.red[200],
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0),

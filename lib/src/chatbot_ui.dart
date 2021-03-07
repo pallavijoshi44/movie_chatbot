@@ -197,6 +197,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> _movieItemClicked(String movieId) async {
+    _stopAllTimers();
     try {
       var _countryCode = 'US';
       var currentPosition = await Geolocator.getCurrentPosition();
@@ -212,6 +213,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _defaultResponse.call();
       print(error);
     }
+  }
+
+  void _stopAllTimers() {
+    stopAbsoluteTimer();
+    stopUITimer();
   }
 
   void _scrollToBottom() {
@@ -314,11 +320,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   response.getListMessage()[0]['text']['text'][0]);
           _messages.insert(0, chatModel);
         });
-        stopAbsoluteTimer();
-        stopUITimer();
+        _stopAllTimers();
         return;
       }
       if (ACTION_MOVIE_RECOMMENDATIONS == action) {
+        _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+        _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+      }
+      if (ACTION_MOVIE_TRAILER_VIDEOS == action) {
         _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
         _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
       }
@@ -371,8 +380,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 new CarouselSelect(response.getListMessage()[0]);
 
             if (_movieSliderShownCount == 0) {
-              stopUITimer();
-              stopAbsoluteTimer();
+              _stopAllTimers();
               _movieSliderShownCount++;
               setState(() {
                 var chatModel = new ChatModel(
@@ -505,8 +513,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _handleSubmitted(String text) {
-    stopUITimer();
-    stopAbsoluteTimer();
+    _stopAllTimers();
+
     if (text != "") {
       _textController.clear();
       setState(() {
@@ -532,16 +540,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _textEditorChanged(String text) {
-    stopUITimer();
-    stopAbsoluteTimer();
+    _stopAllTimers();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    stopUITimer();
-    stopAbsoluteTimer();
+    _stopAllTimers();
     super.dispose();
   }
 }

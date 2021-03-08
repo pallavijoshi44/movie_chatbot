@@ -30,13 +30,16 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     bool currentValue,
     Function updateValue,
   ) {
-    return SwitchListTile(
-      title: Text(title),
-      value: currentValue,
-      subtitle: Text(
-        description,
+    return Container(
+      margin: EdgeInsets.only(top: 16.0),
+      child: SwitchListTile(
+        title: Text(title),
+        value: currentValue,
+        subtitle: Text(
+          description,
+        ),
+        onChanged: updateValue,
       ),
-      onChanged: updateValue,
     );
   }
 

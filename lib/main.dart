@@ -54,9 +54,12 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: new AppBar(
           centerTitle: true,
-          title: new Text(
-            APP_TITLE,
-            style: Theme.of(context).appBarTheme.textTheme.title,
+          title: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: new Text(
+              APP_TITLE,
+              style: Theme.of(context).appBarTheme.textTheme.title,
+            ),
           ),
           actions: <Widget>[
             PopupMenuButton<String>(

@@ -195,7 +195,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (selectedGenres.isEmpty) {
       _showChatMessage(ALL_GENRES_TEXT, true, true);
     } else {
-      _showChatMessage(SELECTED_GENRES_TEXT + selectedGenres.join(", "), true, true);
+      _showChatMessage(SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
     }
 
     _scrollToBottom();

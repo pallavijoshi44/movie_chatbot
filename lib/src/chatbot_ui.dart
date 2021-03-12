@@ -189,6 +189,15 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _selectGenres(List<dynamic> selectedGenres) {
+    setState(() {
+      _messages.removeAt(0);
+    });
+    if (selectedGenres.isEmpty) {
+      _showChatMessage(ALL_GENRES_TEXT, true, true);
+    } else {
+      _showChatMessage(SELECTED_GENRES_TEXT + selectedGenres.join(", "), true, true);
+    }
+
     _scrollToBottom();
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());

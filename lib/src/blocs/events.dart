@@ -1,0 +1,4 @@
+enum DialogFlowEvents {
+  fetchAIResponseForQuery,
+  fetchAIResponseForEvents
+}

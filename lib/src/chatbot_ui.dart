@@ -61,7 +61,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    context.read().add(DialogFlowEvents(
+    context.bloc<DialogFlowBloc>().add(DialogFlowEvents(
         eventStatus: EventStatus.fetchAIResponseForEvents,
         eventName: WELCOME_EVENT,
         parameters: DEFAULT_PARAMETERS_FOR_EVENT));
@@ -187,17 +187,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               },
               itemCount: _messages.length,
             )),
-            Visibility(
-              visible: !_doNotShowTyping,
-              child: Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.all(10.0),
-                child: Text(
-                  WAITING_MESSAGE,
-                  style: Theme.of(context).textTheme.headline,
-                ),
-              ),
-            ),
             Divider(height: 1.0),
             Container(
               decoration: new BoxDecoration(color: Theme.of(context).cardColor),
@@ -606,6 +595,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     _textController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _stopAllTimers();
+
     super.dispose();
   }
 }

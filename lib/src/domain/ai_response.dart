@@ -1,4 +1,3 @@
-
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
 class AIResponse {
@@ -65,5 +64,17 @@ class AIResponse {
   QueryResult get queryResult {
     return _queryResult;
   }
-}
 
+  Map get quickReplies {
+    if (getListMessage() != null) {
+      var payload = getListMessage().firstWhere(
+          (element) => element.containsKey('payload'),
+          orElse: () => null);
+
+      if (payload != null) {
+        return payload['payload'];
+      }
+    }
+    return null;
+  }
+}

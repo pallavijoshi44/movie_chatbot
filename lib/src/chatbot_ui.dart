@@ -119,6 +119,18 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             ),
           );
         }
+        if (state is ChatMessageLoaded) {
+          return ChatMessage(
+            text: state.message.text,
+            type: state.message.chatType,
+          );
+        }
+        if (state is QuickReplyLoaded) {
+          return QuickReply(
+            quickReplies:  state.message.quickReplies,
+            insertQuickReply: _insertQuickReply,
+          );
+        }
         if (state is DialogFlowLoaded) {
           return Column(children: <Widget>[
             Flexible(

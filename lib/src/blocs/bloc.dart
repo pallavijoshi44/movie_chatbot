@@ -32,7 +32,7 @@ class DialogFlowBloc extends Bloc<DialogFlowEvents, DialogFlowState> {
           yield DialogFlowLoading();
           response = await dialogFlowRepo.getAIResponseFoEvent(
               event.eventName, event.parameters);
-          yield* name();
+          yield* _addQuickReply();
         } catch (error) {
           yield DialogFlowError(error: error);
         }
@@ -40,7 +40,7 @@ class DialogFlowBloc extends Bloc<DialogFlowEvents, DialogFlowState> {
     }
   }
 
-  Stream<DialogFlowState> name() async* {
+  Stream<DialogFlowState> _addQuickReply() async* {
     if (response.quickReplies != null) {
       QuickReplies replies = new QuickReplies(response.quickReplies);
       yield ChatMessageLoaded(

@@ -12,22 +12,22 @@ class DialogFlowBloc extends Bloc<DialogFlowEvents, DialogFlowState> {
 
   @override
   Stream<DialogFlowState> mapEventToState(DialogFlowEvents event) async* {
-    switch (event) {
-      case DialogFlowEvents.fetchAIResponseForQuery:
+    switch (event.eventStatus) {
+      case EventStatus.fetchAIResponseForQuery:
         try {
           yield DialogFlowLoading();
-          response = await dialogFlowRepo.getAIResponseForQuery("query");
+          response = await dialogFlowRepo.getAIResponseForQuery(event.query);
           yield DialogFlowLoaded(response: response);
         } catch (error) {
           yield DialogFlowError(error: error);
         }
         break;
 
-      case DialogFlowEvents.fetchAIResponseForEvents:
+      case EventStatus.fetchAIResponseForEvents:
         try {
           yield DialogFlowLoading();
           response = await dialogFlowRepo.getAIResponseFoEvent(
-              "eventName", "parameters");
+              event.eventName, event.parameters);
           yield DialogFlowLoaded(response: response);
         } catch (error) {
           yield DialogFlowError(error: error);

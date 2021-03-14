@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/api/services.dart';
+import 'package:flutter_app/src/blocs/bloc.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
-
 
 void main() => runApp(ChatBot());
 
@@ -81,11 +83,13 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   );
                 }
                 if (value == SETTINGS) {
-                  SharedPreferences prefs =  await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SettingsWidget(_selectedTips, _onTipSelected, prefs),
+                      builder: (context) =>
+                          SettingsWidget(_selectedTips, _onTipSelected, prefs),
                     ),
                   );
                 }
@@ -106,9 +110,10 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
               ],
             ),
           ]),
-      body: ConnectivityCheck(
-        child: ChatBotUI(_selectedTips),
-      ),
+      body: BlocProvider(
+          create: (BuildContext context) =>
+              DialogFlowBloc(dialogFlowRepo: DialogFlow()),
+          child: ChatBotUI(_selectedTips)),
     );
   }
 

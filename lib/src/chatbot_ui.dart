@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/blocs/bloc.dart';
+import 'package:flutter_app/src/blocs/events.dart';
+import 'package:flutter_app/src/blocs/states.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/models/carousel_model.dart';
@@ -31,6 +34,7 @@ import 'ui/movie_provider.dart';
 import 'ui/multi_select.dart';
 import 'ui/quick_reply.dart';
 import 'ui/tips.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBotUI extends StatefulWidget {
   final bool selectedTips;
@@ -57,8 +61,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _getDialogFlowResponseByEvent(
-        WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, true);
+    context.read().add(DialogFlowEvents(
+        eventStatus: EventStatus.fetchAIResponseForEvents,
+        eventName: WELCOME_EVENT,
+        parameters: DEFAULT_PARAMETERS_FOR_EVENT));
+    // _getDialogFlowResponseByEvent(
+    //     WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, true);
     super.initState();
   }
 
@@ -100,91 +108,113 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: _handleUserInteraction,
       behavior: HitTestBehavior.translucent,
-      child: Column(children: <Widget>[
-        Flexible(
-            child: ListView.builder(
-          padding: EdgeInsets.all(8.0),
-          reverse: true,
-          controller: _scrollController,
-          itemBuilder: (_, int index) {
-            var message = _messages[index];
-            if (message != null) {
-              switch (message.type) {
-                case MessageType.CHAT_MESSAGE:
-                  return ChatMessage(
-                    text: (message as ChatModel).text,
-                    type: (message as ChatModel).chatType,
-                  );
-                case MessageType.QUICK_REPLY:
-                  {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                    return QuickReply(
-                      quickReplies: (message as ReplyModel).quickReplies,
-                      insertQuickReply:
-                          (message as ReplyModel).updateQuickReply,
-                    );
-                  }
-                case MessageType.MULTI_SELECT:
-                  {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                    return MultiSelect(
-                      title: (message as MultiSelectModel).text,
-                      buttons: (message as MultiSelectModel).buttons,
-                      insertMultiSelect:
-                          (message as MultiSelectModel).updateMultiSelect,
-                      previouslySelected: _selectedGenres,
-                    );
-                  }
-                case MessageType.CAROUSEL:
-                  {
-                    FocusScope.of(context).requestFocus(new FocusNode());
-                    return CarouselDialogSlider(
-                        (message as CarouselModel).carouselSelect,
-                        _movieItemClicked);
-                  }
-                case MessageType.MOVIE_PROVIDER_URL:
-                  return Url(
-                      title: (message as MovieProviderUrlModel).name,
-                      url: (message as MovieProviderUrlModel).text);
-                case MessageType.MOVIE_PROVIDER:
-                  return MovieProvider(
-                      title: (message as MovieProviderModel).text,
-                      logos: (message as MovieProviderModel).logos);
-                case MessageType.MOVIE_TRAILER:
-                  return MovieThumbnail(
-                      url: (message as MovieTrailerModel).url,
-                      thumbNail: (message as MovieTrailerModel).thumbNail);
-                case MessageType.MOVIE_JUST_WATCH:
-                  return MovieJustWatch(
-                      title: (message as MovieJustWatchModel).name);
-                case MessageType.TIPS_MESSAGE:
-                  return Tips(text: (message as TipsModel).text);
-                case MessageType.UNREAD_MESSAGE:
-                  return UnreadMessage();
-              }
-            }
-            return Container();
-          },
-          itemCount: _messages.length,
-        )),
-        Visibility(
-          visible: !_doNotShowTyping,
-          child: Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.all(10.0),
-            child: Text(
-              WAITING_MESSAGE,
+      child: BlocBuilder<DialogFlowBloc, DialogFlowState>(
+          builder: (BuildContext context, DialogFlowState state) {
+        if (state is DialogFlowError) {
+          //TODO Add different types of error
+          return AlertDialog(
+            title: Text(
+              NO_NETWORK_MESSAGE,
               style: Theme.of(context).textTheme.headline,
             ),
+          );
+        }
+        if (state is DialogFlowLoaded) {
+          return Column(children: <Widget>[
+            Flexible(
+                child: ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              reverse: true,
+              controller: _scrollController,
+              itemBuilder: (_, int index) {
+                var message = _messages[index];
+                if (message != null) {
+                  switch (message.type) {
+                    case MessageType.CHAT_MESSAGE:
+                      return ChatMessage(
+                        text: (message as ChatModel).text,
+                        type: (message as ChatModel).chatType,
+                      );
+                    case MessageType.QUICK_REPLY:
+                      {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        return QuickReply(
+                          quickReplies: (message as ReplyModel).quickReplies,
+                          insertQuickReply:
+                              (message as ReplyModel).updateQuickReply,
+                        );
+                      }
+                    case MessageType.MULTI_SELECT:
+                      {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        return MultiSelect(
+                          title: (message as MultiSelectModel).text,
+                          buttons: (message as MultiSelectModel).buttons,
+                          insertMultiSelect:
+                              (message as MultiSelectModel).updateMultiSelect,
+                          previouslySelected: _selectedGenres,
+                        );
+                      }
+                    case MessageType.CAROUSEL:
+                      {
+                        FocusScope.of(context).requestFocus(new FocusNode());
+                        return CarouselDialogSlider(
+                            (message as CarouselModel).carouselSelect,
+                            _movieItemClicked);
+                      }
+                    case MessageType.MOVIE_PROVIDER_URL:
+                      return Url(
+                          title: (message as MovieProviderUrlModel).name,
+                          url: (message as MovieProviderUrlModel).text);
+                    case MessageType.MOVIE_PROVIDER:
+                      return MovieProvider(
+                          title: (message as MovieProviderModel).text,
+                          logos: (message as MovieProviderModel).logos);
+                    case MessageType.MOVIE_TRAILER:
+                      return MovieThumbnail(
+                          url: (message as MovieTrailerModel).url,
+                          thumbNail: (message as MovieTrailerModel).thumbNail);
+                    case MessageType.MOVIE_JUST_WATCH:
+                      return MovieJustWatch(
+                          title: (message as MovieJustWatchModel).name);
+                    case MessageType.TIPS_MESSAGE:
+                      return Tips(text: (message as TipsModel).text);
+                    case MessageType.UNREAD_MESSAGE:
+                      return UnreadMessage();
+                  }
+                }
+                return Container();
+              },
+              itemCount: _messages.length,
+            )),
+            Visibility(
+              visible: !_doNotShowTyping,
+              child: Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.all(10.0),
+                child: Text(
+                  WAITING_MESSAGE,
+                  style: Theme.of(context).textTheme.headline,
+                ),
+              ),
+            ),
+            Divider(height: 1.0),
+            Container(
+              decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+              child: TextComposer(_textController, _textEditorChanged,
+                  _handleSubmitted, _isTextFieldEnabled),
+            ),
+          ]);
+        }
+        return Container(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsets.all(10.0),
+          child: Text(
+            WAITING_MESSAGE,
+            style: Theme.of(context).textTheme.headline,
           ),
-        ),
-        Divider(height: 1.0),
-        Container(
-          decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-          child: TextComposer(_textController, _textEditorChanged,
-              _handleSubmitted, _isTextFieldEnabled),
-        ),
-      ]),
+        );
+      }),
     );
   }
 
@@ -195,7 +225,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (selectedGenres.isEmpty) {
       _showChatMessage(ALL_GENRES_TEXT, true, true);
     } else {
-      _showChatMessage(SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
+      _showChatMessage(
+          SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
     }
 
     _scrollToBottom();
@@ -210,7 +241,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     _stopAllTimers();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _countryCode = prefs.getString(COUNTRY_CODE);
-     
+
     if (_countryCode != null && _countryCode.isNotEmpty) {
       await _getWatchProvidersAndVideos(movieId, _countryCode);
     } else {
@@ -231,8 +262,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  Future _getWatchProvidersAndVideos(String movieId, String _countryCode) async {
-     var parameters =
+  Future _getWatchProvidersAndVideos(
+      String movieId, String _countryCode) async {
+    var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
     _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
   }

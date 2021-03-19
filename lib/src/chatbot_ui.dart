@@ -82,7 +82,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   _startAbsoluteInactivityTimer(String eventName) {
     if (widget.selectedTips) {
       _absoluteInactivityTimer =
-      new Timer(Duration(seconds: ABSOLUTE_DURATION), () {
+          new Timer(Duration(seconds: ABSOLUTE_DURATION), () {
         _showTips(eventName);
       });
     }
@@ -105,70 +105,70 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       child: Column(children: <Widget>[
         Flexible(
             child: ListView.builder(
-              padding: EdgeInsets.all(8.0),
-              reverse: true,
-              controller: _scrollController,
-              itemBuilder: (_, int index) {
-                var message = _messages[index];
-                if (message != null) {
-                  switch (message.type) {
-                    case MessageType.CHAT_MESSAGE:
-                      return ChatMessage(
-                        text: (message as ChatModel).text,
-                        type: (message as ChatModel).chatType,
-                      );
-                    case MessageType.QUICK_REPLY:
-                      {
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                        return QuickReply(
-                          quickReplies: (message as ReplyModel).quickReplies,
-                          insertQuickReply:
+          padding: EdgeInsets.all(8.0),
+          reverse: true,
+          controller: _scrollController,
+          itemBuilder: (_, int index) {
+            var message = _messages[index];
+            if (message != null) {
+              switch (message.type) {
+                case MessageType.CHAT_MESSAGE:
+                  return ChatMessage(
+                    text: (message as ChatModel).text,
+                    type: (message as ChatModel).chatType,
+                  );
+                case MessageType.QUICK_REPLY:
+                  {
+                    _disableKeyboardForAndroid(context);
+                    return QuickReply(
+                      quickReplies: (message as ReplyModel).quickReplies,
+                      insertQuickReply:
                           (message as ReplyModel).updateQuickReply,
-                        );
-                      }
-                    case MessageType.MULTI_SELECT:
-                      {
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                        return MultiSelect(
-                          title: (message as MultiSelectModel).text,
-                          buttons: (message as MultiSelectModel).buttons,
-                          insertMultiSelect:
-                          (message as MultiSelectModel).updateMultiSelect,
-                          previouslySelected: _selectedGenres,
-                        );
-                      }
-                    case MessageType.CAROUSEL:
-                      {
-                        FocusScope.of(context).requestFocus(new FocusNode());
-                        return CarouselDialogSlider(
-                            (message as CarouselModel).carouselSelect,
-                            _movieItemClicked);
-                      }
-                    case MessageType.MOVIE_PROVIDER_URL:
-                      return Url(
-                          title: (message as MovieProviderUrlModel).name,
-                          url: (message as MovieProviderUrlModel).text);
-                    case MessageType.MOVIE_PROVIDER:
-                      return MovieProvider(
-                          title: (message as MovieProviderModel).text,
-                          logos: (message as MovieProviderModel).logos);
-                    case MessageType.MOVIE_TRAILER:
-                      return MovieThumbnail(
-                          url: (message as MovieTrailerModel).url,
-                          thumbNail: (message as MovieTrailerModel).thumbNail);
-                    case MessageType.MOVIE_JUST_WATCH:
-                      return MovieJustWatch(
-                          title: (message as MovieJustWatchModel).name);
-                    case MessageType.TIPS_MESSAGE:
-                      return Tips(text: (message as TipsModel).text);
-                    case MessageType.UNREAD_MESSAGE:
-                      return UnreadMessage();
+                    );
                   }
-                }
-                return Container();
-              },
-              itemCount: _messages.length,
-            )),
+                case MessageType.MULTI_SELECT:
+                  {
+                    _disableKeyboardForAndroid(context);
+                    return MultiSelect(
+                      title: (message as MultiSelectModel).text,
+                      buttons: (message as MultiSelectModel).buttons,
+                      insertMultiSelect:
+                          (message as MultiSelectModel).updateMultiSelect,
+                      previouslySelected: _selectedGenres,
+                    );
+                  }
+                case MessageType.CAROUSEL:
+                  {
+                    _disableKeyboardForAndroid(context);
+                    return CarouselDialogSlider(
+                        (message as CarouselModel).carouselSelect,
+                        _movieItemClicked);
+                  }
+                case MessageType.MOVIE_PROVIDER_URL:
+                  return Url(
+                      title: (message as MovieProviderUrlModel).name,
+                      url: (message as MovieProviderUrlModel).text);
+                case MessageType.MOVIE_PROVIDER:
+                  return MovieProvider(
+                      title: (message as MovieProviderModel).text,
+                      logos: (message as MovieProviderModel).logos);
+                case MessageType.MOVIE_TRAILER:
+                  return MovieThumbnail(
+                      url: (message as MovieTrailerModel).url,
+                      thumbNail: (message as MovieTrailerModel).thumbNail);
+                case MessageType.MOVIE_JUST_WATCH:
+                  return MovieJustWatch(
+                      title: (message as MovieJustWatchModel).name);
+                case MessageType.TIPS_MESSAGE:
+                  return Tips(text: (message as TipsModel).text);
+                case MessageType.UNREAD_MESSAGE:
+                  return UnreadMessage();
+              }
+            }
+            return Container();
+          },
+          itemCount: _messages.length,
+        )),
         Visibility(
           visible: !_doNotShowTyping,
           child: Container(
@@ -181,10 +181,15 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           ),
         ),
         Divider(height: 1.0),
-        TextComposer(_textController, _textEditorChanged,
-            _handleSubmitted, _isTextFieldEnabled),
+        TextComposer(_textController, _textEditorChanged, _handleSubmitted,
+            _isTextFieldEnabled),
       ]),
     );
+  }
+
+  void _disableKeyboardForAndroid(BuildContext context) {
+     if (Platform.isAndroid)
+      FocusScope.of(context).requestFocus(new FocusNode());
   }
 
   void _selectGenres(List<dynamic> selectedGenres) {
@@ -232,8 +237,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future _getWatchProvidersAndVideos(
-      String movieId,
-      String _countryCode) async {
+      String movieId, String _countryCode) async {
     var parameters =
         "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
     _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
@@ -293,8 +297,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     detectDialogResponses.callDialogFlow();
   }
 
-  void _getDialogFlowResponseByEvent(String eventName, dynamic parameters,
-      bool firstTime) async {
+  void _getDialogFlowResponseByEvent(
+      String eventName, dynamic parameters, bool firstTime) async {
     _textController.clear();
     setState(() {
       _doNotShowTyping = firstTime ?? false;
@@ -370,7 +374,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
       if (response.getListMessage() != null) {
         var payload = response.getListMessage().firstWhere(
-                (element) => element.containsKey('payload'),
+            (element) => element.containsKey('payload'),
             orElse: () => null);
 
         if (payload != null) {
@@ -397,12 +401,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           });
         } else {
           var carouselSelect = response.getListMessage().firstWhere(
-                  (element) => element.containsKey('carouselSelect'),
+              (element) => element.containsKey('carouselSelect'),
               orElse: () => null);
 
           if (carouselSelect != null) {
             CarouselSelect carouselSelect =
-            new CarouselSelect(response.getListMessage()[0]);
+                new CarouselSelect(response.getListMessage()[0]);
 
             if (_movieSliderShownCount == 0) {
               _stopAllTimers();
@@ -456,12 +460,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           } else {
             _scrollToBottom();
             var multiSelect = response.getListMessage().firstWhere(
-                    (element) => element.containsKey('card'),
+                (element) => element.containsKey('card'),
                 orElse: () => null);
 
             if (multiSelect != null) {
               CardDialogflow card =
-              new CardDialogflow(response.getListMessage()[0]);
+                  new CardDialogflow(response.getListMessage()[0]);
 
               setState(() {
                 _selectedGenres = [];
@@ -480,7 +484,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   response.getWebHookPayload().containsKey('movieDetail')) {
                 setState(() {
                   var unreadMessageModel =
-                  new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
+                      new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
                   _messages.insert(0, unreadMessageModel);
                 });
 
@@ -488,7 +492,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 var videos = response.getWebHookPayload()['videos'];
 
                 MovieProvidersAndVideoModel movieProviders =
-                new MovieProvidersAndVideoModel(movieDetails, videos);
+                    new MovieProvidersAndVideoModel(movieDetails, videos);
                 setState(() {
                   _doNotShowTyping = true;
                   if (movieProviders.title != null &&

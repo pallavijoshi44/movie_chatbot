@@ -35,11 +35,11 @@ final cupertinoTheme = CupertinoThemeData(
     barBackgroundColor: Colors.green,
     scaffoldBackgroundColor: Colors.white,
     textTheme: CupertinoTextThemeData(
-      navLargeTitleTextStyle: TextStyle(
-          color: Colors.white,
-          fontFamily: 'OpenSans',
-          fontSize: 20,
-          fontWeight: FontWeight.bold),
+        navLargeTitleTextStyle: TextStyle(
+            color: Colors.white,
+            fontFamily: 'OpenSans',
+            fontSize: 20,
+            fontWeight: FontWeight.bold),
         navTitleTextStyle: TextStyle(
             fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
         tabLabelTextStyle: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
@@ -54,12 +54,13 @@ class ChatBot extends StatelessWidget {
       title: APP_TITLE,
       debugShowCheckedModeBanner: false,
       material: (context, _) => MaterialAppData(theme: materialThemeData),
-      cupertino: (context, _) => CupertinoAppData(theme: cupertinoTheme,
-        localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-          DefaultMaterialLocalizations.delegate,
-          DefaultWidgetsLocalizations.delegate,
-          DefaultCupertinoLocalizations.delegate,
-        ]),
+      cupertino: (context, _) => CupertinoAppData(
+          theme: cupertinoTheme,
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            DefaultMaterialLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate,
+          ]),
       home: ChatBotFlow(),
     );
   }
@@ -77,74 +78,121 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-      appBar: Platform.isIOS? CupertinoNavigationBar(
-        //TODO settings
-        middle: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: new Text(
-              APP_TITLE,
-              style: CupertinoTheme
-                  .of(context)
-                  .textTheme
-                  .navLargeTitleTextStyle),
-        ),
-      ): new AppBar(
-          title: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: new Text(
-              APP_TITLE,
-              style: Platform.isIOS
-                  ? CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle
-                  : Theme.of(context).appBarTheme.textTheme.title,
-            ),
-          ),
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              onSelected: (value) async {
-                if (value == ABOUT_APP) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AboutAppWidget(),
-                    ),
-                  );
-                }
-                if (value == HELP) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HelpWidget(),
-                    ),
-                  );
-                }
-                if (value == SETTINGS) {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          SettingsWidget(_selectedTips, _onTipSelected, prefs),
-                    ),
-                  );
-                }
-              },
-              itemBuilder: (_) => [
-                PopupMenuItem(
-                  child: Text(SETTINGS),
-                  value: SETTINGS,
+      appBar: Platform.isIOS
+          ? CupertinoNavigationBar(
+              middle: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: new Text(APP_TITLE,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
+              ),
+              trailing: GestureDetector(
+                onTap: () {
+                  showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoActionSheet(
+                          actions: [
+                            CupertinoActionSheetAction(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) =>
+                                              AboutAppWidget()));
+                                },
+                                child: const Text(ABOUT_APP)),
+                            CupertinoActionSheetAction(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) => HelpWidget()));
+                                },
+                                child: const Text(HELP)),
+                            CupertinoActionSheetAction(
+                                onPressed: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                          builder: (context) => SettingsWidget(
+                                              _selectedTips,
+                                              _onTipSelected,
+                                              prefs)));
+                                },
+                                child: const Text(SETTINGS)),
+                          ],
+                        );
+                      });
+                },
+                child: Icon(
+                  CupertinoIcons.ellipsis,
+                  color: CupertinoColors.white,
                 ),
-                PopupMenuItem(
-                  child: Text(HELP),
-                  value: HELP,
+              ),
+            )
+          : new AppBar(
+              title: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: new Text(
+                  APP_TITLE,
+                  style: Platform.isIOS
+                      ? CupertinoTheme.of(context)
+                          .textTheme
+                          .navLargeTitleTextStyle
+                      : Theme.of(context).appBarTheme.textTheme.title,
                 ),
-                PopupMenuItem(
-                  child: Text(ABOUT_APP),
-                  value: ABOUT_APP,
-                ),
-              ],
-            ),
-          ]),
+              ),
+              actions: <Widget>[
+                  PopupMenuButton<String>(
+                    onSelected: (value) async {
+                      if (value == ABOUT_APP) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AboutAppWidget(),
+                          ),
+                        );
+                      }
+                      if (value == HELP) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HelpWidget(),
+                          ),
+                        );
+                      }
+                      if (value == SETTINGS) {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SettingsWidget(
+                                _selectedTips, _onTipSelected, prefs),
+                          ),
+                        );
+                      }
+                    },
+                    itemBuilder: (_) => [
+                      PopupMenuItem(
+                        child: Text(SETTINGS),
+                        value: SETTINGS,
+                      ),
+                      PopupMenuItem(
+                        child: Text(HELP),
+                        value: HELP,
+                      ),
+                      PopupMenuItem(
+                        child: Text(ABOUT_APP),
+                        value: ABOUT_APP,
+                      ),
+                    ],
+                  ),
+                ]),
       body: ConnectivityCheck(
         child: ChatBotUI(_selectedTips),
       ),

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:expandable_text/expandable_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 
@@ -39,15 +42,18 @@ class Message extends StatelessWidget {
                 topRight: Radius.circular(30.0),
                 bottomRight: Radius.circular(30.0)),
       ),
-      margin: const EdgeInsets.only(top: 15.0),
-      padding: const EdgeInsets.all(15),
-      child: ExpandableText(
-        text,
-        expandText: EXPAND_TEXT,
-        collapseText: COLLAPSE_TEXT,
-        maxLines: 6,
-        linkColor: Colors.blue,
-          style: Theme.of(context).textTheme.headline),
+      margin: type
+          ? const EdgeInsets.only(top: 15.0, left: 45.0)
+          : const EdgeInsets.only(top: 15.0),
+      padding: const EdgeInsets.all(15.0),
+      child: ExpandableText(text,
+          expandText: EXPAND_TEXT,
+          collapseText: COLLAPSE_TEXT,
+          maxLines: 6,
+          linkColor: Colors.blue,
+          style: Platform.isIOS
+              ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
+              : Theme.of(context).textTheme.headline),
     );
   }
 }

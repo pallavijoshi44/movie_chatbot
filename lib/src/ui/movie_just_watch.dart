@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,12 +14,15 @@ class MovieJustWatch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
+      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         Container(
           margin: const EdgeInsets.only(right: 16.0),
-          child: Image.asset('assets/icon/app_icon.png', width: 30, height: 30, fit: BoxFit.cover,),
+          child: Image.asset(
+            'assets/icon/app_icon.png',
+            width: 30,
+            height: 30,
+            fit: BoxFit.cover,
+          ),
         ),
         Expanded(
             child: Container(
@@ -32,17 +38,20 @@ class MovieJustWatch extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      this.title,
-                      style: Theme.of(context).textTheme.headline,
-                    ),
+                    Text(this.title,
+                        style: Platform.isIOS
+                            ? CupertinoTheme.of(context)
+                                .textTheme
+                                .tabLabelTextStyle
+                            : Theme.of(context).textTheme.headline),
                     RichText(
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: JUST_WATCH_TEXT,
-                            style: Theme.of(context).textTheme.headline,
-                          ),
+                              text: JUST_WATCH_TEXT,
+                              style: Platform.isIOS
+                                  ? TextStyle(color: Colors.black,fontFamily: 'OpenSans', fontSize: 14)
+                                  : Theme.of(context).textTheme.headline),
                           TextSpan(
                             text: "JustWatch",
                             style: TextStyle(
@@ -51,7 +60,8 @@ class MovieJustWatch extends StatelessWidget {
                                 color: Colors.blue),
                             recognizer: new TapGestureRecognizer()
                               ..onTap = () {
-                                _openWebView(context, "https://www.justwatch.com/");
+                                _openWebView(
+                                    context, "https://www.justwatch.com/");
                               },
                           ),
                         ],

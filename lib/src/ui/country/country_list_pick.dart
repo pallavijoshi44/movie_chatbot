@@ -1,8 +1,11 @@
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/country/selection_list.dart';
 import 'package:flutter_app/src/ui/country/support/code_countries_en.dart';
 import 'package:flutter_app/src/ui/country/support/code_countrys.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'country_selection_theme.dart';
 import 'support/code_country.dart';
 export 'support/code_country.dart';
@@ -18,6 +21,7 @@ class CountryListPick extends StatefulWidget {
       this.theme,
       this.useUiOverlay = true,
       this.useSafeArea = false});
+
   final String initialSelection;
   final ValueChanged<CountryCode> onChanged;
   final PreferredSizeWidget appBar;
@@ -49,6 +53,7 @@ class CountryListPick extends StatefulWidget {
 class _CountryListPickState extends State<CountryListPick> {
   CountryCode selectedItem;
   List elements = [];
+
   _CountryListPickState(this.elements);
 
   @override
@@ -75,8 +80,12 @@ class _CountryListPickState extends State<CountryListPick> {
             elements,
             selectedItem,
             appBar: widget.appBar ??
-                AppBar(
-                  backgroundColor: Theme.of(context).appBarTheme.color,
+                PlatformAppBar(
+                  backgroundColor: Platform.isIOS
+                      ? CupertinoTheme.of(context)
+                          .textTheme
+                          .navLargeTitleTextStyle
+                      : Theme.of(context).appBarTheme.color,
                   title: Text("Select Country"),
                 ),
             theme: theme,

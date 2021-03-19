@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,15 +17,14 @@ class Url extends StatelessWidget {
       text: TextSpan(
         children: [
           TextSpan(
-            text: this.title + " ",
-            style: Theme.of(context).textTheme.headline,
-          ),
+              text: this.title + " ",
+              style: Platform.isIOS
+                  ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
+                  : Theme.of(context).textTheme.headline),
           TextSpan(
             text: "Just Watch",
             style: TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 14,
-                color: Colors.blue),
+                fontFamily: 'OpenSans', fontSize: 14, color: Colors.blue),
             recognizer: new TapGestureRecognizer()
               ..onTap = () {
                 _openWebView(context, url);

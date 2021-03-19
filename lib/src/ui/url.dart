@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +17,12 @@ class Url extends StatelessWidget {
       child: Row(children: [
         Container(
           margin: const EdgeInsets.only(right: 16.0),
-          child: Image.asset('assets/icon/app_icon.png', width: 30, height: 30, fit: BoxFit.cover,),
+          child: Image.asset(
+            'assets/icon/app_icon.png',
+            width: 30,
+            height: 30,
+            fit: BoxFit.cover,
+          ),
         ),
         Expanded(
             child: new Column(
@@ -23,7 +31,7 @@ class Url extends StatelessWidget {
             Container(
                 decoration: BoxDecoration(
                   color: Colors.lightGreen[200],
-                  borderRadius:  BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
                       bottomRight: Radius.circular(30.0)),
@@ -34,9 +42,12 @@ class Url extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: this.title + " ",
-                        style: Theme.of(context).textTheme.headline,
-                      ),
+                          text: this.title + " ",
+                          style: Platform.isIOS
+                              ? CupertinoTheme.of(context)
+                                  .textTheme
+                                  .tabLabelTextStyle
+                              : Theme.of(context).textTheme.headline),
                       TextSpan(
                         text: "[Click here]",
                         style: TextStyle(

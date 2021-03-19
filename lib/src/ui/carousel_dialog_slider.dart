@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:expandable_text/expandable_text.dart';
@@ -36,7 +37,9 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
               items:  widget.carouselSelect.items
                   .map((item) => InkWell(
-                splashColor: Theme.of(context).primaryColorLight,
+                splashColor: Platform.isIOS
+                    ? CupertinoTheme.of(context).primaryContrastingColor
+                    : Theme.of(context).primaryColorLight,
                 highlightColor: Colors.green,
                 onTap: _enabled ? () {
                           return _handleTap(item);

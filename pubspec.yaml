@@ -33,6 +33,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   share: ^2.0.0
   shared_preferences: ^2.0.3
+  flutter_platform_widgets: ^0.80.0
 
 
 dev_dependencies:

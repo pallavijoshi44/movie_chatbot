@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
@@ -31,36 +34,65 @@ class MultiSelect extends StatelessWidget {
         children: <Widget>[
           Avatar(),
           Expanded(
-            child: MultiSelectBottomSheetField(
-              decoration: BoxDecoration(
-                  color: Colors.lightGreen[200],
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      topRight: Radius.circular(30.0),
-                      bottomRight: Radius.circular(30.0))),
-              initialValue: previouslySelected,
-              initialChildSize: 0.5,
-              maxChildSize: 0.5,
-              minChildSize: 0.5,
-              listType: MultiSelectListType.CHIP,
-              searchable: false,
-              buttonText: Text("Select Genres Here",
-                  style: Theme.of(context).textTheme.headline),
-              title:
-                  Text("Genres", style: Theme.of(context).textTheme.headline),
-              buttonIcon: Icon(Icons.arrow_drop_down),
-              // Colors.blue[700]
-              items: _items,
-              chipDisplay: MultiSelectChipDisplay(
-                onTap: null,
-                chipColor: Colors.lightGreen[200],
-                textStyle: TextStyle(color: Colors.lightGreen[900]),
-              ),
-              selectedItemsTextStyle: TextStyle(color: Colors.lightGreen[900]),
-              onConfirm: (values) {
-                insertMultiSelect(values);
-              },
-            ),
+            child:
+            // Platform.isIOS
+            //     ? CupertinoButton(
+            //         child: Text("Select Genres Here"),
+            //         onPressed: () {
+            //           showCupertinoModalPopup(
+            //               context: context,
+            //               builder: (context) => CupertinoActionSheet(
+            //                     title: Text("Genres",
+            //                         style: CupertinoTheme.of(context)
+            //                             .textTheme
+            //                             .tabLabelTextStyle),
+            //                     actions: _items
+            //                         .map((item) => CupertinoActionSheetAction(
+            //                             child: Text(item.value),
+            //                             onPressed: null
+            //                             ))
+            //                         .toList(),
+            //                   ));
+            //         }):
+                     MultiSelectBottomSheetField(
+                    decoration: BoxDecoration(
+                        color: Colors.lightGreen[200],
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30.0),
+                            topRight: Radius.circular(30.0),
+                            bottomRight: Radius.circular(30.0))),
+                    initialValue: previouslySelected,
+                    initialChildSize: 0.5,
+                    maxChildSize: 0.5,
+                    minChildSize: 0.5,
+                    listType: MultiSelectListType.CHIP,
+                    searchable: false,
+                    buttonText: Text("Select Genres Here",
+                        style: Platform.isIOS
+                            ? CupertinoTheme.of(context)
+                                .textTheme
+                                .tabLabelTextStyle
+                            : Theme.of(context).textTheme.headline),
+                    title: Text("Genres",
+                        style: Platform.isIOS
+                            ? CupertinoTheme.of(context)
+                                .textTheme
+                                .tabLabelTextStyle
+                            : Theme.of(context).textTheme.headline),
+                    buttonIcon: Icon(Icons.arrow_drop_down),
+                    // Colors.blue[700]
+                    items: _items,
+                    chipDisplay: MultiSelectChipDisplay(
+                      onTap: null,
+                      chipColor: Colors.lightGreen[200],
+                      textStyle: TextStyle(color: Colors.lightGreen[900]),
+                    ),
+                    selectedItemsTextStyle:
+                        TextStyle(color: Colors.lightGreen[900]),
+                    onConfirm: (values) {
+                      insertMultiSelect(values);
+                    },
+                  ),
           ),
         ],
       ),

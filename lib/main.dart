@@ -1,40 +1,65 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
 
+final materialThemeData = ThemeData(
+    primarySwatch: Colors.green,
+    accentColor: Colors.blueGrey[600],
+    errorColor: Colors.red,
+    textTheme: ThemeData.light().textTheme.copyWith(
+        title: TextStyle(
+            fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
+        headline: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
+        button: TextStyle(color: Colors.white)),
+    appBarTheme: AppBarTheme(
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+            )));
+
+final cupertinoTheme = CupertinoThemeData(
+    brightness: Brightness.light,
+    primaryColor: Colors.green,
+    barBackgroundColor: Colors.green,
+    scaffoldBackgroundColor: Colors.white,
+    textTheme: CupertinoTextThemeData(
+      navLargeTitleTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'OpenSans',
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+        navTitleTextStyle: TextStyle(
+            fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
+        tabLabelTextStyle: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
+        actionTextStyle: TextStyle(color: Colors.white)));
 
 void main() => runApp(ChatBot());
 
 class ChatBot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return PlatformApp(
       title: APP_TITLE,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primarySwatch: Colors.green,
-          accentColor: Colors.blueGrey[600],
-          errorColor: Colors.red,
-          textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                  fontFamily: 'OpenSans',
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-              headline: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
-              button: TextStyle(color: Colors.white)),
-          appBarTheme: AppBarTheme(
-              textTheme: ThemeData.light().textTheme.copyWith(
-                    title: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'OpenSans',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ))),
+      material: (context, _) => MaterialAppData(theme: materialThemeData),
+      cupertino: (context, _) => CupertinoAppData(theme: cupertinoTheme,
+        localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+          DefaultMaterialLocalizations.delegate,
+          DefaultWidgetsLocalizations.delegate,
+          DefaultCupertinoLocalizations.delegate,
+        ]),
       home: ChatBotFlow(),
     );
   }
@@ -52,13 +77,25 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
   Widget build(BuildContext context) {
     return new Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-      appBar: new AppBar(
-          centerTitle: true,
+      appBar: Platform.isIOS? CupertinoNavigationBar(
+        //TODO settings
+        middle: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: new Text(
+              APP_TITLE,
+              style: CupertinoTheme
+                  .of(context)
+                  .textTheme
+                  .navLargeTitleTextStyle),
+        ),
+      ): new AppBar(
           title: FittedBox(
             fit: BoxFit.fitWidth,
             child: new Text(
               APP_TITLE,
-              style: Theme.of(context).appBarTheme.textTheme.title,
+              style: Platform.isIOS
+                  ? CupertinoTheme.of(context).textTheme.navLargeTitleTextStyle
+                  : Theme.of(context).appBarTheme.textTheme.title,
             ),
           ),
           actions: <Widget>[
@@ -81,11 +118,13 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   );
                 }
                 if (value == SETTINGS) {
-                  SharedPreferences prefs =  await SharedPreferences.getInstance();
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SettingsWidget(_selectedTips, _onTipSelected, prefs),
+                      builder: (context) =>
+                          SettingsWidget(_selectedTips, _onTipSelected, prefs),
                     ),
                   );
                 }

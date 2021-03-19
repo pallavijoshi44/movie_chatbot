@@ -26,18 +26,17 @@ class TextComposer extends StatelessWidget {
               child: new Row(
                 children: <Widget>[
                   new Flexible(
-                    child: new PlatformTextField(
-                      enabled: isTextFieldEnabled,
-                      controller: textController,
-                      onChanged: textEditorChanged,
-                      onSubmitted: handleSubmitted,material: (_, context) => MaterialTextFieldData(
-                      decoration:
-                          new InputDecoration.collapsed(hintText: HINT_TEXT)),
-                    cupertino: (_, context) => CupertinoTextFieldData(placeholder: HINT_TEXT),),
-                  ),
+                      child: new TextField(
+                    enabled: isTextFieldEnabled,
+                    controller: textController,
+                    onChanged: textEditorChanged,
+                    onSubmitted: handleSubmitted,
+                    decoration:
+                        new InputDecoration.collapsed(hintText: HINT_TEXT),
+                  )),
                   new Container(
                       margin: new EdgeInsets.symmetric(horizontal: 4.0),
-                      child: new PlatformIconButton(
+                      child: new IconButton(
                           icon: new Icon(Icons.send),
                           onPressed: isTextFieldEnabled
                               ? () => handleSubmitted(textController.text)
@@ -49,19 +48,23 @@ class TextComposer extends StatelessWidget {
   }
 
   Widget _buildForIOS(BuildContext context) {
+    FocusScope.of(context).requestFocus(new FocusNode());
     return new Container(
-      decoration: new BoxDecoration(
-          color: CupertinoTheme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(50.0))),
-      margin: const EdgeInsets.only(
-          top: 8.0, bottom: 50.0, left: 20.0, right: 20.0),
+      padding: const EdgeInsets.only(
+          top: 20.0, bottom: 50.0, left: 20.0, right: 0.0),
       child: new Row(
         children: <Widget>[
           Flexible(
             child: Container(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(
+                  top: 10.0, bottom: 10.0, left: 20.0, right: 0.0),
+              decoration: BoxDecoration(color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(30))),
               child: CupertinoTextField.borderless(
-                style: TextStyle(color: Colors.black,fontFamily: 'OpenSans', fontSize: 14),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'OpenSans',
+                      fontSize: 14),
                   enabled: isTextFieldEnabled,
                   controller: textController,
                   onChanged: textEditorChanged,

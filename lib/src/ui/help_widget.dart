@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -13,9 +14,13 @@ class HelpWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(HELP),
-        ),
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+                middle: Text(HELP),
+              )
+            : AppBar(
+                title: Text(HELP),
+              ),
         body: HelpContent());
   }
 }
@@ -40,7 +45,7 @@ class HelpContent extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Container(
-                alignment: Alignment.center,
+                  alignment: Alignment.center,
                   child: CircularProgressIndicator());
             default:
               if (snapshot.hasError)
@@ -55,19 +60,19 @@ class HelpContent extends StatelessWidget {
 
   SingleChildScrollView _buildSingleChildScrollView(String data) {
     return SingleChildScrollView(
-                  child: Container(
-                    margin: EdgeInsets.all(15.0),
-                    padding: EdgeInsets.only(bottom: 15.0),
-                    child: Text(
-                      data,
-                      textAlign: TextAlign.justify,
-                      style: TextStyle(
-                        fontFamily: 'OpenSans',
-                        fontSize: 16,
-                        color: Color.fromRGBO(13, 37, 63, 1),
-                      ),
-                    ),
-                  ),
-                );
+      child: Container(
+        margin: EdgeInsets.all(15.0),
+        padding: EdgeInsets.only(bottom: 15.0),
+        child: Text(
+          data,
+          textAlign: TextAlign.justify,
+          style: TextStyle(
+            fontFamily: 'OpenSans',
+            fontSize: 16,
+            color: Color.fromRGBO(13, 37, 63, 1),
+          ),
+        ),
+      ),
+    );
   }
 }

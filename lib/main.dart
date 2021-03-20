@@ -124,6 +124,11 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                                               prefs)));
                                 },
                                 child: const Text(SETTINGS)),
+                            CupertinoActionSheetAction(
+                                onPressed: ()  {
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(CANCEL))
                           ],
                         );
                       });
@@ -167,7 +172,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                       }
                       if (value == SETTINGS) {
                         SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
+                        await SharedPreferences.getInstance();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

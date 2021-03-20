@@ -50,6 +50,7 @@ const String POWERED_BY_TMDB = 'The movie recommendations are powered by TMDb.';
 const String POWERED_BY_JUST_WATCH =
     'The watch providers data is powered by JustWatch.';
 const String SETTINGS = 'Settings';
+const String CANCEL = 'Cancel';
 const String RECEIVE_TIPS = 'Receive tips';
 const String UNREAD_MESSAGE = 'UNREAD MESSAGES';
 const String SHARE_APP = 'Do you sometimes struggle to select which movie to watch? Not any more. Mobo - the movie chatbot is here to help you. Download now!';

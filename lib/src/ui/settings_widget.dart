@@ -9,9 +9,9 @@ class SettingsWidget extends StatefulWidget {
 
   final currentTipStatus;
   final Function saveTips;
-  //final SharedPreferences prefs;
+  final SharedPreferences prefs;
 
-  SettingsWidget(this.currentTipStatus, this.saveTips);
+  SettingsWidget(this.currentTipStatus, this.saveTips, this.prefs);
 
   @override
   _SettingsWidgetState createState() => _SettingsWidgetState();
@@ -19,21 +19,12 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool _tipsOn = false;
-  String _initialSelection = 'IN';
 
   @override
-  Future<void> initState() async {
+  void initState()  {
     _tipsOn = widget.currentTipStatus;
-    var prefs = await getPrefs();
-    _initialSelection = prefs.getString(COUNTRY_CODE);
     super.initState();
   }
-
-  Future<SharedPreferences> getPrefs() async {
-    var prefs = await SharedPreferences.getInstance();
-    return prefs;
-  }
-
 
   Widget _buildSwitchListTile(String title,
       String description,
@@ -69,7 +60,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isDownIcon: false,
           showEnglishName: true,
         ),
-        initialSelection: _initialSelection,
+        initialSelection:  widget.prefs.getString(COUNTRY_CODE) ?? 'IN',
         onChanged: (CountryCode code) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString(COUNTRY_CODE, code.code);

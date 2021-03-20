@@ -16,9 +16,14 @@ class HelpWidget extends StatelessWidget {
     return Scaffold(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
-                middle: Text(HELP,  style: CupertinoTheme.of(context)
-                    .textTheme
-                    .navLargeTitleTextStyle),
+                leading: new IconButton(
+                  icon: new Icon(CupertinoIcons.back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                middle: Text(HELP,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
               )
             : AppBar(
                 title: Text(HELP),

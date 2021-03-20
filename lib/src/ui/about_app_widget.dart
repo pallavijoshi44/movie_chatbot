@@ -14,6 +14,10 @@ class AboutAppWidget extends StatelessWidget {
     return Scaffold(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
+                leading: new IconButton(
+                  icon: new Icon(CupertinoIcons.back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
                 middle: Text(ABOUT_APP,
                     style: CupertinoTheme.of(context)
                         .textTheme

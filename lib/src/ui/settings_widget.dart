@@ -78,9 +78,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
-                middle: Text(SETTINGS, style: CupertinoTheme.of(context)
-                    .textTheme
-                    .navLargeTitleTextStyle),
+                leading: new IconButton(
+                  icon: new Icon(CupertinoIcons.back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                middle: Text(SETTINGS,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
               )
             : AppBar(
                 title: Text(SETTINGS),

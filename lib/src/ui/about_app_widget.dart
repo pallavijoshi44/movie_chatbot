@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -6,23 +7,41 @@ import 'package:flutter_app/src/domain/constants.dart';
 import 'package:share/share.dart';
 
 class AboutAppWidget extends StatelessWidget {
+  static const routeName = '/about';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(ABOUT_APP),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.share,
-                color: Colors.white,
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+                middle: Text(ABOUT_APP,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
+                trailing: GestureDetector(
+                  onTap: () {
+                    _onShare(context);
+                  },
+                  child: Icon(
+                    CupertinoIcons.share,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : AppBar(
+                title: Text(ABOUT_APP),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      _onShare(context);
+                    },
+                  )
+                ],
               ),
-              onPressed: () {
-                _onShare(context);
-              },
-            )
-          ],
-        ),
         body: Content());
   }
 }
@@ -87,7 +106,9 @@ class Content extends StatelessWidget {
             fit: BoxFit.cover,
             width: width - 150,
           ),
-          SizedBox(height: 20,)
+          SizedBox(
+            height: 20,
+          )
         ],
       ),
     );
@@ -100,7 +121,8 @@ _onShare(BuildContext context) async {
   if (isIOS) {
     url = "itms-apps://itunes.apple.com/app/id<Apple ID>";
   } else {
-    url = "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";
+    url =
+        "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";
   }
   final RenderBox box = context.findRenderObject() as RenderBox;
   await Share.share(url,

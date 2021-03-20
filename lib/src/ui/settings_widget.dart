@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/ui/ios/cupertino_switch_list_tile.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'country/country_list_pick.dart';
 
@@ -36,14 +38,20 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   ) {
     return Container(
       margin: EdgeInsets.only(top: 16.0),
-      child: SwitchListTile(
-        title: Text(title),
-        value: currentValue,
-        subtitle: Text(
-          description,
-        ),
-        onChanged: updateValue,
-      ),
+      child: Platform.isIOS
+          ? CupertinoSwitchListTile(
+              title: Text(title),
+              value: currentValue,
+              subtitle: Text(description),
+              onChanged: updateValue)
+          : SwitchListTile(
+              title: Text(title),
+              value: currentValue,
+              subtitle: Text(
+                description,
+              ),
+              onChanged: updateValue,
+            ),
     );
   }
 
@@ -54,7 +62,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         SET_COUNTRY_LOCATION_CONTENT,
       ),
       trailing: CountryListPick(
-        appBar: AppBar(
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+          leading:  PlatformIconButton(
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          middle: Text('Choose Country',
+              style: CupertinoTheme.of(context)
+                  .textTheme
+                  .navLargeTitleTextStyle),
+        )
+            : AppBar(
           title: Text('Choose Country'),
         ),
         theme: CountryTheme(
@@ -78,8 +96,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
-                leading: new IconButton(
-                  icon: new Icon(CupertinoIcons.back, color: Colors.white),
+                leading: new CupertinoButton(
+                  child: new Icon(CupertinoIcons.back, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text(SETTINGS,

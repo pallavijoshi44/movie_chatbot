@@ -546,7 +546,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _handleSubmitted(String text) {
     _stopAllTimers();
 
-    if (text != "") {
+    if (text.trim() != "") {
       _textController.clear();
       setState(() {
         _doNotShowTyping = false;

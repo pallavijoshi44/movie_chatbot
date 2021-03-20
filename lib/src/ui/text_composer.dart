@@ -37,9 +37,7 @@ class TextComposer extends StatelessWidget {
                       margin: new EdgeInsets.symmetric(horizontal: 4.0),
                       child: new IconButton(
                           icon: new Icon(Icons.send),
-                          onPressed: isTextFieldEnabled
-                              ? () => handleSubmitted(textController.text)
-                              : null)),
+                          onPressed: _handleTextEntered())),
                 ],
               ),
             ),
@@ -73,12 +71,17 @@ class TextComposer extends StatelessWidget {
             ),
             IconButton(
                 icon: Icon(Icons.send),
-                onPressed: isTextFieldEnabled
-                    ? () => handleSubmitted(textController.text)
-                    : null)
+                onPressed: _handleTextEntered())
           ],
         ),
       ),
     );
   }
+
+  Function _handleTextEntered() {
+    return isTextFieldEnabled
+        ? () => handleSubmitted(textController.text)
+        : null;
+  }
+
 }

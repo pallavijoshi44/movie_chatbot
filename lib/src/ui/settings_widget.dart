@@ -64,17 +64,18 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       trailing: CountryListPick(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
-          leading:  PlatformIconButton(
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          middle: Text('Choose Country',
-              style: CupertinoTheme.of(context)
-                  .textTheme
-                  .navLargeTitleTextStyle),
-        )
+                leading: new CupertinoButton(
+                  child: new Icon(CupertinoIcons.back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                middle: Text('Choose Country',
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
+              )
             : AppBar(
-          title: Text('Choose Country'),
-        ),
+                title: Text('Choose Country'),
+              ),
         theme: CountryTheme(
           isShowFlag: true,
           isShowTitle: true,
@@ -96,8 +97,13 @@ class _SettingsWidgetState extends State<SettingsWidget> {
     return Scaffold(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
-                leading: new CupertinoButton(
-                  child: new Icon(CupertinoIcons.back, color: Colors.white),
+                leading: CupertinoButton(
+                  child: const Text(
+                    CANCEL,
+                    textScaleFactor: 1.0,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text(SETTINGS,

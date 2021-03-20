@@ -88,50 +88,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                         .navLargeTitleTextStyle),
               ),
               trailing: GestureDetector(
-                onTap: () {
-                  showCupertinoModalPopup(
-                      context: context,
-                      builder: (context) {
-                        return CupertinoActionSheet(
-                          actions: [
-                            CupertinoActionSheetAction(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) =>
-                                              AboutAppWidget()));
-                                },
-                                child: const Text(ABOUT_APP)),
-                            CupertinoActionSheetAction(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) => HelpWidget()));
-                                },
-                                child: const Text(HELP)),
-                            CupertinoActionSheetAction(
-                                onPressed: () async {
-                                  SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) => SettingsWidget(
-                                              _selectedTips,
-                                              _onTipSelected,
-                                              prefs)));
-                                },
-                                child: const Text(SETTINGS)),
-                            CupertinoActionSheetAction(
-                                onPressed: ()  {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(CANCEL))
-                          ],
-                        );
-                      });
+                onTap: () async {
+                  await _showActionSheet(context);
                 },
                 child: Icon(
                   CupertinoIcons.ellipsis,
@@ -172,7 +130,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                       }
                       if (value == SETTINGS) {
                         SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
+                            await SharedPreferences.getInstance();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -202,6 +160,59 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         child: ChatBotUI(_selectedTips),
       ),
     );
+  }
+
+  Future _showActionSheet(BuildContext context) async {
+    showCupertinoModalPopup(
+      useRootNavigator: false,
+        context: context,
+        builder: (ctx) {
+          return CupertinoActionSheet(
+            cancelButton: CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(CANCEL)),
+            actions: [
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    Navigator.push(
+                       context,
+                       CupertinoPageRoute(
+                           fullscreenDialog: true,
+                           builder: (context) =>
+                               AboutAppWidget()));
+                  },
+                  child: const Text(ABOUT_APP)),
+              CupertinoActionSheetAction(
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    Navigator.push(context,
+                        CupertinoPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => HelpWidget()));
+                   // Navigator.pop(ctx);
+                  },
+                  child: const Text(HELP)),
+              CupertinoActionSheetAction(
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    Navigator.of(ctx).pop();
+                    Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => SettingsWidget(
+                                _selectedTips, _onTipSelected, prefs)));
+                   // Navigator.pop(ctx);
+
+                  },
+                  child: const Text(SETTINGS))
+            ],
+          );
+        });
   }
 
   _onTipSelected(bool value) {

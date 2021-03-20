@@ -8,6 +8,8 @@ import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 
 class HelpWidget extends StatelessWidget {
+  static const routeName = '/help';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

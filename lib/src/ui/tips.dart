@@ -17,7 +17,7 @@ class Tips extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.only(right: 16.0),
+          margin: const EdgeInsets.only(right: 15.0),
           child: CircleAvatar(
             child: Text(TIP_TEXT,
                 style: Platform.isIOS

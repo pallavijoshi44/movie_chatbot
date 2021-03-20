@@ -87,16 +87,16 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                         .textTheme
                         .navLargeTitleTextStyle),
               ),
-              trailing: GestureDetector(
-                onTap: () async {
+              trailing: CupertinoButton(
+                onPressed: () async {
                   await _showActionSheet(context);
                 },
+                padding: EdgeInsets.zero,
                 child: Icon(
                   CupertinoIcons.ellipsis,
-                  color: CupertinoColors.white,
+                  color: Colors.white,
                 ),
-              ),
-            )
+              ))
           : new AppBar(
               title: FittedBox(
                 fit: BoxFit.fitWidth,
@@ -164,7 +164,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
 
   Future _showActionSheet(BuildContext context) async {
     showCupertinoModalPopup(
-      useRootNavigator: false,
+        useRootNavigator: false,
         context: context,
         builder: (ctx) {
           return CupertinoActionSheet(
@@ -178,21 +178,21 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   onPressed: () {
                     Navigator.of(ctx).pop();
                     Navigator.push(
-                       context,
-                       CupertinoPageRoute(
-                           fullscreenDialog: true,
-                           builder: (context) =>
-                               AboutAppWidget()));
+                        context,
+                        CupertinoPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => AboutAppWidget()));
                   },
                   child: const Text(ABOUT_APP)),
               CupertinoActionSheetAction(
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    Navigator.push(context,
+                    Navigator.push(
+                        context,
                         CupertinoPageRoute(
                             fullscreenDialog: true,
                             builder: (context) => HelpWidget()));
-                   // Navigator.pop(ctx);
+                    // Navigator.pop(ctx);
                   },
                   child: const Text(HELP)),
               CupertinoActionSheetAction(
@@ -206,8 +206,7 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                             fullscreenDialog: true,
                             builder: (context) => SettingsWidget(
                                 _selectedTips, _onTipSelected, prefs)));
-                   // Navigator.pop(ctx);
-
+                    // Navigator.pop(ctx);
                   },
                   child: const Text(SETTINGS))
             ],

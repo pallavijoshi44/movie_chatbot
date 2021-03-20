@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
@@ -21,15 +23,17 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   bool _tipsOn = false;
 
   @override
-  void initState()  {
+  void initState() {
     _tipsOn = widget.currentTipStatus;
     super.initState();
   }
 
-  Widget _buildSwitchListTile(String title,
-      String description,
-      bool currentValue,
-      Function updateValue,) {
+  Widget _buildSwitchListTile(
+    String title,
+    String description,
+    bool currentValue,
+    Function updateValue,
+  ) {
     return Container(
       margin: EdgeInsets.only(top: 16.0),
       child: SwitchListTile(
@@ -60,7 +64,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isDownIcon: false,
           showEnglishName: true,
         ),
-        initialSelection:  widget.prefs.getString(COUNTRY_CODE) ?? 'IN',
+        initialSelection: widget.prefs.getString(COUNTRY_CODE) ?? 'IN',
         onChanged: (CountryCode code) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString(COUNTRY_CODE, code.code);
@@ -72,18 +76,24 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(SETTINGS),
-        ),
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+                middle: Text(SETTINGS, style: CupertinoTheme.of(context)
+                    .textTheme
+                    .navLargeTitleTextStyle),
+              )
+            : AppBar(
+                title: Text(SETTINGS),
+              ),
         body: Column(
           children: [
             _buildSwitchListTile(
               RECEIVE_TIPS,
               RECEIVE_TIPS_CONTENT,
               _tipsOn,
-                  (newValue) {
+              (newValue) {
                 setState(
-                      () {
+                  () {
                     _tipsOn = newValue;
                     widget.saveTips(newValue);
                   },

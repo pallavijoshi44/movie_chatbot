@@ -13,7 +13,6 @@ const String DEFAULT_PARAMETERS_FOR_EVENT = "'parameters' : {}";
 const String SHOW_GENRES = "yes, show genres";
 const String IGNORE_GENRES = "no, all genres";
 const String SAME_CRITERIA = "same criteria";
-const String RANDOM = "Random";
 const String ACTION_START_OVER = "startOver";
 const String ACTION_TRIGGER_TIPS = "triggerTips";
 const String ACTION_MOVIE_RECOMMENDATIONS = "fetchMovieRecommendations";

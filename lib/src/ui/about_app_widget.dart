@@ -27,10 +27,11 @@ class AboutAppWidget extends StatelessWidget {
                     style: CupertinoTheme.of(context)
                         .textTheme
                         .navLargeTitleTextStyle),
-                trailing: GestureDetector(
-                  onTap: () {
+                trailing: CupertinoButton(
+                  onPressed: () {
                     _onShare(context);
                   },
+                  padding: EdgeInsets.zero,
                   child: Icon(
                     CupertinoIcons.share,
                     color: Colors.white,

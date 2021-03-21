@@ -18,12 +18,14 @@ import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/ui/movie_thumbnail.dart';
+import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_version/get_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
@@ -219,21 +221,67 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (_countryCode != null && _countryCode.isNotEmpty) {
       await _getWatchProvidersAndVideos(movieId, _countryCode);
     } else {
-      try {
-        var currentPosition = await Geolocator.getCurrentPosition();
-        var placeMarks = await placemarkFromCoordinates(
-            currentPosition.latitude, currentPosition.longitude);
-        if (placeMarks != null && placeMarks.length > 0) {
-          _countryCode = placeMarks[0].isoCountryCode;
+      if (Platform.isIOS) {
+        var isGpsEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!isGpsEnabled) {
+          _checkLocationServicesForIOS(isGpsEnabled,prefs);
+        } else {
+          await _handleCountryCode(_countryCode, movieId);
         }
-      } catch (error) {
-        _countryCode = "IN";
-      } finally {
-        await _getWatchProvidersAndVideos(movieId, _countryCode);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString(COUNTRY_CODE, _countryCode);
+      } else {
+        await _handleCountryCode(_countryCode, movieId);
       }
     }
+  }
+
+  Future _handleCountryCode(String _countryCode, String movieId) async {
+        try {
+      var currentPosition = await Geolocator.getCurrentPosition();
+      var placeMarks = await placemarkFromCoordinates(
+          currentPosition.latitude, currentPosition.longitude);
+      if (placeMarks != null && placeMarks.length > 0) {
+        _countryCode = placeMarks[0].isoCountryCode;
+      }
+    } catch (error) {
+      _countryCode = "IN";
+    } finally {
+      await _getWatchProvidersAndVideos(movieId, _countryCode);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(COUNTRY_CODE, _countryCode);
+    }
+  }
+
+  _checkLocationServicesForIOS(bool isGpsEnabled, SharedPreferences prefs) async {
+        showDialog(
+          context: context,
+          builder: (BuildContext ctx) {
+            return CupertinoAlertDialog(
+              title: Text("Turn on Location Services to allow Mobo to recommend movies in your location"),
+              actions: <Widget>[
+                CupertinoButton(
+                  child: Text('Go to Phone Settings'),
+                  onPressed: () async {
+                    Geolocator.openLocationSettings();
+                    Navigator.of(ctx, rootNavigator: true).pop();
+                  },
+                ),
+                CupertinoButton(
+                  child: Text('Change location from app'),
+                  onPressed: () async {
+                    _showSettingsScreen(ctx, context, prefs);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+
+  }
+  Future _showSettingsScreen(BuildContext ctx, BuildContext context, SharedPreferences prefs) async {
+    var arguments = {'prefs': prefs};
+    Navigator.of(ctx).pop();
+    Navigator.pushNamed(context, SettingsWidget.routeName,
+        arguments: arguments);
   }
 
   Future _getWatchProvidersAndVideos(

@@ -47,7 +47,21 @@ final cupertinoTheme = CupertinoThemeData(
 
 void main() => runApp(ChatBot());
 
-class ChatBot extends StatelessWidget {
+bool _selectedTips = true;
+
+class ChatBot extends StatefulWidget {
+  @override
+  _ChatBotState createState() => _ChatBotState();
+}
+
+class _ChatBotState extends State<ChatBot> {
+
+  _onTipSelected(bool value) {
+    setState(() {
+      _selectedTips = value;
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return PlatformApp(
@@ -61,18 +75,16 @@ class ChatBot extends StatelessWidget {
             DefaultWidgetsLocalizations.delegate,
             DefaultCupertinoLocalizations.delegate,
           ]),
+      routes: {
+        SettingsWidget.routeName: (ctx) =>
+            SettingsWidget(_selectedTips, _onTipSelected)
+      },
       home: ChatBotFlow(),
     );
   }
 }
 
-class ChatBotFlow extends StatefulWidget {
-  @override
-  _ChatBotFlowState createState() => _ChatBotFlowState();
-}
-
-class _ChatBotFlowState extends State<ChatBotFlow> {
-  bool _selectedTips = true;
+class ChatBotFlow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -128,16 +140,8 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                           ),
                         );
                       }
-                      if (value == SETTINGS) {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SettingsWidget(
-                                _selectedTips, _onTipSelected, prefs),
-                          ),
-                        );
+                      if (value == SETTINGS)  {
+                        await _showSettingsScreen(context, context);
                       }
                     },
                     itemBuilder: (_) => [
@@ -197,15 +201,14 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
                   child: const Text(HELP)),
               CupertinoActionSheetAction(
                   onPressed: () async {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    Navigator.of(ctx).pop();
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => SettingsWidget(
-                                _selectedTips, _onTipSelected, prefs)));
+                    await _showSettingsScreen(ctx, context);
+                    //
+                    // Navigator.push(
+                    //     context,
+                    //     CupertinoPageRoute(
+                    //         fullscreenDialog: true,
+                    //         builder: (context) => SettingsWidget(
+                    //             _selectedTips, _onTipSelected, prefs)));
                     // Navigator.pop(ctx);
                   },
                   child: const Text(SETTINGS))
@@ -214,9 +217,12 @@ class _ChatBotFlowState extends State<ChatBotFlow> {
         });
   }
 
-  _onTipSelected(bool value) {
-    setState(() {
-      _selectedTips = value;
-    });
+  Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {
+     SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+    var arguments = {'prefs': prefs};
+    Navigator.of(ctx).pop();
+    Navigator.pushNamed(context, SettingsWidget.routeName,
+        arguments: arguments);
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/ui/ios/cupertino_switch_list_tile.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'country/country_list_pick.dart';
 
@@ -13,9 +12,8 @@ class SettingsWidget extends StatefulWidget {
 
   final currentTipStatus;
   final Function saveTips;
-  final SharedPreferences prefs;
 
-  SettingsWidget(this.currentTipStatus, this.saveTips, this.prefs);
+  SettingsWidget(this.currentTipStatus, this.saveTips);
 
   @override
   _SettingsWidgetState createState() => _SettingsWidgetState();
@@ -23,11 +21,20 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool _tipsOn = false;
+  SharedPreferences prefs;
 
   @override
   void initState() {
     _tipsOn = widget.currentTipStatus;
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final routeArgs = ModalRoute.of(context).settings.arguments
+        as Map<String, SharedPreferences>;
+    prefs = routeArgs['prefs'];
+    super.didChangeDependencies();
   }
 
   Widget _buildSwitchListTile(
@@ -83,7 +90,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isDownIcon: false,
           showEnglishName: true,
         ),
-        initialSelection: widget.prefs.getString(COUNTRY_CODE) ?? 'IN',
+        initialSelection: prefs.getString(COUNTRY_CODE) ?? 'IN',
         onChanged: (CountryCode code) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString(COUNTRY_CODE, code.code);

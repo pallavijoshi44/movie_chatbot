@@ -57,7 +57,7 @@ class MultiSelect extends StatelessWidget {
                         ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
                         : Theme.of(context).textTheme.headline),
                 buttonIcon: Icon(Icons.arrow_drop_down),
-                // Colors.blue[700]
+                selectedColor: Platform.isIOS? Colors.lightGreen[400] : null,
                 items: _items,
                 chipDisplay: MultiSelectChipDisplay(
                   onTap: null,

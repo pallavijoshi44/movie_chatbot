@@ -43,7 +43,7 @@ final cupertinoTheme = CupertinoThemeData(
         navTitleTextStyle: TextStyle(
             fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
         tabLabelTextStyle: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
-        actionTextStyle: TextStyle(color: Colors.white)));
+        actionTextStyle: TextStyle(color: Colors.white, fontSize: 14,  fontFamily: 'OpenSans')));
 
 void main() => runApp(ChatBot());
 

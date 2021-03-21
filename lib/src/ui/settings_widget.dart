@@ -47,9 +47,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       margin: EdgeInsets.only(top: 16.0),
       child: Platform.isIOS
           ? CupertinoSwitchListTile(
-              title: Text(title),
+              title: Text(
+                title,
+                style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
+              ),
               value: currentValue,
-              subtitle: Text(description),
+              subtitle: Text(description,
+                  style:
+                      CupertinoTheme.of(context).textTheme.tabLabelTextStyle),
               onChanged: updateValue)
           : SwitchListTile(
               title: Text(title),
@@ -64,21 +69,27 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
   Widget _buildCountryCode() {
     return ListTile(
-      title: Text(SET_COUNTRY),
-      subtitle: Text(
-        SET_COUNTRY_LOCATION_CONTENT,
-      ),
+      title: Platform.isIOS
+          ? Text(SET_COUNTRY,
+              style: CupertinoTheme.of(context).textTheme.navTitleTextStyle)
+          : Text(SET_COUNTRY),
+      subtitle: Platform.isIOS
+          ? Text(SET_COUNTRY_LOCATION_CONTENT,
+              style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle)
+          : Text(
+              SET_COUNTRY_LOCATION_CONTENT,
+            ),
       trailing: CountryListPick(
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
                 leading: new CupertinoButton(
+                  padding: EdgeInsets.zero,
                   child: new Icon(CupertinoIcons.back, color: Colors.white),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text('Choose Country',
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle),
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
               )
             : AppBar(
                 title: Text('Choose Country'),
@@ -105,18 +116,16 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
                 leading: CupertinoButton(
-                  child: const Text(
-                    CANCEL,
-                    textScaleFactor: 1.0,
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text(CANCEL,
+                      textScaleFactor: 1.0,
+                      style:
+                          CupertinoTheme.of(context).textTheme.actionTextStyle),
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text(SETTINGS,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle),
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
               )
             : AppBar(
                 title: Text(SETTINGS),

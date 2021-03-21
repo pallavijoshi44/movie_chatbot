@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -63,7 +65,9 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
     return AlertDialog(
       title: Text(
         NO_NETWORK_MESSAGE,
-        style: Theme.of(context).textTheme.headline,
+        style: Platform.isIOS
+            ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
+            : Theme.of(context).textTheme.headline,
       ),
     );
   }

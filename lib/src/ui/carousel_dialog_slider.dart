@@ -35,16 +35,19 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                   enlargeCenterPage: false,
                   enableInfiniteScroll: false,
                   enlargeStrategy: CenterPageEnlargeStrategy.height),
-              items:  widget.carouselSelect.items
+              items: widget.carouselSelect.items
                   .map((item) => Material(
-                    child: InkWell(
-                splashColor: Platform.isIOS
-                      ? CupertinoTheme.of(context).primaryContrastingColor
-                      : Theme.of(context).primaryColorLight,
-                highlightColor: Colors.green,
-                onTap: _enabled ? () {
-                            return _handleTap(item);
-                          } : null,
+                        child: InkWell(
+                          splashColor: Platform.isIOS
+                              ? CupertinoTheme.of(context)
+                                  .primaryContrastingColor
+                              : Theme.of(context).primaryColorLight,
+                          highlightColor: Colors.green,
+                          onTap: _enabled
+                              ? () {
+                                  return _handleTap(item);
+                                }
+                              : null,
                           child: Card(
                             elevation: 5,
                             margin: EdgeInsets.all(5),
@@ -61,7 +64,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 20.0,
+                                      fontSize: Platform.isIOS ? 16.0 : 20.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -92,7 +95,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                         linkColor: Colors.blue,
                                         style: TextStyle(
                                           color: Colors.grey,
-                                          fontSize: 15.0,
+                                          fontSize: Platform.isIOS ? 14.0 : 15.0,
                                         ),
                                       ),
                                     ),
@@ -102,7 +105,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                             ),
                           ),
                         ),
-                  ))
+                      ))
                   .toList(),
             ),
           ],
@@ -110,18 +113,18 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   }
 
   _handleTap(ItemCarousel item) {
-     setState(() {
+    setState(() {
       _enabled = false;
     });
     _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
-     return widget.carouselItemClicked(item.info['key']);
+    return widget.carouselItemClicked(item.info['key']);
   }
 
   @override
   void dispose() {
-     if(_timer != null) {
-       _timer.cancel();
-     }
-     super.dispose();
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    super.dispose();
   }
 }

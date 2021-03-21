@@ -182,57 +182,6 @@ class ChatBotFlow extends StatelessWidget {
             )));
   }
 
-  AppBar _buildAndroidAppBar(BuildContext context) {
-    return new AppBar(
-        centerTitle: true,
-        title: FittedBox(
-          fit: BoxFit.fitWidth,
-          child: new Text(
-            APP_TITLE,
-            style: Theme.of(context).appBarTheme.textTheme.title,
-          ),
-        ),
-        actions: <Widget>[
-          PopupMenuButton<String>(
-            onSelected: (value) async {
-              if (value == ABOUT_APP) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AboutAppWidget(),
-                  ),
-                );
-              }
-              if (value == HELP) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HelpWidget(),
-                  ),
-                );
-              }
-              if (value == SETTINGS) {
-                await _showSettingsScreen(context, context);
-              }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                child: Text(SETTINGS),
-                value: SETTINGS,
-              ),
-              PopupMenuItem(
-                child: Text(HELP),
-                value: HELP,
-              ),
-              PopupMenuItem(
-                child: Text(ABOUT_APP),
-                value: ABOUT_APP,
-              ),
-            ],
-          ),
-        ]);
-  }
-
   Future _showActionSheet(BuildContext context) async {
     showCupertinoModalPopup(
         useRootNavigator: false,

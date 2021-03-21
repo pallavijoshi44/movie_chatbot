@@ -63,36 +63,32 @@ class _ChatBotState extends State<ChatBot> {
 
   @override
   Widget build(BuildContext context) {
+    var localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+      DefaultMaterialLocalizations.delegate,
+      DefaultWidgetsLocalizations.delegate,
+      DefaultCupertinoLocalizations.delegate,
+    ];
+
     return PlatformApp(
       title: APP_TITLE,
       debugShowCheckedModeBanner: false,
-      material: (context, _) => MaterialAppData(
-          theme: materialThemeData,
-          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-            DefaultMaterialLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-          ]),
+      material: (context, _) {
+        return MaterialAppData(
+            theme: materialThemeData,
+            localizationsDelegates: localizationsDelegates);
+      },
       cupertino: (context, _) => CupertinoAppData(
           theme: cupertinoTheme,
-          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-            DefaultMaterialLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-          ]),
+          localizationsDelegates: localizationsDelegates),
       onGenerateRoute: (RouteSettings settings) {
         if (settings.name == SettingsWidget.routeName) {
+          var builder =
+              (context) => SettingsWidget(_selectedTips, _onTipSelected);
           if (Platform.isIOS) {
             return CupertinoPageRoute(
-                builder: (context) =>
-                    SettingsWidget(_selectedTips, _onTipSelected),
-                fullscreenDialog: true,
-                settings: settings);
+                builder: builder, fullscreenDialog: true, settings: settings);
           } else
-            return MaterialPageRoute(
-                builder: (context) =>
-                    SettingsWidget(_selectedTips, _onTipSelected),
-                settings: settings);
+            return MaterialPageRoute(builder: builder, settings: settings);
         }
         return null;
       },
@@ -104,102 +100,137 @@ class _ChatBotState extends State<ChatBot> {
 class ChatBotFlow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS?
-        CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-              middle: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: new Text(APP_TITLE,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle),
-              ),
-              trailing: CupertinoButton(
-                onPressed: () async {
-                  await _showActionSheet(context);
-                },
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.ellipsis,
-                  color: Colors.white,
+    return PlatformScaffold(
+        backgroundColor: Color.fromRGBO(249, 248, 235, 1),
+        cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
+        material: (_, target) => _buildMaterialScaffoldData(context),
+        body: ConnectivityCheck(child: ChatBotUI(_selectedTips)));
+  }
+
+  MaterialScaffoldData _buildMaterialScaffoldData(BuildContext context) {
+    return MaterialScaffoldData(
+      appBar: new AppBar(
+          centerTitle: true,
+          title: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: new Text(
+              APP_TITLE,
+              style: Theme.of(context).appBarTheme.textTheme.title,
+            ),
+          ),
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: (value) async {
+                if (value == ABOUT_APP) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AboutAppWidget(),
+                    ),
+                  );
+                }
+                if (value == HELP) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => HelpWidget(),
+                    ),
+                  );
+                }
+                if (value == SETTINGS) {
+                  await _showSettingsScreen(context, context);
+                }
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text(SETTINGS),
+                  value: SETTINGS,
                 ),
-              )),
-            child: ConnectivityCheck(
-          child: ChatBotUI(_selectedTips),
-        ))
-        : new Scaffold(
-      backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-      appBar: Platform.isIOS
-          ? CupertinoNavigationBar(
-              middle: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: new Text(APP_TITLE,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle),
-              ),
-              trailing: CupertinoButton(
-                onPressed: () async {
-                  await _showActionSheet(context);
-                },
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.ellipsis,
-                  color: Colors.white,
+                PopupMenuItem(
+                  child: Text(HELP),
+                  value: HELP,
                 ),
-              ))
-          : new AppBar(
-              centerTitle: true,
-              title: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: new Text(
-                  APP_TITLE,
-                  style: Theme.of(context).appBarTheme.textTheme.title,
+                PopupMenuItem(
+                  child: Text(ABOUT_APP),
+                  value: ABOUT_APP,
                 ),
-              ),
-              actions: <Widget>[
-                  PopupMenuButton<String>(
-                    onSelected: (value) async {
-                      if (value == ABOUT_APP) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AboutAppWidget(),
-                          ),
-                        );
-                      }
-                      if (value == HELP) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HelpWidget(),
-                          ),
-                        );
-                      }
-                      if (value == SETTINGS) {
-                        await _showSettingsScreen(context, context);
-                      }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        child: Text(SETTINGS),
-                        value: SETTINGS,
-                      ),
-                      PopupMenuItem(
-                        child: Text(HELP),
-                        value: HELP,
-                      ),
-                      PopupMenuItem(
-                        child: Text(ABOUT_APP),
-                        value: ABOUT_APP,
-                      ),
-                    ],
-                  ),
-                ]),
-      body: ConnectivityCheck(
-        child: ChatBotUI(_selectedTips),
-      ),
+              ],
+            ),
+          ]),
     );
+  }
+
+  CupertinoPageScaffoldData _buildCupertinoPageScaffoldData(
+      BuildContext context) {
+    return CupertinoPageScaffoldData(
+        navigationBar: CupertinoNavigationBar(
+            middle: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: new Text(APP_TITLE,
+                  style:
+                      CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+            ),
+            trailing: CupertinoButton(
+              onPressed: () async {
+                await _showActionSheet(context);
+              },
+              padding: EdgeInsets.zero,
+              child: Icon(
+                CupertinoIcons.ellipsis,
+                color: Colors.white,
+              ),
+            )));
+  }
+
+  AppBar _buildAndroidAppBar(BuildContext context) {
+    return new AppBar(
+        centerTitle: true,
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: new Text(
+            APP_TITLE,
+            style: Theme.of(context).appBarTheme.textTheme.title,
+          ),
+        ),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == ABOUT_APP) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AboutAppWidget(),
+                  ),
+                );
+              }
+              if (value == HELP) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HelpWidget(),
+                  ),
+                );
+              }
+              if (value == SETTINGS) {
+                await _showSettingsScreen(context, context);
+              }
+            },
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text(SETTINGS),
+                value: SETTINGS,
+              ),
+              PopupMenuItem(
+                child: Text(HELP),
+                value: HELP,
+              ),
+              PopupMenuItem(
+                child: Text(ABOUT_APP),
+                value: ABOUT_APP,
+              ),
+            ],
+          ),
+        ]);
   }
 
   Future _showActionSheet(BuildContext context) async {

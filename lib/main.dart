@@ -55,13 +55,12 @@ class ChatBot extends StatefulWidget {
 }
 
 class _ChatBotState extends State<ChatBot> {
-
   _onTipSelected(bool value) {
     setState(() {
       _selectedTips = value;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return PlatformApp(
@@ -75,9 +74,21 @@ class _ChatBotState extends State<ChatBot> {
             DefaultWidgetsLocalizations.delegate,
             DefaultCupertinoLocalizations.delegate,
           ]),
-      routes: {
-        SettingsWidget.routeName: (ctx) =>
-            SettingsWidget(_selectedTips, _onTipSelected)
+      onGenerateRoute: (RouteSettings settings) {
+        if (settings.name == SettingsWidget.routeName) {
+          if (Platform.isIOS) {
+            return CupertinoPageRoute(
+                builder: (context) =>
+                    SettingsWidget(_selectedTips, _onTipSelected),
+                fullscreenDialog: true,
+                settings: settings);
+          } else
+            return MaterialPageRoute(
+                builder: (context) =>
+                    SettingsWidget(_selectedTips, _onTipSelected),
+                settings: settings);
+        }
+        return null;
       },
       home: ChatBotFlow(),
     );
@@ -85,7 +96,6 @@ class _ChatBotState extends State<ChatBot> {
 }
 
 class ChatBotFlow extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -110,15 +120,12 @@ class ChatBotFlow extends StatelessWidget {
                 ),
               ))
           : new AppBar(
+              centerTitle: true,
               title: FittedBox(
                 fit: BoxFit.fitWidth,
                 child: new Text(
                   APP_TITLE,
-                  style: Platform.isIOS
-                      ? CupertinoTheme.of(context)
-                          .textTheme
-                          .navLargeTitleTextStyle
-                      : Theme.of(context).appBarTheme.textTheme.title,
+                  style: Theme.of(context).appBarTheme.textTheme.title,
                 ),
               ),
               actions: <Widget>[
@@ -140,7 +147,7 @@ class ChatBotFlow extends StatelessWidget {
                           ),
                         );
                       }
-                      if (value == SETTINGS)  {
+                      if (value == SETTINGS) {
                         await _showSettingsScreen(context, context);
                       }
                     },
@@ -202,14 +209,6 @@ class ChatBotFlow extends StatelessWidget {
               CupertinoActionSheetAction(
                   onPressed: () async {
                     await _showSettingsScreen(ctx, context);
-                    //
-                    // Navigator.push(
-                    //     context,
-                    //     CupertinoPageRoute(
-                    //         fullscreenDialog: true,
-                    //         builder: (context) => SettingsWidget(
-                    //             _selectedTips, _onTipSelected, prefs)));
-                    // Navigator.pop(ctx);
                   },
                   child: const Text(SETTINGS))
             ],
@@ -218,10 +217,11 @@ class ChatBotFlow extends StatelessWidget {
   }
 
   Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {
-     SharedPreferences prefs =
-        await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var arguments = {'prefs': prefs};
-    Navigator.of(ctx).pop();
+    if (Platform.isIOS) {
+      Navigator.of(ctx).pop();
+    }
     Navigator.pushNamed(context, SettingsWidget.routeName,
         arguments: arguments);
   }

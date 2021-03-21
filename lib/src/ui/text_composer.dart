@@ -61,7 +61,7 @@ class TextComposer extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.black,
                         fontFamily: 'OpenSans',
-                        fontSize: 14),
+                        fontSize: 15),
                     enabled: isTextFieldEnabled,
                     controller: textController,
                     onChanged: textEditorChanged,

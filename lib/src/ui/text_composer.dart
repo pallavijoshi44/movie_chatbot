@@ -69,8 +69,8 @@ class TextComposer extends StatelessWidget {
                     placeholder: HINT_TEXT),
               ),
             ),
-            IconButton(
-                icon: Icon(Icons.send),
+            CupertinoButton(
+                child: Icon(Icons.send),
                 onPressed: _handleTextEntered())
           ],
         ),

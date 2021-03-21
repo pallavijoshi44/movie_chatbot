@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:get_version/get_version.dart';
 import 'package:share/share.dart';
 
 class AboutAppWidget extends StatelessWidget {
@@ -129,7 +130,8 @@ _onShare(BuildContext context) async {
   String url;
   final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
   if (isIOS) {
-    url = "itms-apps://itunes.apple.com/app/id<Apple ID>";
+    var appId = GetVersion.appID;
+    url = "$SHARE_APP itms-apps://itunes.apple.com/app/id{$appId}}";
   } else {
     url =
         "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";

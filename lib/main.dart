@@ -66,7 +66,13 @@ class _ChatBotState extends State<ChatBot> {
     return PlatformApp(
       title: APP_TITLE,
       debugShowCheckedModeBanner: false,
-      material: (context, _) => MaterialAppData(theme: materialThemeData),
+      material: (context, _) => MaterialAppData(
+          theme: materialThemeData,
+          localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+            DefaultMaterialLocalizations.delegate,
+            DefaultWidgetsLocalizations.delegate,
+            DefaultCupertinoLocalizations.delegate,
+          ]),
       cupertino: (context, _) => CupertinoAppData(
           theme: cupertinoTheme,
           localizationsDelegates: <LocalizationsDelegate<dynamic>>[
@@ -98,7 +104,30 @@ class _ChatBotState extends State<ChatBot> {
 class ChatBotFlow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Platform.isIOS?
+        CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBar(
+              middle: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: new Text(APP_TITLE,
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .navLargeTitleTextStyle),
+              ),
+              trailing: CupertinoButton(
+                onPressed: () async {
+                  await _showActionSheet(context);
+                },
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  CupertinoIcons.ellipsis,
+                  color: Colors.white,
+                ),
+              )),
+            child: ConnectivityCheck(
+          child: ChatBotUI(_selectedTips),
+        ))
+        : new Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: Platform.isIOS
           ? CupertinoNavigationBar(

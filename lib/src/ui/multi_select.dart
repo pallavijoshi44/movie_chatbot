@@ -54,13 +54,14 @@ class MultiSelect extends StatelessWidget {
             //                         .toList(),
             //                   ));
             //         }):
-                     MultiSelectBottomSheetField(
+                     Material(
+                       child: MultiSelectBottomSheetField(
                     decoration: BoxDecoration(
-                        color: Colors.lightGreen[200],
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30.0),
-                            topRight: Radius.circular(30.0),
-                            bottomRight: Radius.circular(30.0))),
+                          color: Colors.lightGreen[200],
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.0),
+                              topRight: Radius.circular(30.0),
+                              bottomRight: Radius.circular(30.0))),
                     initialValue: previouslySelected,
                     initialChildSize: 0.5,
                     maxChildSize: 0.5,
@@ -68,31 +69,32 @@ class MultiSelect extends StatelessWidget {
                     listType: MultiSelectListType.CHIP,
                     searchable: false,
                     buttonText: Text("Select Genres Here",
-                        style: Platform.isIOS
-                            ? CupertinoTheme.of(context)
-                                .textTheme
-                                .tabLabelTextStyle
-                            : Theme.of(context).textTheme.headline),
+                          style: Platform.isIOS
+                              ? CupertinoTheme.of(context)
+                                  .textTheme
+                                  .tabLabelTextStyle
+                              : Theme.of(context).textTheme.headline),
                     title: Text("Genres",
-                        style: Platform.isIOS
-                            ? CupertinoTheme.of(context)
-                                .textTheme
-                                .tabLabelTextStyle
-                            : Theme.of(context).textTheme.headline),
+                          style: Platform.isIOS
+                              ? CupertinoTheme.of(context)
+                                  .textTheme
+                                  .tabLabelTextStyle
+                              : Theme.of(context).textTheme.headline),
                     buttonIcon: Icon(Icons.arrow_drop_down),
                     // Colors.blue[700]
                     items: _items,
                     chipDisplay: MultiSelectChipDisplay(
-                      onTap: null,
-                      chipColor: Colors.lightGreen[200],
-                      textStyle: TextStyle(color: Colors.lightGreen[900]),
+                        onTap: null,
+                        chipColor: Colors.lightGreen[200],
+                        textStyle: TextStyle(color: Colors.lightGreen[900]),
                     ),
                     selectedItemsTextStyle:
-                        TextStyle(color: Colors.lightGreen[900]),
+                          TextStyle(color: Colors.lightGreen[900]),
                     onConfirm: (values) {
-                      insertMultiSelect(values);
+                        insertMultiSelect(values);
                     },
                   ),
+                     ),
           ),
         ],
       ),

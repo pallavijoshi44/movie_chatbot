@@ -17,18 +17,16 @@ class HelpWidget extends StatelessWidget {
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
                 leading: CupertinoButton(
-                  child: const Text(
-                    CANCEL,
-                    textScaleFactor: 1.0,
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: Text(CANCEL,
+                      textScaleFactor: 1.0,
+                      style:
+                          CupertinoTheme.of(context).textTheme.actionTextStyle),
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text(HELP,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navLargeTitleTextStyle),
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
               )
             : AppBar(
                 title: Text(HELP),
@@ -80,7 +78,7 @@ class HelpContent extends StatelessWidget {
           textAlign: TextAlign.justify,
           style: TextStyle(
             fontFamily: 'OpenSans',
-            fontSize: 16,
+            fontSize: Platform.isIOS ? 14 : 16,
             color: Color.fromRGBO(13, 37, 63, 1),
           ),
         ),

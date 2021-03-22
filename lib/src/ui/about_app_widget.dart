@@ -16,10 +16,12 @@ class AboutAppWidget extends StatelessWidget {
         appBar: Platform.isIOS
             ? CupertinoNavigationBar(
                 leading: CupertinoButton(
-                  child: const Text(
+                  child: Text(
                     CANCEL,
                     textScaleFactor: 1.0,
-                    style: TextStyle(color: Colors.white),
+                    style: CupertinoTheme.of(context)
+                        .textTheme
+                        .actionTextStyle,
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
@@ -27,7 +29,7 @@ class AboutAppWidget extends StatelessWidget {
                 middle: Text(ABOUT_APP,
                     style: CupertinoTheme.of(context)
                         .textTheme
-                        .navLargeTitleTextStyle),
+                        .navTitleTextStyle),
                 trailing: CupertinoButton(
                   onPressed: () {
                     _onShare(context);
@@ -74,7 +76,7 @@ class Content extends StatelessWidget {
               POWERED_BY_TMDB,
               style: TextStyle(
                 fontFamily: 'OpenSans',
-                fontSize: 16,
+                fontSize: Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
               textAlign: TextAlign.center,
@@ -92,7 +94,7 @@ class Content extends StatelessWidget {
               TMDB_CONTENT,
               style: TextStyle(
                 fontFamily: 'OpenSans',
-                fontSize: 16,
+                fontSize:  Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
               textAlign: TextAlign.center,
@@ -106,7 +108,7 @@ class Content extends StatelessWidget {
               POWERED_BY_JUST_WATCH,
               style: TextStyle(
                 fontFamily: 'OpenSans',
-                fontSize: 16,
+                fontSize:  Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
               textAlign: TextAlign.center,
@@ -130,8 +132,8 @@ _onShare(BuildContext context) async {
   String url;
   final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
   if (isIOS) {
-    var appId = GetVersion.appID;
-    url = "$SHARE_APP itms-apps://itunes.apple.com/app/id{$appId}}";
+    var appId = await GetVersion.appID;
+    url = "$SHARE_APP itms-apps://itunes.apple.com/app/id$appId}";
   } else {
     url =
         "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";

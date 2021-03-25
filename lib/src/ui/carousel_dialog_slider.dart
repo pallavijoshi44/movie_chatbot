@@ -25,91 +25,91 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(top: 10.0),
-        child: Column(
-          children: <Widget>[
-            CarouselSlider(
-              options: CarouselOptions(
-                  autoPlay: false,
-                  aspectRatio: 1.0,
-                  enlargeCenterPage: false,
-                  enableInfiniteScroll: false,
-                  enlargeStrategy: CenterPageEnlargeStrategy.height),
-              items: widget.carouselSelect.items
-                  .map((item) => Material(
-                        child: InkWell(
-                          splashColor: Platform.isIOS
-                              ? CupertinoTheme.of(context)
-                                  .primaryContrastingColor
-                              : Theme.of(context).primaryColorLight,
-                          highlightColor: Colors.green,
-                          onTap: _enabled
-                              ? () {
-                                  return _handleTap(item);
-                                }
-                              : null,
-                          child: Card(
-                            elevation: 5,
-                            margin: EdgeInsets.all(5),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${item.title}',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: Platform.isIOS ? 16.0 : 20.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Flexible(
-                                    flex: 4,
-                                    child: item.image.imageUri.contains('null')
-                                        ? Image.asset(
-                                            'assets/images/placeholder.jpg',
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Image.network(item.image.imageUri,
-                                            fit: BoxFit.contain),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Flexible(
-                                    flex: 1,
-                                    child: SingleChildScrollView(
-                                      child: ExpandableText(
-                                        '${item.description ?? ""}',
-                                        expandText: EXPAND_TEXT,
-                                        collapseText: COLLAPSE_TEXT,
-                                        maxLines: 3,
-                                        linkColor: Colors.blue,
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: Platform.isIOS ? 14.0 : 15.0,
-                                        ),
+      margin: const EdgeInsets.only(top: 10.0),
+      child: CarouselSlider(
+        options: CarouselOptions(
+            autoPlay: false,
+            aspectRatio: 0.9,
+            enlargeCenterPage: false,
+            enableInfiniteScroll: false,
+            enlargeStrategy: CenterPageEnlargeStrategy.height),
+        items: widget.carouselSelect.items
+            .map((item) => Material(
+                  child: InkWell(
+                    splashColor: Platform.isIOS
+                        ? CupertinoTheme.of(context).primaryContrastingColor
+                        : Theme.of(context).primaryColorLight,
+                    highlightColor: Colors.green,
+                    onTap: _enabled
+                        ? () {
+                            return _handleTap(item);
+                          }
+                        : null,
+                    child: Card(
+                              elevation: 5,
+                              margin: EdgeInsets.all(5),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '${item.title}',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: Platform.isIOS ? 16.0 : 20.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  )
-                                ],
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Flexible(
+                                      flex: 2,
+                                      child: item.image.imageUri
+                                              .contains('null')
+                                          ? Image.asset(
+                                              'assets/images/placeholder.jpg',
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.network(item.image.imageUri,
+                                              fit: BoxFit.contain),
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Flexible(
+                                      child: LayoutBuilder(
+                                        builder: (ctx, constraints) =>
+                                            SingleChildScrollView(
+                                          child: ExpandableText(
+                                            '${item.description ?? ""}',
+                                            expandText: EXPAND_TEXT,
+                                            collapseText: COLLAPSE_TEXT,
+                                            maxLines: constraints.maxHeight ~/ 18,
+                                            linkColor: Colors.blue,
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize:
+                                                  Platform.isIOS ? 14.0 : 15.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            ),
-          ],
-        ));
+                  ),
+                ))
+            .toList(),
+      ),
+    );
   }
 
   _handleTap(ItemCarousel item) {

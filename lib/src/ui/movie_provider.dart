@@ -45,15 +45,17 @@ class MovieProvider extends StatelessWidget {
             ),
             Wrap(
                 runSpacing: 10.0,
-                spacing: 10.0,
                 alignment: WrapAlignment.spaceBetween,
                 direction: Axis.horizontal,
                 children: this.logos.map((logo) {
-                  return Image.network(
-                    logo,
-                    fit: BoxFit.cover,
-                    width: 50.0,
-                    height: 50.0,
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                    child: Image.network(
+                      logo,
+                      fit: BoxFit.cover,
+                      width: 50.0,
+                      height: 50.0,
+                    ),
                   );
                 }).toList()),
           ]))

@@ -1,4 +1,4 @@
-
+import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
 class AIResponse {
@@ -34,6 +34,19 @@ class AIResponse {
     return _queryResult.fulfillmentText;
   }
 
+  String getChatMessage() {
+    return getMessage() ?? getDefaultOrChatMessage();
+  }
+
+  String getDefaultOrChatMessage() {
+    var listMessage = getListMessage()[0]['text']['text'];
+    return (listMessage != null &&
+            listMessage[0] != null &&
+            listMessage[0].toString().isNotEmpty)
+        ? listMessage[0]
+        : DEFAULT_RESPONSE;
+  }
+
   List<dynamic> getListMessage() {
     return _queryResult.fulfillmentMessages;
   }
@@ -66,4 +79,3 @@ class AIResponse {
     return _queryResult;
   }
 }
-

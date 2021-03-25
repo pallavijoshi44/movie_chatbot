@@ -392,8 +392,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           _doNotShowTyping = true;
           var chatModel = new TipsModel(
               type: MessageType.TIPS_MESSAGE,
-              text: response.getMessage() ??
-                  response.getListMessage()[0]['text']['text'][0]);
+              text: response.getChatMessage());
           _messages.insert(0, chatModel);
         });
         _stopAllTimers();
@@ -578,8 +577,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   _doNotShowTyping = true;
                   var chatModel = new ChatModel(
                       type: MessageType.CHAT_MESSAGE,
-                      text: response.getMessage() ??
-                          response.getListMessage()[0]['text']['text'][0],
+                      text: response.getChatMessage(),
                       chatType: false);
                   _messages.insert(0, chatModel);
                 });

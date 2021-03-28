@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
-
-import '../movie_provider.dart';
+import 'movie_provider.dart';
 import 'movie_thumbnail.dart';
 
 class MovieDetailWidget extends StatelessWidget {

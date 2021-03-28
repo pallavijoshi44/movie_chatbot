@@ -11,16 +11,16 @@ class DialogFlow {
   const DialogFlow({@required this.authGoogle, this.language = "en"});
 
   String _getUrl() {
-    //return "https://dialogflow.googleapis.com/v2/projects/${authGoogle.getProjectId}/agent/sessions/${authGoogle.getSessionId}:detectIntent";
-    String baseURL = "https://dialogflow.googleapis.com";
-    String version = "v2";
-    String environmentIdentifier;
-    if (kReleaseMode)
-      environmentIdentifier = "production";
-    else
-      environmentIdentifier = "test";
-    String url = "$baseURL/$version/projects/${authGoogle.getProjectId}/agent/environments/$environmentIdentifier/users/-/sessions/${authGoogle.getSessionId}:detectIntent";
-    return url;
+    return "https://dialogflow.googleapis.com/v2/projects/${authGoogle.getProjectId}/agent/sessions/${authGoogle.getSessionId}:detectIntent";
+    // String baseURL = "https://dialogflow.googleapis.com";
+    // String version = "v2";
+    // String environmentIdentifier;
+    // if (kReleaseMode)
+    //   environmentIdentifier = "production";
+    // else
+    //   environmentIdentifier = "test";
+    // String url = "$baseURL/$version/projects/${authGoogle.getProjectId}/agent/environments/$environmentIdentifier/users/-/sessions/${authGoogle.getSessionId}:detectIntent";
+    // return url;
   }
 
   Future<AIResponse> detectIntent(String query) async {

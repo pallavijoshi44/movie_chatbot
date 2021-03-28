@@ -26,7 +26,6 @@ import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:get_version/get_version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
@@ -291,7 +290,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future _getWatchProvidersAndVideos(
       String movieId, String _countryCode) async {
     var parameters =
-        "'parameters' : { 'movie_id':  $movieId, 'country_code': '$_countryCode'}";
+        "'parameters' : { 'id':  $movieId, 'country_code': '$_countryCode'}";
     _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
   }
 
@@ -545,7 +544,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     new MovieProvidersAndVideoModel(movieDetails, videos);
                 setState(() {
                   _doNotShowTyping = true;
-                //  _handleNewUIForMovieDetails(movieProviders);
+            //      _handleNewUIForMovieDetails(movieProviders);
 
                   if (movieProviders.title != null &&
                       movieProviders.title != "") {

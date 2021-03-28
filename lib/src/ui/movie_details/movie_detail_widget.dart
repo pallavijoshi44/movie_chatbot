@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
+import 'package:flutter_app/src/ui/movie_details/movie_title_with_image.dart';
 import 'movie_provider.dart';
 import 'movie_thumbnail.dart';
 
@@ -39,6 +40,7 @@ class MovieDetailWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
+            MovieTitleWithImage(),
             ...model.providers.map((provider) =>  MovieProvider(
                   title: provider.title,
                   logos: provider.logos,

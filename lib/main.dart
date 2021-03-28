@@ -43,7 +43,8 @@ final cupertinoTheme = CupertinoThemeData(
         navTitleTextStyle: TextStyle(
             fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
         tabLabelTextStyle: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
-        actionTextStyle: TextStyle(color: Colors.white, fontSize: 14,  fontFamily: 'OpenSans')));
+        actionTextStyle: TextStyle(
+            color: Colors.white, fontSize: 14, fontFamily: 'OpenSans')));
 
 void main() => runApp(ChatBot());
 
@@ -81,16 +82,30 @@ class _ChatBotState extends State<ChatBot> {
           theme: cupertinoTheme,
           localizationsDelegates: localizationsDelegates),
       onGenerateRoute: (RouteSettings settings) {
-        if (settings.name == SettingsWidget.routeName) {
-          var builder =
-              (context) => SettingsWidget(_selectedTips, _onTipSelected);
-          if (Platform.isIOS) {
-            return CupertinoPageRoute(
-                builder: builder, fullscreenDialog: true, settings: settings);
-          } else
-            return MaterialPageRoute(builder: builder, settings: settings);
+        var builder;
+        switch (settings.name) {
+          case SettingsWidget.routeName:
+            {
+              builder =
+                  (context) => SettingsWidget(_selectedTips, _onTipSelected);
+            }
+            break;
+          case HelpWidget.routeName:
+            {
+              builder = (context) => HelpWidget();
+            }
+            break;
+          case AboutAppWidget.routeName:
+            {
+              builder = (context) => AboutAppWidget();
+            }
+            break;
         }
-        return null;
+        if (Platform.isIOS) {
+          return CupertinoPageRoute(
+              builder: builder, fullscreenDialog: true, settings: settings);
+        } else
+          return MaterialPageRoute(builder: builder, settings: settings);
       },
       home: ChatBotFlow(),
     );
@@ -121,25 +136,10 @@ class ChatBotFlow extends StatelessWidget {
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: (value) async {
-                if (value == ABOUT_APP) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AboutAppWidget(),
-                    ),
-                  );
-                }
-                if (value == HELP) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HelpWidget(),
-                    ),
-                  );
-                }
-                if (value == SETTINGS) {
+                if (value == ABOUT_APP) _showAboutAppScreen(context, context);
+                if (value == HELP) _showHelpWidget(context, context);
+                if (value == SETTINGS)
                   await _showSettingsScreen(context, context);
-                }
               },
               itemBuilder: (_) => [
                 PopupMenuItem(
@@ -195,43 +195,41 @@ class ChatBotFlow extends StatelessWidget {
                 child: const Text(CANCEL)),
             actions: [
               CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => AboutAppWidget()));
-                  },
+                  onPressed: () => _showAboutAppScreen(ctx, context),
                   child: const Text(ABOUT_APP)),
               CupertinoActionSheetAction(
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => HelpWidget()));
-                    // Navigator.pop(ctx);
-                  },
+                  onPressed: () => _showHelpWidget(ctx, context),
                   child: const Text(HELP)),
               CupertinoActionSheetAction(
-                  onPressed: () async {
-                    await _showSettingsScreen(ctx, context);
-                  },
+                  onPressed: () async =>
+                      await _showSettingsScreen(ctx, context),
                   child: const Text(SETTINGS))
             ],
           );
         });
   }
 
+  void _showAboutAppScreen(BuildContext ctx, BuildContext context) {
+    _popActionSheetForiOS(ctx);
+    Navigator.pushNamed(context, AboutAppWidget.routeName);
+  }
+
+  void _showHelpWidget(BuildContext ctx, BuildContext context) {
+    _popActionSheetForiOS(ctx);
+    Navigator.pushNamed(context, HelpWidget.routeName);
+  }
+
   Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var arguments = {'prefs': prefs};
+    _popActionSheetForiOS(ctx);
+    Navigator.pushNamed(context, SettingsWidget.routeName,
+        arguments: arguments);
+  }
+
+  void _popActionSheetForiOS(BuildContext ctx) {
     if (Platform.isIOS) {
       Navigator.of(ctx).pop();
     }
-    Navigator.pushNamed(context, SettingsWidget.routeName,
-        arguments: arguments);
   }
 }

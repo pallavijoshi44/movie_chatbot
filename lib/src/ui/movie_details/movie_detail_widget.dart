@@ -16,6 +16,7 @@ class MovieDetailWidget extends StatelessWidget {
     final model = routeArgs['movieDetails'];
 
     return Scaffold(
+      backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: Platform.isIOS
           ? CupertinoNavigationBar(
         leading: CupertinoButton(

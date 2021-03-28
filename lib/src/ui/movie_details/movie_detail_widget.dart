@@ -38,7 +38,7 @@ class MovieDetailWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MovieThumbnailDetail(url: model.videoUrl, thumbNail: model.videoThumbnail),
+            MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
             ...model.providers.map((provider) =>  MovieProvider(
                   title: provider.title,
                   logos: provider.logos,

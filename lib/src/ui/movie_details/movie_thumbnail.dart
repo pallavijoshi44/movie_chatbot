@@ -5,11 +5,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'thumbnail_view.dart';
 
 
-class MovieThumbnailDetail extends StatelessWidget {
+class MovieThumbnail extends StatelessWidget {
   final String url;
   final String thumbNail;
 
-  const MovieThumbnailDetail({Key key, this.url, this.thumbNail}) : super(key: key);
+  const MovieThumbnail({Key key, this.url, this.thumbNail}) : super(key: key);
 
   _launchURL() async {
     if (await canLaunch(url)) {

@@ -17,7 +17,7 @@ class ThumbnailCard extends StatelessWidget {
     this.padding,
     this.onPressed,
     this.rippleBrightness = Brightness.light,
-    this.borderRadiusValue = 8.0,
+    this.borderRadiusValue = 0.0,
     this.backgroundColor = Colors.transparent,
     this.backgroundGradient, 
     this.shadow = Shadow.normal,
@@ -27,14 +27,8 @@ class ThumbnailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      margin: EdgeInsets.only(bottom: 10.0),
       duration: Duration(milliseconds: 350),
-      decoration: BoxDecoration(
-          color: backgroundColor,
-          gradient: backgroundGradient ?? null,
-          borderRadius: BorderRadius.circular(borderRadiusValue),
-          boxShadow: _getShadows(),
-          border: boxBorder,
-      ),
       // clip corners
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadiusValue),

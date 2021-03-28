@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
+import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,6 +99,11 @@ class _ChatBotState extends State<ChatBot> {
           case AboutAppWidget.routeName:
             {
               builder = (context) => AboutAppWidget();
+            }
+            break;
+          case MovieDetailWidget.routeName:
+            {
+              builder = (context) => MovieDetailWidget();
             }
             break;
         }

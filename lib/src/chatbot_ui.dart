@@ -17,7 +17,8 @@ import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
-import 'package:flutter_app/src/ui/movie_thumbnail.dart';
+import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
+import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
@@ -190,7 +191,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _disableKeyboardForAndroid(BuildContext context) {
-     if (Platform.isAndroid)
+    if (Platform.isAndroid)
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
@@ -224,7 +225,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       if (Platform.isIOS) {
         var isGpsEnabled = await Geolocator.isLocationServiceEnabled();
         if (!isGpsEnabled) {
-          _checkLocationServicesForIOS(isGpsEnabled,prefs);
+          _checkLocationServicesForIOS(isGpsEnabled, prefs);
         } else {
           await _handleCountryCode(_countryCode, movieId);
         }
@@ -235,7 +236,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future _handleCountryCode(String _countryCode, String movieId) async {
-        try {
+    try {
       var currentPosition = await Geolocator.getCurrentPosition();
       var placeMarks = await placemarkFromCoordinates(
           currentPosition.latitude, currentPosition.longitude);
@@ -251,33 +252,36 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  _checkLocationServicesForIOS(bool isGpsEnabled, SharedPreferences prefs) async {
-        showDialog(
-          context: context,
-          builder: (BuildContext ctx) {
-            return CupertinoAlertDialog(
-              title: Text("Turn on Location Services to allow Mobo to recommend movies in your location"),
-              actions: <Widget>[
-                CupertinoButton(
-                  child: Text('Go to Phone Settings'),
-                  onPressed: () async {
-                    Geolocator.openLocationSettings();
-                    Navigator.of(ctx, rootNavigator: true).pop();
-                  },
-                ),
-                CupertinoButton(
-                  child: Text('Change location from app'),
-                  onPressed: () async {
-                    _showSettingsScreen(ctx, context, prefs);
-                  },
-                ),
-              ],
-            );
-          },
+  _checkLocationServicesForIOS(
+      bool isGpsEnabled, SharedPreferences prefs) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return CupertinoAlertDialog(
+          title: Text(
+              "Turn on Location Services to allow Mobo to recommend movies in your location"),
+          actions: <Widget>[
+            CupertinoButton(
+              child: Text('Go to Phone Settings'),
+              onPressed: () async {
+                Geolocator.openLocationSettings();
+                Navigator.of(ctx, rootNavigator: true).pop();
+              },
+            ),
+            CupertinoButton(
+              child: Text('Change location from app'),
+              onPressed: () async {
+                _showSettingsScreen(ctx, context, prefs);
+              },
+            ),
+          ],
         );
-
+      },
+    );
   }
-  Future _showSettingsScreen(BuildContext ctx, BuildContext context, SharedPreferences prefs) async {
+
+  Future _showSettingsScreen(
+      BuildContext ctx, BuildContext context, SharedPreferences prefs) async {
     var arguments = {'prefs': prefs};
     Navigator.of(ctx).pop();
     Navigator.pushNamed(context, SettingsWidget.routeName,
@@ -391,8 +395,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         setState(() {
           _doNotShowTyping = true;
           var chatModel = new TipsModel(
-              type: MessageType.TIPS_MESSAGE,
-              text: response.getChatMessage());
+              type: MessageType.TIPS_MESSAGE, text: response.getChatMessage());
           _messages.insert(0, chatModel);
         });
         _stopAllTimers();
@@ -542,6 +545,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     new MovieProvidersAndVideoModel(movieDetails, videos);
                 setState(() {
                   _doNotShowTyping = true;
+                  _handleNewUIForMovieDetails(movieProviders);
+
                   if (movieProviders.title != null &&
                       movieProviders.title != "") {
                     _messages.insert(
@@ -627,5 +632,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     _stopAllTimers();
     super.dispose();
+  }
+
+  void _handleNewUIForMovieDetails(MovieProvidersAndVideoModel movieProviders) {
+    var arguments = {'movieDetails': movieProviders};
+
+    Navigator.pushNamed(context, MovieDetailWidget.routeName,
+        arguments: arguments);
   }
 }

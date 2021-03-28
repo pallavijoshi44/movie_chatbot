@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'thumbnail_card.dart';
 
+
 class ThumbnailView extends StatefulWidget {
   const ThumbnailView({
     Key key,

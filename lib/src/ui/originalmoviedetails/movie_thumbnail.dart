@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'thumbnail_view.dart';
 
+
 class MovieThumbnail extends StatelessWidget {
   final String url;
   final String thumbNail;

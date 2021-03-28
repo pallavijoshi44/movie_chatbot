@@ -547,35 +547,36 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   _doNotShowTyping = true;
                   _handleNewUIForMovieDetails(movieProviders);
 
-                  if (movieProviders.title != null &&
-                      movieProviders.title != "") {
-                    _messages.insert(
-                        0,
-                        new MovieJustWatchModel(
-                            type: MessageType.MOVIE_JUST_WATCH,
-                            title: movieProviders.title));
-                  }
-                  if (movieProviders.providers != null &&
-                      movieProviders.providers.length > 0) {
-                    movieProviders.providers.forEach((provider) {
-                      _messages.insert(
-                          0,
-                          new MovieProviderModel(
-                              text: provider.title,
-                              type: MessageType.MOVIE_PROVIDER,
-                              logos: provider.logos));
-                    });
-                  }
-                  if (movieProviders.videoUrl != null) {
-                    _messages.insert(
-                        0,
-                        new MovieTrailerModel(
-                          url: movieProviders.videoUrl,
-                          thumbNail: movieProviders.videoThumbnail,
-                          type: MessageType.MOVIE_TRAILER,
-                        ));
-                  }
-                });
+                  // if (movieProviders.title != null &&
+                  //     movieProviders.title != "") {
+                  //   _messages.insert(
+                  //       0,
+                  //       new MovieJustWatchModel(
+                  //           type: MessageType.MOVIE_JUST_WATCH,
+                  //           title: movieProviders.title));
+                  // }
+                  // if (movieProviders.providers != null &&
+                  //     movieProviders.providers.length > 0) {
+                  //   movieProviders.providers.forEach((provider) {
+                  //     _messages.insert(
+                  //         0,
+                  //         new MovieProviderModel(
+                  //             text: provider.title,
+                  //             type: MessageType.MOVIE_PROVIDER,
+                  //             logos: provider.logos));
+                  //   });
+                  // }
+                  // if (movieProviders.videoUrl != null) {
+                  //   _messages.insert(
+                  //       0,
+                  //       new MovieTrailerModel(
+                  //         url: movieProviders.videoUrl,
+                  //         thumbNail: movieProviders.videoThumbnail,
+                  //         type: MessageType.MOVIE_TRAILER,
+                  //       ));
+                  // }
+                }
+                );
               } else {
                 _scrollToBottom();
                 setState(() {

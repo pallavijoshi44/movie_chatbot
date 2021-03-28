@@ -34,15 +34,17 @@ class MovieDetailWidget extends StatelessWidget {
           : AppBar(
         title: Text("MOVIE_DETAILS"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          MovieThumbnailDetail(url: model.videoUrl, thumbNail: model.videoThumbnail),
-          ...model.providers.map((provider) =>  MovieProvider(
-                title: provider.title,
-                logos: provider.logos,
-              )).toList(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            MovieThumbnailDetail(url: model.videoUrl, thumbNail: model.videoThumbnail),
+            ...model.providers.map((provider) =>  MovieProvider(
+                  title: provider.title,
+                  logos: provider.logos,
+                )).toList(),
+          ],
+        ),
       ),
     );
   }

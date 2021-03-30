@@ -21,34 +21,57 @@ class MovieDetailWidget extends StatelessWidget {
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: Platform.isIOS
           ? CupertinoNavigationBar(
-        leading: CupertinoButton(
-          child: Text("Back",
-              textScaleFactor: 1.0,
-              style:
-              CupertinoTheme.of(context).textTheme.actionTextStyle),
-          padding: EdgeInsets.zero,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        middle: Text("MOVIE_DETAILS",
-            style:
-            CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-      )
+              leading: CupertinoButton(
+                child: Text("Back",
+                    textScaleFactor: 1.0,
+                    style:
+                        CupertinoTheme.of(context).textTheme.actionTextStyle),
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              middle: Text("MOVIE_DETAILS",
+                  style:
+                      CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+            )
           : AppBar(
-        title: Text("MOVIE_DETAILS"),
+              title: Text("MOVIE_DETAILS"),
+            ),
+      body: Container(
+        margin: EdgeInsets.only(bottom: 15),
+        padding: EdgeInsets.only(bottom: 15),
+        child: Platform.isIOS
+            ? CupertinoScrollbar(
+                isAlwaysShown: true,
+                radiusWhileDragging: Radius.circular(15),
+                thicknessWhileDragging: 2,
+                child: _buildSingleChildScrollView(model),
+              )
+            : Scrollbar(
+                child: _buildSingleChildScrollView(model),
+                isAlwaysShown: true,
+                radius: Radius.circular(15),
+                thickness: 2,
+              ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
-            MovieInformationWidget(),
-            MovieDescriptionWidget(),
-            ...model.providers.map((provider) =>  MovieProvider(
-                  title: provider.title,
-                  logos: provider.logos,
-                )).toList(),
-          ],
-        ),
+    );
+  }
+
+  SingleChildScrollView _buildSingleChildScrollView(
+      MovieProvidersAndVideoModel model) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
+          MovieInformationWidget(),
+          MovieDescriptionWidget(),
+          ...model.providers
+              .map((provider) => MovieProvider(
+                    title: provider.title,
+                    logos: provider.logos,
+                  ))
+              .toList(),
+        ],
       ),
     );
   }

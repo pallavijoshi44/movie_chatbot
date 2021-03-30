@@ -16,8 +16,7 @@ class MovieProvider extends StatelessWidget {
       Container(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 60),
-          margin: const EdgeInsets.only(top: 15.0),
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(title,

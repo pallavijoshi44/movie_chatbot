@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
+import 'movie_description.dart';
 import 'movie_provider.dart';
 import 'movie_thumbnail.dart';
 
@@ -41,6 +42,7 @@ class MovieDetailWidget extends StatelessWidget {
           children: [
             MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
             MovieInformationWidget(),
+            MovieDescriptionWidget(),
             ...model.providers.map((provider) =>  MovieProvider(
                   title: provider.title,
                   logos: provider.logos,

@@ -15,7 +15,7 @@ class MovieInformationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -35,7 +35,7 @@ class MovieInformationWidget extends StatelessWidget {
           ),
           Flexible(
             child: Container(
-              margin: EdgeInsets.only(left: 10.0, right: 10.0),
+              margin: EdgeInsets.only(left: 20.0, right: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

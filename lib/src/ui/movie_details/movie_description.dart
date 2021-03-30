@@ -20,12 +20,12 @@ class MovieDescriptionWidget extends StatelessWidget {
           Text("About Movie",
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                  : Theme.of(context).textTheme.headline),
+                  : Theme.of(context).textTheme.title),
           SizedBox(height: 5,),
           Text("This is the description of the movie",
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-                  : Theme.of(context).textTheme.caption)
+                  : Theme.of(context).textTheme.headline)
         ],
       ),
     );

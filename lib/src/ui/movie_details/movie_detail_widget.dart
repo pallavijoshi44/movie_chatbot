@@ -34,7 +34,7 @@ class MovieDetailWidget extends StatelessWidget {
                       CupertinoTheme.of(context).textTheme.navTitleTextStyle),
             )
           : AppBar(
-              title: Text("MOVIE_DETAILS"),
+              title: Text("MOVIE_DETAILS", style:  Theme.of(context).appBarTheme.textTheme.title),
             ),
       body: Container(
         margin: EdgeInsets.only(bottom: 15),
@@ -49,8 +49,9 @@ class MovieDetailWidget extends StatelessWidget {
             : Scrollbar(
                 child: _buildSingleChildScrollView(model),
                 isAlwaysShown: true,
+                showTrackOnHover: true,
                 radius: Radius.circular(15),
-                thickness: 2,
+                thickness: 5,
               ),
       ),
     );

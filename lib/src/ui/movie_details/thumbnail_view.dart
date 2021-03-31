@@ -80,7 +80,7 @@ class _ThumbnailViewState extends State<ThumbnailView>
                           ? Icon(CupertinoIcons.play,
                               color: Colors.white, size: 32)
                           : Icon(Icons.play_arrow,
-                              color: Colors.grey[800], size: 32),
+                              color: Colors.white, size: 32),
                     ),
                   ),
           ],

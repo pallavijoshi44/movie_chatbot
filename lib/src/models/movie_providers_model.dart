@@ -2,15 +2,23 @@ import 'package:flutter_app/src/models/message_model.dart';
 
 class MovieProvidersAndVideoModel extends MessageModel {
   String title;
+  String countryName;
+  String imagePath;
+  String releaseYear;
+  String rating;
+  String description;
   List<dynamic> providers = [];
-  String urlTitle;
-  String urlLink;
   String videoUrl;
   String videoThumbnail;
 
   MovieProvidersAndVideoModel(Map item, Map videos) {
     if (item != null && item.isNotEmpty) {
       this.title = item['title'];
+      this.countryName = item['countryName'];
+      this.imagePath = item['imagePath'];
+      this.releaseYear = item['releaseYear'];
+      this.rating = item['rating'];
+      this.description = item['description'];
       List<dynamic> providers = item['providers'];
       if (providers != null && providers.length > 0) {
         providers.forEach((element) {
@@ -18,8 +26,6 @@ class MovieProvidersAndVideoModel extends MessageModel {
           this.providers.add(provider);
         });
       }
-      this.urlTitle = item['urlTitle'];
-      this.urlLink = item['urlLink'];
     }
     if (videos != null && videos.isNotEmpty) {
       this.videoUrl = videos['videoUrl'];

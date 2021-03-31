@@ -64,8 +64,8 @@ class MovieDetailWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
-          MovieInformationWidget(),
-          MovieDescriptionWidget(),
+          MovieInformationWidget(title: model.title, image: model.imagePath, year: model.releaseYear, rating: model.rating,),
+          MovieDescriptionWidget(title: model.title, description: model.description,),
           ...model.providers
               .map((provider) => MovieProvider(
                     title: provider.title,
@@ -77,3 +77,9 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 }
+String title;
+List<dynamic> providers = [];
+String urlTitle;
+String urlLink;
+String videoUrl;
+String videoThumbnail;

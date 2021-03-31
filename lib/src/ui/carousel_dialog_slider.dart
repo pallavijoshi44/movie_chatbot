@@ -6,6 +6,7 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
@@ -25,91 +26,66 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 10.0),
-      child: CarouselSlider(
-        options: CarouselOptions(
-            autoPlay: false,
-            aspectRatio: 0.9,
-            enlargeCenterPage: false,
-            enableInfiniteScroll: false,
-            enlargeStrategy: CenterPageEnlargeStrategy.height),
-        items: widget.carouselSelect.items
-            .map((item) => Material(
-                  child: InkWell(
-                    splashColor: Platform.isIOS
-                        ? CupertinoTheme.of(context).primaryContrastingColor
-                        : Theme.of(context).primaryColorLight,
-                    highlightColor: Colors.green,
-                    onTap: _enabled
-                        ? () {
-                            return _handleTap(item);
-                          }
-                        : null,
-                    child: Card(
-                              elevation: 5,
-                              margin: EdgeInsets.all(5),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '${item.title}',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: Platform.isIOS ? 16.0 : 20.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Flexible(
-                                      flex: 2,
-                                      child: item.image.imageUri
-                                              .contains('null')
-                                          ? Image.asset(
-                                              'assets/images/placeholder.jpg',
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.network(item.image.imageUri,
-                                              fit: BoxFit.contain),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Flexible(
-                                      child: LayoutBuilder(
-                                        builder: (ctx, constraints) =>
-                                            SingleChildScrollView(
-                                          child: ExpandableText(
-                                            '${item.description ?? ""}',
-                                            expandText: EXPAND_TEXT,
-                                            collapseText: COLLAPSE_TEXT,
-                                            maxLines: constraints.maxHeight ~/ 18,
-                                            linkColor: Colors.blue,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize:
-                                                  Platform.isIOS ? 14.0 : 15.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
+        height: 400.0,
+        margin: EdgeInsets.only(top: 20),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: widget.carouselSelect.items
+              .map((item) => Material(
+                    color: Color.fromRGBO(249, 248, 235, 1),
+                    child: InkWell(
+                      splashColor: Platform.isIOS
+                          ? CupertinoTheme.of(context).primaryContrastingColor
+                          : Theme.of(context).primaryColorLight,
+                      highlightColor: Colors.green,
+                      onTap: _enabled
+                          ? () {
+                              return _handleTap(item);
+                            }
+                          : null,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        elevation: 5,
+                        child: Container(
+                          margin: EdgeInsets.all(20),
+                          width: 200,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: item.image.imageUri == null
+                                    ? Image.asset(
+                                        'assets/images/placeholder.jpg',
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(item.image.imageUri,
+                                        fit: BoxFit.fitHeight),
+                              ),
+                              Container(
+                                width: 150,
+                                margin: EdgeInsets.only(top: 10),
+                                child: Text(
+                                  '${item.title}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.0,
+                                    fontFamily: 'OpenSans',
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                  ),
-                ))
-            .toList(),
-      ),
-    );
+                              RatingWidget(
+                                  rating: item.description,
+                                  centerAlignment: true),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ))
+              .toList(),
+        ));
   }
 
   _handleTap(ItemCarousel item) {
@@ -128,3 +104,57 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
     super.dispose();
   }
 }
+/*
+Material(
+                  child: InkWell(
+                    splashColor: Platform.isIOS
+                        ? CupertinoTheme.of(context).primaryContrastingColor
+                        : Theme.of(context).primaryColorLight,
+                    highlightColor: Colors.green,
+                    onTap: _enabled
+                        ? () {
+                            return _handleTap(item);
+                          }
+                        : null,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            child: item.image.imageUri == null
+                                ? Image.asset(
+                                    'assets/images/placeholder.jpg',
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(item.image.imageUri,
+                                    fit: BoxFit.cover),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text(
+                          '${item.title}',
+                          textAlign: TextAlign.center,
+                          softWrap: true,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontFamily: 'OpenSans',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        RatingWidget(
+                            rating: item.description, centerAlignment: false),
+                      ],
+                    ),
+                  ),
+                ))
+            .toList(),
+ */

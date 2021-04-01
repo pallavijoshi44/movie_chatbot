@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
@@ -45,36 +46,46 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                             borderRadius: BorderRadius.circular(15)),
                         elevation: 5,
                         child: Container(
-                          margin: EdgeInsets.all(20),
-                          width: 200,
+                          width: 250,
                           child: Column(
                             children: [
-                              Expanded(
+                              Container(
+                                margin: EdgeInsets.all(15),
+                                height: 300,
+                                width: 200,
                                 child: item.image.imageUri == null
                                     ? Image.asset(
                                         'assets/images/placeholder.jpg',
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fitHeight,
                                       )
                                     : Image.network(item.image.imageUri,
                                         fit: BoxFit.fitHeight),
                               ),
-                              Container(
-                                width: 150,
-                                margin: EdgeInsets.only(top: 10),
-                                child: Text(
-                                  '${item.title}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.0,
-                                    fontFamily: 'OpenSans',
-                                    fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 5, right: 5),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '${item.title}',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14.0,
+                                          fontFamily: 'OpenSans',
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      RatingWidget(
+                                          rating: item.description,
+                                          centerAlignment: true),
+                                    ],
                                   ),
                                 ),
                               ),
-                              RatingWidget(
-                                  rating: item.description,
-                                  centerAlignment: true),
                             ],
                           ),
                         ),

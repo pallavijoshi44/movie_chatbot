@@ -291,7 +291,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       String movieId, String _countryCode) async {
     var parameters =
         "'parameters' : { 'id':  $movieId, 'country_code': '$_countryCode'}";
-    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, false);
+    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, true);
   }
 
   void _stopAllTimers() {
@@ -529,19 +529,17 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 _messages.insert(0, multiSelectModel);
               });
             } else {
-              if (response.getWebHookPayload() != null &&
-                  response.getWebHookPayload().containsKey('detail')) {
-                setState(() {
-                  var unreadMessageModel =
-                      new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
-                  _messages.insert(0, unreadMessageModel);
-                });
+              if (response.getWebHookPayload() != null) {
+                // setState(() {
+                //   var unreadMessageModel =
+                //       new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
+                //   _messages.insert(0, unreadMessageModel);
+                // });
 
-                var movieDetails = response.getWebHookPayload()['detail'];
-                var videos = response.getWebHookPayload()['videos'];
+               // var movieDetails = response.getWebHookPayload()['detail'];
+               // var videos = response.getWebHookPayload()['videos'];
 
-                MovieProvidersAndVideoModel movieProviders =
-                    new MovieProvidersAndVideoModel(movieDetails, videos);
+                MovieProvidersAndVideoModel movieProviders = new MovieProvidersAndVideoModel(response.getWebHookPayload());
                 setState(() {
                   _doNotShowTyping = true;
                   _handleNewUIForMovieDetails(movieProviders);

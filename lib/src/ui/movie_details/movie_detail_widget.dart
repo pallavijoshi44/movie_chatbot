@@ -29,12 +29,13 @@ class MovieDetailWidget extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              middle: Text("MOVIE_DETAILS",
+              middle: Text(model.title,
                   style:
                       CupertinoTheme.of(context).textTheme.navTitleTextStyle),
             )
           : AppBar(
-              title: Text("MOVIE_DETAILS", style:  Theme.of(context).appBarTheme.textTheme.title),
+              title: Text(model.title,
+                  style: Theme.of(context).appBarTheme.textTheme.title),
             ),
       body: Container(
         margin: EdgeInsets.only(bottom: 15),
@@ -64,19 +65,29 @@ class MovieDetailWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MovieThumbnail(url: model.videoUrl, thumbNail: model.videoThumbnail),
-          MovieInformationWidget(title: model.title, image: model.imagePath, year: model.releaseYear, rating: model.rating,),
-          MovieDescriptionWidget(title: model.title, description: model.description,),
-          ...model.providers
-              .map((provider) => MovieProvider(
-                    title: provider.title,
-                    logos: provider.logos,
-                  ))
-              .toList(),
+          MovieInformationWidget(
+              title: model.title,
+              image: model.imagePath,
+              year: model.releaseYear,
+              rating: model.rating,
+              duration: model.duration),
+          MovieDescriptionWidget(
+            title: model.title,
+            description: model.description,
+          ),
+          if (model.providers != null)
+            ...model.providers
+                .map((provider) => MovieProvider(
+                      title: provider.title,
+                      logos: provider.logos,
+                    ))
+                .toList(),
         ],
       ),
     );
   }
 }
+
 String title;
 List<dynamic> providers = [];
 String urlTitle;

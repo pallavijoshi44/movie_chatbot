@@ -6,12 +6,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 
 class MovieInformationWidget extends StatelessWidget {
-  MovieInformationWidget({this.title, this.image, this.year, this.rating});
+  MovieInformationWidget({this.title, this.image, this.year, this.rating, this.duration});
 
   final String title;
   final String image;
   final String year;
   final String rating;
+  final String duration;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class MovieInformationWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Movie Title",
+                  Text(this.title,
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'OpenSans',
@@ -49,24 +50,32 @@ class MovieInformationWidget extends StatelessWidget {
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text("2018",
-                      style: TextStyle(
-                          color: Colors.grey,
-                          fontFamily: 'OpenSans',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                  Visibility(
+                    visible: shouldShow(this.year),
+                    child: Text(this.year,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily: 'OpenSans',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                  ),
                   SizedBox(
                     height: 5.0,
                   ),
-                  RatingWidget(rating: this.rating),
+                  Visibility(
+                      visible: shouldShow(this.rating),
+                      child: RatingWidget(rating: this.rating, centerAlignment: false,)),
                   SizedBox(
                     height: 5.0,
                   ),
-                  Text("2hr 30min",
-                      style: TextStyle(
-                          color: Colors.grey[900],
-                          fontFamily: 'OpenSans',
-                          fontSize: 16)),
+                  Visibility(
+                    visible: shouldShow(this.duration),
+                    child: Text(this.duration,
+                        style: TextStyle(
+                            color: Colors.grey[900],
+                            fontFamily: 'OpenSans',
+                            fontSize: 16)),
+                  ),
                 ],
               ),
             ),
@@ -75,4 +84,6 @@ class MovieInformationWidget extends StatelessWidget {
       ),
     );
   }
+
+  bool shouldShow(String item) =>  item != null || item != "";
 }

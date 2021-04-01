@@ -10,15 +10,17 @@ class MovieProvidersAndVideoModel extends MessageModel {
   List<dynamic> providers = [];
   String videoUrl;
   String videoThumbnail;
+  String duration;
 
-  MovieProvidersAndVideoModel(Map item, Map videos) {
+  MovieProvidersAndVideoModel(Map item) {
     if (item != null && item.isNotEmpty) {
       this.title = item['title'];
       this.countryName = item['countryName'];
       this.imagePath = item['imagePath'];
-      this.releaseYear = item['releaseYear'];
-      this.rating = item['rating'];
+      this.releaseYear = item['releaseYear'] != null ? item['releaseYear'].toString() : "";
+      this.rating = item['rating'] != null ? item['rating'].toString() : "";
       this.description = item['description'];
+      this.duration = item['duration'];
       List<dynamic> providers = item['providers'];
       if (providers != null && providers.length > 0) {
         providers.forEach((element) {
@@ -27,6 +29,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
         });
       }
     }
+    var videos = item['videos'];
     if (videos != null && videos.isNotEmpty) {
       this.videoUrl = videos['videoUrl'];
       this.videoThumbnail = videos['videoThumbnail'];

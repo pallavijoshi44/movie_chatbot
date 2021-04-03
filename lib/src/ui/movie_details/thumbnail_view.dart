@@ -62,7 +62,7 @@ class _ThumbnailViewState extends State<ThumbnailView>
                         if (loadingProgress == null) return child;
                         return Center(
                           child: Container(
-                            height: 150,
+                            height: 100,
                             color: Color(0xFFEEEEEE),
                           ),
                         );

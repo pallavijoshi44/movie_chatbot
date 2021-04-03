@@ -21,7 +21,7 @@ class TextComposer extends StatelessWidget {
             data: new IconThemeData(color: Theme.of(context).accentColor),
             child: new Container(
               decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: new Row(
                 children: <Widget>[
                   new Flexible(

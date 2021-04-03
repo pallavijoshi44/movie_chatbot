@@ -24,7 +24,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 400.0,
+        height: 415.0,
         margin: EdgeInsets.only(top: 20),
         child: ListView(
           scrollDirection: Axis.horizontal,
@@ -69,7 +69,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                     children: [
                                       Text(
                                         '${item.title}',
-                                        maxLines: 1,
+                                        maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         softWrap: true,
                                         textAlign: TextAlign.center,

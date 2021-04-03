@@ -29,13 +29,19 @@ class MovieDetailWidget extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 onPressed: () => Navigator.of(context).pop(),
               ),
-              middle: Text(model.title,
-                  style:
-                      CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+              middle: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(model.title,
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+              ),
             )
           : AppBar(
-              title: Text(model.title,
-                  style: Theme.of(context).appBarTheme.textTheme.title),
+              title: FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(model.title,
+                    style: Theme.of(context).appBarTheme.textTheme.title),
+              ),
             ),
       body: Container(
         margin: EdgeInsets.only(bottom: 15),

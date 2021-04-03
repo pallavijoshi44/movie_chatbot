@@ -51,6 +51,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                             children: [
                               Container(
                                 margin: EdgeInsets.all(15),
+                                padding: EdgeInsets.only(top: 10),
                                 height: 300,
                                 width: 200,
                                 child: item.image.imageUri == null
@@ -75,7 +76,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontSize: 14.0,
-                                          fontFamily: 'OpenSans',
+                                          fontFamily: 'QuickSand',
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

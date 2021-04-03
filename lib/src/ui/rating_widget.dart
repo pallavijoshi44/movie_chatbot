@@ -17,7 +17,7 @@ class RatingWidget extends StatelessWidget {
       children: [
         Text(this.rating,
             style: TextStyle(
-                color: Colors.grey[900], fontFamily: 'OpenSans', fontSize: 16)),
+                color: Colors.grey[600], fontFamily: 'QuickSand', fontSize: 14)),
         SizedBox(
           width: 5.0,
         ),

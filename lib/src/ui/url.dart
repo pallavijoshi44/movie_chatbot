@@ -51,7 +51,7 @@ class Url extends StatelessWidget {
                       TextSpan(
                         text: "[Click here]",
                         style: TextStyle(
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'QuickSand',
                             fontSize: 14,
                             color: Colors.blue),
                         recognizer: new TapGestureRecognizer()

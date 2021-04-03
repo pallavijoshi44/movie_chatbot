@@ -101,7 +101,7 @@ class _ThumbnailViewState extends State<ThumbnailView>
           child: Text("Watch Trailer",
               softWrap: false,
               overflow: TextOverflow.fade,
-              style: TextStyle(fontFamily: 'OpenSans', fontSize: 16)),
+              style: TextStyle(fontFamily: 'QuickSand', fontSize: 16)),
         ));
   }
 

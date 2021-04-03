@@ -23,16 +23,17 @@ class MovieInformationWidget extends StatelessWidget {
         children: [
           Card(
             elevation: 5,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             child: image == null
                 ? Image.asset(
                     'assets/images/placeholder.jpg',
-                    fit: BoxFit.contain,
-                    height: 200,
+                    fit: BoxFit.cover,
+                    height: 180,
                   )
                 : Image.network(
                     image,
-                    fit: BoxFit.contain,
-                    height: 200,
+                    fit: BoxFit.cover,
+                    height: 180,
                   ),
           ),
           Flexible(
@@ -44,8 +45,8 @@ class MovieInformationWidget extends StatelessWidget {
                   Text(this.title,
                       style: TextStyle(
                           color: Colors.black,
-                          fontFamily: 'OpenSans',
-                          fontSize: 25,
+                          fontFamily: 'QuickSand',
+                          fontSize: 20,
                           fontWeight: FontWeight.bold)),
                   SizedBox(
                     height: 5.0,
@@ -55,7 +56,7 @@ class MovieInformationWidget extends StatelessWidget {
                     child: Text(this.year,
                         style: TextStyle(
                             color: Colors.grey,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'QuickSand',
                             fontSize: 16,
                             fontWeight: FontWeight.bold)),
                   ),
@@ -73,8 +74,8 @@ class MovieInformationWidget extends StatelessWidget {
                     child: Text(this.duration,
                         style: TextStyle(
                             color: Colors.grey[900],
-                            fontFamily: 'OpenSans',
-                            fontSize: 16)),
+                            fontFamily: 'QuickSand',
+                            fontSize: 14)),
                   ),
                 ],
               ),

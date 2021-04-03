@@ -65,43 +65,6 @@ class ThumbnailCard extends StatelessWidget {
     );
   }
 
-  List<BoxShadow> _getShadows(){
-
-    switch(shadow){
-      case Shadow.normal:
-        return [
-          BoxShadow(
-            offset: Offset(0, 5),
-            blurRadius: 15,
-            color: Colors.black12,
-          )
-        ];
-        break;
-      case Shadow.large:
-        return [
-          BoxShadow(
-            offset: Offset(0, 15),
-            blurRadius: 35,
-            color: Color(0x12000000),
-          )
-        ];
-        break;
-      case Shadow.soft:
-        return [
-          BoxShadow(
-            offset: Offset(0, 5),
-            blurRadius: 15,
-            color: Color(0x12000000),
-          )
-        ];
-        break;
-      case Shadow.none:
-        return [];
-        break;
-    }
-
-    return [];
-  }
 }
 
 enum Shadow {

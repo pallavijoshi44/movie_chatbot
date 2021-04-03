@@ -30,7 +30,7 @@ class QuickReply extends StatelessWidget {
                       disabledBorderColor: Colors.grey[600],
                       disabledTextColor: Colors.grey[900],
                       child: Text(quickReply,
-                          style: TextStyle(fontFamily: 'OpenSans', fontSize: 14)),
+                          style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
                       borderSide: BorderSide(color: Colors.lightGreen[900]),
                       textColor: Colors.lightGreen[900],
                       shape: RoundedRectangleBorder(

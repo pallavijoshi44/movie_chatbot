@@ -50,12 +50,12 @@ class MovieJustWatch extends StatelessWidget {
                           TextSpan(
                               text: JUST_WATCH_TEXT,
                               style: Platform.isIOS
-                                  ? TextStyle(color: Colors.black,fontFamily: 'OpenSans', fontSize: 14)
+                                  ? TextStyle(color: Colors.black,fontFamily: 'QuickSand', fontSize: 14)
                                   : Theme.of(context).textTheme.headline),
                           TextSpan(
                             text: "JustWatch",
                             style: TextStyle(
-                                fontFamily: 'OpenSans',
+                                fontFamily: 'QuickSand',
                                 fontSize: 14,
                                 color: Colors.blue),
                             recognizer: new TapGestureRecognizer()

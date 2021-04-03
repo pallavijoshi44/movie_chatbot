@@ -77,7 +77,7 @@ class HelpContent extends StatelessWidget {
           data,
           textAlign: TextAlign.justify,
           style: TextStyle(
-            fontFamily: 'OpenSans',
+            fontFamily: 'QuickSand',
             fontSize: Platform.isIOS ? 14 : 16,
             color: Color.fromRGBO(13, 37, 63, 1),
           ),

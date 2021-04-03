@@ -152,7 +152,7 @@ Material(
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14.0,
-                            fontFamily: 'OpenSans',
+                            fontFamily: 'QuickSand',
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -23,7 +23,7 @@ class Tips extends StatelessWidget {
                 style: Platform.isIOS
                     ? TextStyle(
                         color: Colors.black,
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'QuickSand',
                         fontSize: 14)
                     : Theme.of(context).textTheme.headline),
             backgroundColor: Colors.red[200],

@@ -25,13 +25,11 @@ class MovieThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ThumbnailView(
-          onPressed: (url) {
-            _launchURL();
-          },
-          url: url,
-          thumbNail: thumbNail),
-    );
+    return ThumbnailView(
+        onPressed: (url) {
+          _launchURL();
+        },
+        url: url,
+        thumbNail: thumbNail);
   }
 }

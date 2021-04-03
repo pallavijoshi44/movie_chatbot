@@ -24,7 +24,7 @@ class Url extends StatelessWidget {
           TextSpan(
             text: "Just Watch",
             style: TextStyle(
-                fontFamily: 'OpenSans', fontSize: 14, color: Colors.blue),
+                fontFamily: 'QuickSand', fontSize: 14, color: Colors.blue),
             recognizer: new TapGestureRecognizer()
               ..onTap = () {
                 _openWebView(context, url);

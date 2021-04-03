@@ -18,14 +18,14 @@ final materialThemeData = ThemeData(
     errorColor: Colors.red,
     textTheme: ThemeData.light().textTheme.copyWith(
         title: TextStyle(
-            fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
-        headline: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
+            fontFamily: 'QuickSand', fontSize: 16, fontWeight: FontWeight.bold),
+        headline: TextStyle(fontFamily: 'QuickSand', fontSize: 14),
         button: TextStyle(color: Colors.white)),
     appBarTheme: AppBarTheme(
         textTheme: ThemeData.light().textTheme.copyWith(
               title: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'OpenSans',
+                  fontFamily: 'QuickSand',
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             )));
@@ -38,14 +38,14 @@ final cupertinoTheme = CupertinoThemeData(
     textTheme: CupertinoTextThemeData(
         navLargeTitleTextStyle: TextStyle(
             color: Colors.white,
-            fontFamily: 'OpenSans',
+            fontFamily: 'QuickSand',
             fontSize: 20,
             fontWeight: FontWeight.bold),
         navTitleTextStyle: TextStyle(
-            fontFamily: 'OpenSans', fontSize: 16, fontWeight: FontWeight.bold),
-        tabLabelTextStyle: TextStyle(fontFamily: 'OpenSans', fontSize: 14),
+            fontFamily: 'QuickSand', fontSize: 16, fontWeight: FontWeight.bold),
+        tabLabelTextStyle: TextStyle(fontFamily: 'QuickSand', fontSize: 14),
         actionTextStyle: TextStyle(
-            color: Colors.white, fontSize: 14, fontFamily: 'OpenSans')));
+            color: Colors.white, fontSize: 14, fontFamily: 'QuickSand')));
 
 void main() => runApp(ChatBot());
 

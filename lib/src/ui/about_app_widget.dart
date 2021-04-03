@@ -75,7 +75,7 @@ class Content extends StatelessWidget {
             child: Text(
               POWERED_BY_TMDB,
               style: TextStyle(
-                fontFamily: 'OpenSans',
+                fontFamily: 'QuickSand',
                 fontSize: Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
@@ -93,7 +93,7 @@ class Content extends StatelessWidget {
             child: Text(
               TMDB_CONTENT,
               style: TextStyle(
-                fontFamily: 'OpenSans',
+                fontFamily: 'QuickSand',
                 fontSize:  Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
@@ -107,7 +107,7 @@ class Content extends StatelessWidget {
             child: Text(
               POWERED_BY_JUST_WATCH,
               style: TextStyle(
-                fontFamily: 'OpenSans',
+                fontFamily: 'QuickSand',
                 fontSize:  Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),

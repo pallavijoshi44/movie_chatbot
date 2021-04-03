@@ -60,7 +60,7 @@ class TextComposer extends StatelessWidget {
                 child: CupertinoTextField.borderless(
                     style: TextStyle(
                         color: Colors.black,
-                        fontFamily: 'OpenSans',
+                        fontFamily: 'QuickSand',
                         fontSize: 15),
                     enabled: isTextFieldEnabled,
                     controller: textController,

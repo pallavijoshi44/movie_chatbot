@@ -77,10 +77,6 @@ class MovieDetailWidget extends StatelessWidget {
               year: model.releaseYear,
               rating: model.rating,
               duration: model.duration),
-          MovieDescriptionWidget(
-            title: model.title,
-            description: model.description,
-          ),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -88,6 +84,10 @@ class MovieDetailWidget extends StatelessWidget {
                       logos: provider.logos,
                     ))
                 .toList(),
+          MovieDescriptionWidget(
+            title: model.title,
+            description: model.description,
+          ),
         ],
       ),
     );

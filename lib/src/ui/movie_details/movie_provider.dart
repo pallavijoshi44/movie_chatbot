@@ -28,7 +28,6 @@ class MovieProvider extends StatelessWidget {
             ),
             Wrap(
                 runSpacing: 10.0,
-                alignment: WrapAlignment.spaceBetween,
                 direction: Axis.horizontal,
                 children: this.logos.map((logo) {
                   return Padding(

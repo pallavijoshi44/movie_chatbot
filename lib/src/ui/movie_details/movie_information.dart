@@ -17,7 +17,7 @@ class MovieInformationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+      margin: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

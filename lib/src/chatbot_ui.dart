@@ -50,7 +50,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Timer _absoluteInactivityTimer;
   bool _doNotShowTyping = false;
   int _unknownAction = 0;
-  bool _isTextFieldEnabled = true;
+  bool _isTextFieldEnabled = false;
+  bool _isLoading = false;
   int _movieSliderShownCount = 0;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
@@ -104,88 +105,104 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     return GestureDetector(
       onTap: _handleUserInteraction,
       behavior: HitTestBehavior.translucent,
-      child: Column(children: <Widget>[
-        Flexible(
-            child: ListView.builder(
-          padding: EdgeInsets.all(8.0),
-          reverse: true,
-          controller: _scrollController,
-          itemBuilder: (_, int index) {
-            var message = _messages[index];
-            if (message != null) {
-              switch (message.type) {
-                case MessageType.CHAT_MESSAGE:
-                  return ChatMessage(
-                    text: (message as ChatModel).text,
-                    type: (message as ChatModel).chatType,
-                  );
-                case MessageType.QUICK_REPLY:
-                  {
-                    _disableKeyboardForAndroid(context);
-                    return QuickReply(
-                      quickReplies: (message as ReplyModel).quickReplies,
-                      insertQuickReply:
-                          (message as ReplyModel).updateQuickReply,
-                    );
+      child: Stack(
+        children: [
+          Column(children: <Widget>[
+            Flexible(
+                child: ListView.builder(
+              padding: EdgeInsets.all(8.0),
+              reverse: true,
+              controller: _scrollController,
+              itemBuilder: (_, int index) {
+                var message = _messages[index];
+                if (message != null) {
+                  switch (message.type) {
+                    case MessageType.CHAT_MESSAGE:
+                      return ChatMessage(
+                        text: (message as ChatModel).text,
+                        type: (message as ChatModel).chatType,
+                      );
+                    case MessageType.QUICK_REPLY:
+                      {
+                        _disableKeyboardForAndroid(context);
+                        return QuickReply(
+                          quickReplies: (message as ReplyModel).quickReplies,
+                          insertQuickReply:
+                              (message as ReplyModel).updateQuickReply,
+                        );
+                      }
+                    case MessageType.MULTI_SELECT:
+                      {
+                        _disableKeyboardForAndroid(context);
+                        return MultiSelect(
+                          title: (message as MultiSelectModel).text,
+                          buttons: (message as MultiSelectModel).buttons,
+                          insertMultiSelect:
+                              (message as MultiSelectModel).updateMultiSelect,
+                          previouslySelected: _selectedGenres,
+                        );
+                      }
+                    case MessageType.CAROUSEL:
+                      {
+                        _disableKeyboardForAndroid(context);
+                        return CarouselDialogSlider(
+                            (message as CarouselModel).carouselSelect,
+                            _movieItemClicked);
+                      }
+                    case MessageType.MOVIE_PROVIDER_URL:
+                      return Url(
+                          title: (message as MovieProviderUrlModel).name,
+                          url: (message as MovieProviderUrlModel).text);
+                    case MessageType.MOVIE_PROVIDER:
+                      return MovieProvider(
+                          title: (message as MovieProviderModel).text,
+                          logos: (message as MovieProviderModel).logos);
+                    case MessageType.MOVIE_TRAILER:
+                      return MovieThumbnail(
+                          url: (message as MovieTrailerModel).url,
+                          thumbNail: (message as MovieTrailerModel).thumbNail);
+                    case MessageType.MOVIE_JUST_WATCH:
+                      return MovieJustWatch(
+                          title: (message as MovieJustWatchModel).name);
+                    case MessageType.TIPS_MESSAGE:
+                      return Tips(text: (message as TipsModel).text);
+                    case MessageType.UNREAD_MESSAGE:
+                      return UnreadMessage();
                   }
-                case MessageType.MULTI_SELECT:
-                  {
-                    _disableKeyboardForAndroid(context);
-                    return MultiSelect(
-                      title: (message as MultiSelectModel).text,
-                      buttons: (message as MultiSelectModel).buttons,
-                      insertMultiSelect:
-                          (message as MultiSelectModel).updateMultiSelect,
-                      previouslySelected: _selectedGenres,
-                    );
-                  }
-                case MessageType.CAROUSEL:
-                  {
-                    _disableKeyboardForAndroid(context);
-                    return CarouselDialogSlider(
-                        (message as CarouselModel).carouselSelect,
-                        _movieItemClicked);
-                  }
-                case MessageType.MOVIE_PROVIDER_URL:
-                  return Url(
-                      title: (message as MovieProviderUrlModel).name,
-                      url: (message as MovieProviderUrlModel).text);
-                case MessageType.MOVIE_PROVIDER:
-                  return MovieProvider(
-                      title: (message as MovieProviderModel).text,
-                      logos: (message as MovieProviderModel).logos);
-                case MessageType.MOVIE_TRAILER:
-                  return MovieThumbnail(
-                      url: (message as MovieTrailerModel).url,
-                      thumbNail: (message as MovieTrailerModel).thumbNail);
-                case MessageType.MOVIE_JUST_WATCH:
-                  return MovieJustWatch(
-                      title: (message as MovieJustWatchModel).name);
-                case MessageType.TIPS_MESSAGE:
-                  return Tips(text: (message as TipsModel).text);
-                case MessageType.UNREAD_MESSAGE:
-                  return UnreadMessage();
-              }
-            }
-            return Container();
-          },
-          itemCount: _messages.length,
-        )),
-        Visibility(
-          visible: !_doNotShowTyping,
-          child: Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.all(10.0),
-            child: Text(WAITING_MESSAGE,
-                style: Platform.isIOS
-                    ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-                    : Theme.of(context).textTheme.headline),
-          ),
-        ),
-        Divider(height: 1.0),
-        TextComposer(_textController, _textEditorChanged, _handleSubmitted,
-            _isTextFieldEnabled),
-      ]),
+                }
+                return Container();
+              },
+              itemCount: _messages.length,
+            )),
+            Visibility(
+              visible: !_doNotShowTyping,
+              child: Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.all(10.0),
+                child: Text(WAITING_MESSAGE,
+                    style: Platform.isIOS
+                        ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
+                        : Theme.of(context).textTheme.headline),
+              ),
+            ),
+            Divider(height: 1.0),
+            TextComposer(_textController, _textEditorChanged, _handleSubmitted,
+                _isTextFieldEnabled),
+          ]),
+          Center(
+            child: Container(
+              width: 40,
+              height: 40,
+              child: Visibility(
+                child: CircularProgressIndicator(
+                  backgroundColor: Colors.white,
+                ),
+                visible: _isLoading,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -215,6 +232,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> _movieItemClicked(String movieId) async {
     _stopAllTimers();
+    setState(() {
+      _isLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _countryCode = prefs.getString(COUNTRY_CODE);
 
@@ -381,6 +401,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _executeResponse(AIResponse response) {
     setState(() {
       _isTextFieldEnabled = true;
+      _isLoading = false;
       _messages.removeWhere((element) => element is UnreadMessageModel);
     });
     if (response != null) {
@@ -536,10 +557,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 //   _messages.insert(0, unreadMessageModel);
                 // });
 
-               // var movieDetails = response.getWebHookPayload()['detail'];
-               // var videos = response.getWebHookPayload()['videos'];
+                // var movieDetails = response.getWebHookPayload()['detail'];
+                // var videos = response.getWebHookPayload()['videos'];
 
-                MovieProvidersAndVideoModel movieProviders = new MovieProvidersAndVideoModel(response.getWebHookPayload());
+                MovieProvidersAndVideoModel movieProviders =
+                    new MovieProvidersAndVideoModel(
+                        response.getWebHookPayload());
                 setState(() {
                   _doNotShowTyping = true;
                   _handleNewUIForMovieDetails(movieProviders);
@@ -572,8 +595,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   //         type: MessageType.MOVIE_TRAILER,
                   //       ));
                   // }
-                }
-                );
+                });
               } else {
                 _scrollToBottom();
                 setState(() {

@@ -53,10 +53,10 @@ class MovieDetailWidget extends StatelessWidget {
                 isAlwaysShown: true,
                 radiusWhileDragging: Radius.circular(15),
                 thicknessWhileDragging: 2,
-                child: _buildSingleChildScrollView(model),
+                child: _buildSingleChildScrollView(context, model),
               )
             : Scrollbar(
-                child: _buildSingleChildScrollView(model),
+                child: _buildSingleChildScrollView(context, model),
                 isAlwaysShown: true,
                 showTrackOnHover: true,
                 radius: Radius.circular(15),
@@ -67,7 +67,7 @@ class MovieDetailWidget extends StatelessWidget {
   }
 
   SingleChildScrollView _buildSingleChildScrollView(
-      MovieProvidersAndVideoModel model) {
+      BuildContext context, MovieProvidersAndVideoModel model) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,6 +81,17 @@ class MovieDetailWidget extends StatelessWidget {
               year: model.releaseYear,
               rating: model.rating,
               duration: model.duration),
+          // if (model.providers != null)
+          //   Container(
+          //     margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+          //     child: Text(
+          //         "You can watch ${model.title} in ${model.countryName} in the following ways:",
+          //         style: TextStyle(
+          //             color: Colors.black,
+          //             fontFamily: 'QuickSand',
+          //             fontSize: 14,
+          //             fontWeight: FontWeight.w100)),
+          //   ),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(

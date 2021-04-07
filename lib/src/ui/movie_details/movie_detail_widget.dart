@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
+import '../movie_just_watch.dart';
 import 'movie_description.dart';
 import 'movie_provider.dart';
 import 'movie_thumbnail.dart';
@@ -90,6 +92,9 @@ class MovieDetailWidget extends StatelessWidget {
             title: model.title,
             description: model.description,
           ),
+          MovieJustWatch(
+            title: JUST_WATCH_TEXT,
+          )
         ],
       ),
     );

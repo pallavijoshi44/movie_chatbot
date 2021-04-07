@@ -27,7 +27,6 @@ class ThumbnailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      margin: EdgeInsets.only(bottom: 10.0),
       duration: Duration(milliseconds: 350),
       // clip corners
       child: ClipRRect(

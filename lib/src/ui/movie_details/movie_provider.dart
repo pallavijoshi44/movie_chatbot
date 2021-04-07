@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MovieProvider extends StatelessWidget {
-  MovieProvider({this.title, this.logos});
+  MovieProvider({this.title, this.logos, this.watchProviderLink});
 
   final String title;
+  final String watchProviderLink;
   final List<dynamic> logos;
 
   @override
@@ -30,17 +33,27 @@ class MovieProvider extends StatelessWidget {
                 runSpacing: 10.0,
                 direction: Axis.horizontal,
                 children: this.logos.map((logo) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: Image.network(
-                      logo,
-                      fit: BoxFit.cover,
-                      width: 50.0,
-                      height: 50.0,
-                    ),
-                  );
+                  return IconButton(
+                    highlightColor: Colors.green,
+                      iconSize: 50,
+                      icon: Image.network(logo,),
+                      padding: const EdgeInsets.only(right: 5.0),
+                      onPressed: () { _openWebView(context, watchProviderLink); },
+                    );
                 }).toList()),
           ]))
     ]));
+  }
+
+  Future<void> _openWebView(BuildContext context, String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }

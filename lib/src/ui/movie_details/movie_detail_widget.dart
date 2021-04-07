@@ -86,6 +86,7 @@ class MovieDetailWidget extends StatelessWidget {
                 .map((provider) => MovieProvider(
                       title: provider.title,
                       logos: provider.logos,
+                      watchProviderLink: model.watchProviderLink,
                     ))
                 .toList(),
           MovieDescriptionWidget(

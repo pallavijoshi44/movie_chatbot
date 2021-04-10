@@ -80,6 +80,7 @@ class MovieDetailWidget extends StatelessWidget {
                 url: model.videoUrl, thumbNail: model.videoThumbnail),
           MovieInformationWidget(
               title: model.title,
+              tagline: model.tagline,
               image: model.imagePath,
               year: model.releaseYear,
               rating: model.rating,

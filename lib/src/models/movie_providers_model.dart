@@ -16,6 +16,10 @@ class MovieProvidersAndVideoModel extends MessageModel {
   bool isMovie;
   String homePage;
   String lastAirDate;
+  String nextEpisodeAirDate;
+  int numberOfSeasons;
+  String tagline;
+  List<dynamic> cast = [];
 
   MovieProvidersAndVideoModel(Map item) {
     if (item != null && item.isNotEmpty) {
@@ -23,7 +27,8 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.title = item['title'];
       this.countryName = item['countryName'];
       this.imagePath = item['imagePath'];
-      this.releaseYear = item['releaseYear'] != null ? item['releaseYear'].toString() : "";
+      this.releaseYear =
+          item['releaseYear'] != null ? item['releaseYear'].toString() : "";
       this.rating = item['rating'] != null ? item['rating'].toString() : "";
       this.description = item['description'];
       this.duration = item['duration'];
@@ -31,6 +36,9 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.isMovie = item['isMovie'] ?? true;
       this.homePage = item['homePage'] ?? "";
       this.lastAirDate = item['lastAirDate'];
+      this.nextEpisodeAirDate = item['nextEpisodeAirDate'];
+      this.numberOfSeasons = item['numberOfSeasons'];
+      this.tagline = item['tagline'];
       List<dynamic> providers = item['providers'];
       if (providers != null && providers.length > 0) {
         providers.forEach((element) {
@@ -38,6 +46,13 @@ class MovieProvidersAndVideoModel extends MessageModel {
           this.providers.add(provider);
         });
       }
+    }
+    List<dynamic> casts = item['cast'];
+    if (casts != null && casts.length > 0) {
+      casts.forEach((element) {
+        Cast cast = new Cast(element);
+        this.cast.add(cast);
+      });
     }
     var videos = item['videos'];
     if (videos != null && videos.isNotEmpty) {
@@ -59,5 +74,15 @@ class Provider {
         this.logos.add(element);
       });
     }
+  }
+}
+
+class Cast {
+  String name;
+  String profile;
+
+  Cast(Map response) {
+    this.name = response['title'];
+    this.profile = response['profile'];
   }
 }

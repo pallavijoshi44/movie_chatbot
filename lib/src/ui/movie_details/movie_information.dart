@@ -6,13 +6,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 
 class MovieInformationWidget extends StatelessWidget {
-  MovieInformationWidget({this.title, this.image, this.year, this.rating, this.duration});
+  MovieInformationWidget({this.title, this.image, this.year, this.rating, this.duration, this.tagline});
 
   final String title;
   final String image;
   final String year;
   final String rating;
   final String duration;
+  final String tagline;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,19 @@ class MovieInformationWidget extends StatelessWidget {
                     height: 5.0,
                   ),
                   Visibility(
+                    visible: shouldShow(this.tagline),
+                    child: Text(this.tagline,
+                        style: TextStyle(
+                            color: Colors.green[900],
+                            fontFamily: 'QuickSand',
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.normal)),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Visibility(
                     visible: shouldShow(this.year),
                     child: Text(this.year,
                         style: TextStyle(
@@ -86,5 +100,5 @@ class MovieInformationWidget extends StatelessWidget {
     );
   }
 
-  bool shouldShow(String item) =>  item != null || item != "";
+  bool shouldShow(String item) =>  item != null && item.isNotEmpty;
 }

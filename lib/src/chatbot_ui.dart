@@ -390,7 +390,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
     setState(() {
-      _isTextFieldEnabled = true;
+      //_isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);

@@ -1,4 +1,6 @@
 import 'package:flutter_app/src/models/message_model.dart';
+import 'package:intl/intl.dart';
+
 
 class MovieProvidersAndVideoModel extends MessageModel {
   int id;
@@ -35,8 +37,8 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.watchProviderLink = item['watchProviderLink'];
       this.isMovie = item['isMovie'] ?? true;
       this.homePage = item['homePage'] ?? "";
-      this.lastAirDate = item['lastAirDate'];
-      this.nextEpisodeAirDate = item['nextEpisodeAirDate'];
+      this.lastAirDate = _parseDate(item['lastAirDate']);
+      this.nextEpisodeAirDate = _parseDate(item['nextEpisodeAirDate']);
       this.numberOfSeasons = item['numberOfSeasons'];
       this.tagline = item['tagline'];
       List<dynamic> providers = item['providers'];
@@ -59,6 +61,13 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.videoUrl = videos['videoUrl'];
       this.videoThumbnail = videos['videoThumbnail'];
     }
+  }
+
+  String _parseDate(String date) {
+    if (date != null && date.isNotEmpty) {
+      return DateFormat.yMMMd().format(DateTime.parse(date));
+    }
+    return null;
   }
 }
 

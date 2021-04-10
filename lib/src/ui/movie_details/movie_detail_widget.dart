@@ -6,6 +6,7 @@ import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/ui/country/country_list_pick.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
+import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../movie_just_watch.dart';
 import 'movie_description.dart';
@@ -87,6 +88,11 @@ class MovieDetailWidget extends StatelessWidget {
             duration: model.duration,
             homePage: model.homePage,
           ),
+          if (!model.isMovie) TvDetailsWidget(
+            nextEpisodeAirDate: model.nextEpisodeAirDate,
+            lastAirDate: model.lastAirDate,
+            numberOfSeasons: model.numberOfSeasons,
+          ),
           if (model.providers != null && model.providers.length > 0)
             _buildCountryWidget(context, model, prefs,
                 model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT)
@@ -123,7 +129,7 @@ class MovieDetailWidget extends StatelessWidget {
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
                   : Theme.of(context).textTheme.title),
-          Expanded(
+          Flexible(
             child: CountryListPick(
               appBar: Platform.isIOS
                   ? CupertinoNavigationBar(

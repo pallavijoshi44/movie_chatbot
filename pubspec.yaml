@@ -57,11 +57,9 @@ flutter:
       fonts:
         - asset: assets/fonts/OpenSans-Regular.ttf
         - asset: assets/fonts/OpenSans-Bold.ttf
-        - asset: assets/fonts/OpenSans-Italic.ttf
           weight: 700
     - family: Quicksand
       fonts:
         - asset: assets/fonts/Quicksand-Regular.ttf
         - asset: assets/fonts/Quicksand-Bold.ttf
-        - asset: assets/fonts/Quicksand-Medium.ttf
           weight: 700

@@ -4,9 +4,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MovieInformationWidget extends StatelessWidget {
-  MovieInformationWidget({this.title, this.image, this.year, this.rating, this.duration, this.tagline});
+  MovieInformationWidget(
+      {this.title,
+      this.image,
+      this.year,
+      this.rating,
+      this.duration,
+      this.tagline,
+      this.homePage});
 
   final String title;
   final String image;
@@ -14,6 +22,7 @@ class MovieInformationWidget extends StatelessWidget {
   final String rating;
   final String duration;
   final String tagline;
+  final String homePage;
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +33,26 @@ class MovieInformationWidget extends StatelessWidget {
         children: [
           Card(
             elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            child: image == null
-                ? Image.asset(
-                    'assets/images/placeholder.jpg',
-                    fit: BoxFit.cover,
-                    height: 180,
-                  )
-                : Image.network(
-                    image,
-                    fit: BoxFit.cover,
-                    height: 180,
-                  ),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            child: GestureDetector(
+              onTap: isValid(this.homePage)
+                  ? () {
+                      _openWebView(context, this.homePage);
+                    }
+                  : null,
+              child: image == null
+                  ? Image.asset(
+                      'assets/images/placeholder.jpg',
+                      fit: BoxFit.cover,
+                      height: 180,
+                    )
+                  : Image.network(
+                      image,
+                      fit: BoxFit.cover,
+                      height: 180,
+                    ),
+            ),
           ),
           Flexible(
             child: Container(
@@ -53,7 +70,7 @@ class MovieInformationWidget extends StatelessWidget {
                     height: 5.0,
                   ),
                   Visibility(
-                    visible: shouldShow(this.tagline),
+                    visible: isValid(this.tagline),
                     child: Text(this.tagline,
                         style: TextStyle(
                             color: Colors.green[900],
@@ -66,7 +83,7 @@ class MovieInformationWidget extends StatelessWidget {
                     height: 5.0,
                   ),
                   Visibility(
-                    visible: shouldShow(this.year),
+                    visible: isValid(this.year),
                     child: Text(this.year,
                         style: TextStyle(
                             color: Colors.grey,
@@ -78,13 +95,16 @@ class MovieInformationWidget extends StatelessWidget {
                     height: 5.0,
                   ),
                   Visibility(
-                      visible: shouldShow(this.rating),
-                      child: RatingWidget(rating: this.rating, centerAlignment: false,)),
+                      visible: isValid(this.rating),
+                      child: RatingWidget(
+                        rating: this.rating,
+                        centerAlignment: false,
+                      )),
                   SizedBox(
                     height: 5.0,
                   ),
                   Visibility(
-                    visible: shouldShow(this.duration),
+                    visible: isValid(this.duration),
                     child: Text(this.duration,
                         style: TextStyle(
                             color: Colors.grey[900],
@@ -100,5 +120,17 @@ class MovieInformationWidget extends StatelessWidget {
     );
   }
 
-  bool shouldShow(String item) =>  item != null && item.isNotEmpty;
+  bool isValid(String item) => item != null && item.isNotEmpty;
+
+  Future<void> _openWebView(BuildContext context, String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }

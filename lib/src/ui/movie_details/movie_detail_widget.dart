@@ -79,12 +79,14 @@ class MovieDetailWidget extends StatelessWidget {
             MovieThumbnail(
                 url: model.videoUrl, thumbNail: model.videoThumbnail),
           MovieInformationWidget(
-              title: model.title,
-              tagline: model.tagline,
-              image: model.imagePath,
-              year: model.releaseYear,
-              rating: model.rating,
-              duration: model.duration),
+            title: model.title,
+            tagline: model.tagline,
+            image: model.imagePath,
+            year: model.releaseYear,
+            rating: model.rating,
+            duration: model.duration,
+            homePage: model.homePage,
+          ),
           if (model.providers != null && model.providers.length > 0)
             _buildCountryWidget(context, model, prefs,
                 model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT)
@@ -127,7 +129,8 @@ class MovieDetailWidget extends StatelessWidget {
                   ? CupertinoNavigationBar(
                       leading: new CupertinoButton(
                         padding: EdgeInsets.zero,
-                        child: new Icon(CupertinoIcons.back, color: Colors.white),
+                        child:
+                            new Icon(CupertinoIcons.back, color: Colors.white),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       middle: Text('Choose Country',

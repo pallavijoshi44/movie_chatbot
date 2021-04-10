@@ -56,6 +56,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
+  bool _isCountryChanged = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -657,10 +658,39 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> _handleNewUIForMovieDetails(
       MovieProvidersAndVideoModel movieProviders) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var cupertinoPageRoute = CupertinoPageRoute(
+        builder: (context) =>
+            MovieDetailWidget(movieProviders, prefs, _onCountryChanged));
+    var materialPageRoute = MaterialPageRoute(
+        builder: (context) =>
+            MovieDetailWidget(movieProviders, prefs, _onCountryChanged));
 
-    Map arguments = {'movieDetails': movieProviders, 'prefs': prefs};
+    if (_isCountryChanged) {
+      _isCountryChanged = false;
+      Platform.isIOS
+          ? Navigator.pushReplacement(
+        context,
+        cupertinoPageRoute,
+      )
+          : Navigator.pushReplacement(
+        context,
+        materialPageRoute,
+      );
+    } else {
+      Platform.isIOS
+          ? Navigator.push(
+        context,
+        cupertinoPageRoute,
+      )
+          : Navigator.push(
+        context,
+        materialPageRoute,
+      );
+    }
+  }
 
-    Navigator.pushNamed(context, MovieDetailWidget.routeName,
-        arguments: arguments);
+  Future<void> _onCountryChanged(int id, String countryCode) async {
+    await _getWatchProvidersAndVideos(id.toString(), countryCode);
+    _isCountryChanged = true;
   }
 }

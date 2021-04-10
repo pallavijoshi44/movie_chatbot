@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -113,57 +112,3 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
     super.dispose();
   }
 }
-/*
-Material(
-                  child: InkWell(
-                    splashColor: Platform.isIOS
-                        ? CupertinoTheme.of(context).primaryContrastingColor
-                        : Theme.of(context).primaryColorLight,
-                    highlightColor: Colors.green,
-                    onTap: _enabled
-                        ? () {
-                            return _handleTap(item);
-                          }
-                        : null,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Card(
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            child: item.image.imageUri == null
-                                ? Image.asset(
-                                    'assets/images/placeholder.jpg',
-                                    fit: BoxFit.cover,
-                                  )
-                                : Image.network(item.image.imageUri,
-                                    fit: BoxFit.cover),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Text(
-                          '${item.title}',
-                          textAlign: TextAlign.center,
-                          softWrap: true,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontFamily: 'QuickSand',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        RatingWidget(
-                            rating: item.description, centerAlignment: false),
-                      ],
-                    ),
-                  ),
-                ))
-            .toList(),
- */

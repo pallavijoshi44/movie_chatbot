@@ -1,6 +1,7 @@
 import 'package:flutter_app/src/models/message_model.dart';
 
 class MovieProvidersAndVideoModel extends MessageModel {
+  int id;
   String title;
   String countryName;
   String imagePath;
@@ -15,6 +16,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
 
   MovieProvidersAndVideoModel(Map item) {
     if (item != null && item.isNotEmpty) {
+      this.id = item['id'];
       this.title = item['title'];
       this.countryName = item['countryName'];
       this.imagePath = item['imagePath'];

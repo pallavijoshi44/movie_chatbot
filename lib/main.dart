@@ -101,11 +101,6 @@ class _ChatBotState extends State<ChatBot> {
               builder = (context) => AboutAppWidget();
             }
             break;
-          case MovieDetailWidget.routeName:
-            {
-              builder = (context) => MovieDetailWidget();
-            }
-            break;
         }
         if (Platform.isIOS) {
           return CupertinoPageRoute(

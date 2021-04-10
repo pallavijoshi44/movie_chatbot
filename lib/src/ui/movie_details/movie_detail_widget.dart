@@ -14,13 +14,14 @@ import 'movie_thumbnail.dart';
 
 class MovieDetailWidget extends StatelessWidget {
   static const routeName = '/movie-detail';
+  final MovieProvidersAndVideoModel model;
+  final SharedPreferences prefs;
+  final Function onCountryChanged;
+
+  MovieDetailWidget(this.model, this.prefs, this.onCountryChanged);
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context).settings.arguments as Map;
-    final model = routeArgs['movieDetails'] as MovieProvidersAndVideoModel;
-    final prefs = routeArgs['prefs'] as SharedPreferences;
-
     return Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
       appBar: Platform.isIOS
@@ -68,8 +69,8 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView _buildSingleChildScrollView(
-      BuildContext context, MovieProvidersAndVideoModel model, SharedPreferences prefs) {
+  SingleChildScrollView _buildSingleChildScrollView(BuildContext context,
+      MovieProvidersAndVideoModel model, SharedPreferences prefs) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,9 +85,9 @@ class MovieDetailWidget extends StatelessWidget {
               rating: model.rating,
               duration: model.duration),
           if (model.providers != null && model.providers.length > 0)
-             _buildCountryWidget(context, model, prefs, MOVIE_WATCH_TEXT)
+            _buildCountryWidget(context, model, prefs, MOVIE_WATCH_TEXT)
           else
-             _buildCountryWidget(context, model, prefs, NO_MOVIE_WATCH_TEXT),
+            _buildCountryWidget(context, model, prefs, NO_MOVIE_WATCH_TEXT),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -107,40 +108,40 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 
-  ListTile _buildCountryWidget(BuildContext context, MovieProvidersAndVideoModel model, SharedPreferences prefs, String text)  {
+  ListTile _buildCountryWidget(BuildContext context,
+      MovieProvidersAndVideoModel model, SharedPreferences prefs, String text) {
     return ListTile(
-            title: Text(text,
-                style: Platform.isIOS
-                    ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                    : Theme.of(context).textTheme.title),
-            trailing: CountryListPick(
-              appBar: Platform.isIOS
-                  ? CupertinoNavigationBar(
-                      leading: new CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: new Icon(CupertinoIcons.back,
-                            color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      middle: Text('Choose Country',
-                          style:CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-                    )
-                  : AppBar(
-                      title: Text('Choose Country')
-              ),
-              theme: CountryTheme(
-                isShowFlag: true,
-                isShowTitle: true,
-                isShowCode: false,
-                isDownIcon: false,
-                showEnglishName: true,
-              ),
-              initialSelection: prefs.getString(COUNTRY_CODE),
-              onChanged: (CountryCode code) async {
-                await prefs.setString(COUNTRY_CODE, code.code);
-              },
-            ),
-          );
+      title: Text(text,
+          style: Platform.isIOS
+              ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
+              : Theme.of(context).textTheme.title),
+      trailing: CountryListPick(
+        appBar: Platform.isIOS
+            ? CupertinoNavigationBar(
+                leading: new CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: new Icon(CupertinoIcons.back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                middle: Text('Choose Country',
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+              )
+            : AppBar(title: Text('Choose Country')),
+        theme: CountryTheme(
+          isShowFlag: true,
+          isShowTitle: true,
+          isShowCode: false,
+          isDownIcon: false,
+          showEnglishName: true,
+        ),
+        initialSelection: prefs.getString(COUNTRY_CODE),
+        onChanged: (CountryCode code) async {
+          await prefs.setString(COUNTRY_CODE, code.code);
+          onCountryChanged.call(model.id, code.code);
+        },
+      ),
+    );
   }
 }
 

@@ -144,10 +144,3 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 }
-
-String title;
-List<dynamic> providers = [];
-String urlTitle;
-String urlLink;
-String videoUrl;
-String videoThumbnail;

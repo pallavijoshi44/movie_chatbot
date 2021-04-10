@@ -49,6 +49,7 @@ flutter:
     - assets/credentials.json
     - assets/images/placeholder.jpg
     - assets/images/thumbnail_default.png
+    - assets/images/person_placeholder.png
     - assets/images/tmdb_logo.png
     - assets/images/just_watch_logo.png
     - assets/flags/

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/ui/country/country_list_pick.dart';
+import 'package:flutter_app/src/ui/movie_details/cast_details.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
 import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,6 +115,7 @@ class MovieDetailWidget extends StatelessWidget {
             title: model.isMovie ? "About Movie" : "About TV Show",
             description: model.description,
           ),
+          CastDetails(cast: model.cast)
         ],
       ),
     );

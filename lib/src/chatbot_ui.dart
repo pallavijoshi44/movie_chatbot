@@ -654,8 +654,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void _handleNewUIForMovieDetails(MovieProvidersAndVideoModel movieProviders) {
-    var arguments = {'movieDetails': movieProviders};
+  Future<void> _handleNewUIForMovieDetails(
+      MovieProvidersAndVideoModel movieProviders) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map arguments = {'movieDetails': movieProviders, 'prefs': prefs};
 
     Navigator.pushNamed(context, MovieDetailWidget.routeName,
         arguments: arguments);

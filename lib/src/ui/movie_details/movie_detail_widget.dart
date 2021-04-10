@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
+import 'package:flutter_app/src/ui/country/country_list_pick.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../movie_just_watch.dart';
 import 'movie_description.dart';
 import 'movie_provider.dart';
@@ -15,9 +17,9 @@ class MovieDetailWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs = ModalRoute.of(context).settings.arguments
-        as Map<String, MovieProvidersAndVideoModel>;
-    final model = routeArgs['movieDetails'];
+    final routeArgs = ModalRoute.of(context).settings.arguments as Map;
+    final model = routeArgs['movieDetails'] as MovieProvidersAndVideoModel;
+    final prefs = routeArgs['prefs'] as SharedPreferences;
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
@@ -53,10 +55,10 @@ class MovieDetailWidget extends StatelessWidget {
                 isAlwaysShown: true,
                 radiusWhileDragging: Radius.circular(15),
                 thicknessWhileDragging: 2,
-                child: _buildSingleChildScrollView(context, model),
+                child: _buildSingleChildScrollView(context, model, prefs),
               )
             : Scrollbar(
-                child: _buildSingleChildScrollView(context, model),
+                child: _buildSingleChildScrollView(context, model, prefs),
                 isAlwaysShown: true,
                 showTrackOnHover: true,
                 radius: Radius.circular(15),
@@ -67,7 +69,7 @@ class MovieDetailWidget extends StatelessWidget {
   }
 
   SingleChildScrollView _buildSingleChildScrollView(
-      BuildContext context, MovieProvidersAndVideoModel model) {
+      BuildContext context, MovieProvidersAndVideoModel model, SharedPreferences prefs) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,17 +83,10 @@ class MovieDetailWidget extends StatelessWidget {
               year: model.releaseYear,
               rating: model.rating,
               duration: model.duration),
-          // if (model.providers != null)
-          //   Container(
-          //     margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-          //     child: Text(
-          //         "You can watch ${model.title} in ${model.countryName} in the following ways:",
-          //         style: TextStyle(
-          //             color: Colors.black,
-          //             fontFamily: 'QuickSand',
-          //             fontSize: 14,
-          //             fontWeight: FontWeight.w100)),
-          //   ),
+          if (model.providers != null && model.providers.length > 0)
+             _buildCountryWidget(context, model, prefs, MOVIE_WATCH_TEXT)
+          else
+             _buildCountryWidget(context, model, prefs, NO_MOVIE_WATCH_TEXT),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -110,6 +105,42 @@ class MovieDetailWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  ListTile _buildCountryWidget(BuildContext context, MovieProvidersAndVideoModel model, SharedPreferences prefs, String text)  {
+    return ListTile(
+            title: Text(text,
+                style: Platform.isIOS
+                    ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
+                    : Theme.of(context).textTheme.title),
+            trailing: CountryListPick(
+              appBar: Platform.isIOS
+                  ? CupertinoNavigationBar(
+                      leading: new CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: new Icon(CupertinoIcons.back,
+                            color: Colors.white),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      middle: Text('Choose Country',
+                          style:CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+                    )
+                  : AppBar(
+                      title: Text('Choose Country')
+              ),
+              theme: CountryTheme(
+                isShowFlag: true,
+                isShowTitle: true,
+                isShowCode: false,
+                isDownIcon: false,
+                showEnglishName: true,
+              ),
+              initialSelection: prefs.getString(COUNTRY_CODE),
+              onChanged: (CountryCode code) async {
+                await prefs.setString(COUNTRY_CODE, code.code);
+              },
+            ),
+          );
   }
 }
 

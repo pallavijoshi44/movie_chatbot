@@ -19,7 +19,7 @@ class MovieProvider extends StatelessWidget {
       Container(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 60),
-          padding: const EdgeInsets.only(top: 15, left: 15, right: 15),
+          padding: const EdgeInsets.only(left: 15, right: 15, bottom: 15.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(title,
@@ -35,11 +35,15 @@ class MovieProvider extends StatelessWidget {
                 children: this.logos.map((logo) {
                   return IconButton(
                     highlightColor: Colors.green,
-                      iconSize: 50,
-                      icon: Image.network(logo,),
-                      padding: const EdgeInsets.only(right: 5.0),
-                      onPressed: () { _openWebView(context, watchProviderLink); },
-                    );
+                    iconSize: 50,
+                    icon: Image.network(
+                      logo,
+                    ),
+                    padding: const EdgeInsets.only(right: 5.0),
+                    onPressed: () {
+                      _openWebView(context, watchProviderLink);
+                    },
+                  );
                 }).toList()),
           ]))
     ]));

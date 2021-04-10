@@ -85,9 +85,11 @@ class MovieDetailWidget extends StatelessWidget {
               rating: model.rating,
               duration: model.duration),
           if (model.providers != null && model.providers.length > 0)
-            _buildCountryWidget(context, model, prefs, model.isMovie ? MOVIE_WATCH_TEXT: TV_WATCH_TEXT)
+            _buildCountryWidget(context, model, prefs,
+                model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT)
           else
-            _buildCountryWidget(context, model, prefs, model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT),
+            _buildCountryWidget(context, model, prefs,
+                model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -108,38 +110,46 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 
-  ListTile _buildCountryWidget(BuildContext context,
+  Widget _buildCountryWidget(BuildContext context,
       MovieProvidersAndVideoModel model, SharedPreferences prefs, String text) {
-    return ListTile(
-      title: Text(text,
-          style: Platform.isIOS
-              ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-              : Theme.of(context).textTheme.title),
-      trailing: CountryListPick(
-        appBar: Platform.isIOS
-            ? CupertinoNavigationBar(
-                leading: new CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: new Icon(CupertinoIcons.back, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                middle: Text('Choose Country',
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-              )
-            : AppBar(title: Text('Choose Country')),
-        theme: CountryTheme(
-          isShowFlag: true,
-          isShowTitle: true,
-          isShowCode: false,
-          isDownIcon: false,
-          showEnglishName: true,
-        ),
-        initialSelection: prefs.getString(COUNTRY_CODE),
-        onChanged: (CountryCode code) async {
-          await prefs.setString(COUNTRY_CODE, code.code);
-          onCountryChanged.call(model.id, code.code);
-        },
+    return Container(
+      margin: EdgeInsets.only(left: 15.0, right: 15.0),
+      child: Row(
+        children: [
+          Text(text,
+              style: Platform.isIOS
+                  ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
+                  : Theme.of(context).textTheme.title),
+          Expanded(
+            child: CountryListPick(
+              appBar: Platform.isIOS
+                  ? CupertinoNavigationBar(
+                      leading: new CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: new Icon(CupertinoIcons.back, color: Colors.white),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      middle: Text('Choose Country',
+                          style: CupertinoTheme.of(context)
+                              .textTheme
+                              .navTitleTextStyle),
+                    )
+                  : AppBar(title: Text('Choose Country')),
+              theme: CountryTheme(
+                isShowFlag: true,
+                isShowTitle: true,
+                isShowCode: false,
+                isDownIcon: false,
+                showEnglishName: true,
+              ),
+              initialSelection: prefs.getString(COUNTRY_CODE),
+              onChanged: (CountryCode code) async {
+                await prefs.setString(COUNTRY_CODE, code.code);
+                onCountryChanged.call(model.id, code.code);
+              },
+            ),
+          )
+        ],
       ),
     );
   }

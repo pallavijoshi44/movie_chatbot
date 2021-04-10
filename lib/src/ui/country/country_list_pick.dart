@@ -115,13 +115,11 @@ class _CountryListPickState extends State<CountryListPick> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (widget.theme?.isShowFlag ?? true == true)
-                  Flexible(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Image.asset(
-                        selectedItem.flagUri,
-                        width: 32.0,
-                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                    child: Image.asset(
+                      selectedItem.flagUri,
+                      width: 32.0,
                     ),
                   ),
                 if (widget.theme?.isShowCode ?? true == true)
@@ -132,10 +130,15 @@ class _CountryListPickState extends State<CountryListPick> {
                     ),
                   ),
                 if (widget.theme?.isShowTitle ?? true == true)
-                  Flexible(
+                  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                      child: Text(selectedItem.toCountryStringOnly()),
+                      child: Text(selectedItem.toCountryStringOnly(),
+                          style: Platform.isIOS
+                              ? CupertinoTheme.of(context)
+                                  .textTheme
+                                  .tabLabelTextStyle
+                              : Theme.of(context).textTheme.headline),
                     ),
                   ),
                 if (widget.theme?.isDownIcon ?? true == true)

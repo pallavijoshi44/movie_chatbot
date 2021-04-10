@@ -13,7 +13,7 @@ class MovieDescriptionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+      margin: const EdgeInsets.only(left: 15.0, right: 15.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -13,6 +13,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
   String videoThumbnail;
   String duration;
   String watchProviderLink;
+  bool isMovie;
 
   MovieProvidersAndVideoModel(Map item) {
     if (item != null && item.isNotEmpty) {
@@ -25,6 +26,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
       this.description = item['description'];
       this.duration = item['duration'];
       this.watchProviderLink = item['watchProviderLink'];
+      this.isMovie = item['isMovie'] ?? true;
       List<dynamic> providers = item['providers'];
       if (providers != null && providers.length > 0) {
         providers.forEach((element) {

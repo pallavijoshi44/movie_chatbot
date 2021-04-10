@@ -85,9 +85,9 @@ class MovieDetailWidget extends StatelessWidget {
               rating: model.rating,
               duration: model.duration),
           if (model.providers != null && model.providers.length > 0)
-            _buildCountryWidget(context, model, prefs, MOVIE_WATCH_TEXT)
+            _buildCountryWidget(context, model, prefs, model.isMovie ? MOVIE_WATCH_TEXT: TV_WATCH_TEXT)
           else
-            _buildCountryWidget(context, model, prefs, NO_MOVIE_WATCH_TEXT),
+            _buildCountryWidget(context, model, prefs, model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -97,7 +97,7 @@ class MovieDetailWidget extends StatelessWidget {
                     ))
                 .toList(),
           MovieDescriptionWidget(
-            title: model.title,
+            title: model.isMovie ? "About Movie" : "About TV Show",
             description: model.description,
           ),
           MovieJustWatch(

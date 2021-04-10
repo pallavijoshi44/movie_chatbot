@@ -17,7 +17,7 @@ class MovieDescriptionWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("About Movie",
+          Text(this.title,
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
                   : Theme.of(context).textTheme.title),

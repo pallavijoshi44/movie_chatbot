@@ -116,11 +116,40 @@ class _ChatBotState extends State<ChatBot> {
 class ChatBotFlow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-        backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-        cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
-        material: (_, target) => _buildMaterialScaffoldData(context),
-        body: ConnectivityCheck(child: ChatBotUI(_selectedTips)));
+    return WillPopScope(
+      onWillPop: () => _onBackPressed(context),
+      child: PlatformScaffold(
+          backgroundColor: Color.fromRGBO(249, 248, 235, 1),
+          cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
+          material: (_, target) => _buildMaterialScaffoldData(context),
+          body: ConnectivityCheck(child: ChatBotUI(_selectedTips))),
+    );
+  }
+
+  Future<bool> _onBackPressed(BuildContext context) {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            actionsPadding: EdgeInsets.all(10),
+            title: new Text('Are you sure?',  style: Theme.of(context).appBarTheme.textTheme.headline),
+            content: new Text(
+              'You don\'t want to chat with me anymore?',
+              style: Theme.of(context).textTheme.headline,
+            ),
+            actions: <Widget>[
+              new GestureDetector(
+                onTap: () => Navigator.of(context).pop(false),
+                child: Text("NO",  style: Theme.of(context).textTheme.headline),
+              ),
+              SizedBox(height: 16),
+              new GestureDetector(
+                onTap: () => Navigator.of(context).pop(true),
+                child: Text("YES",  style: Theme.of(context).textTheme.headline),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 
   MaterialScaffoldData _buildMaterialScaffoldData(BuildContext context) {

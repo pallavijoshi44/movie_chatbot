@@ -8,8 +8,8 @@ import 'package:flutter_app/src/ui/country/country_list_pick.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
 import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../movie_just_watch.dart';
 import 'movie_description.dart';
+import 'movie_just_watch.dart';
 import 'movie_provider.dart';
 import 'movie_thumbnail.dart';
 
@@ -107,13 +107,13 @@ class MovieDetailWidget extends StatelessWidget {
                       watchProviderLink: model.watchProviderLink,
                     ))
                 .toList(),
+          MovieJustWatch(
+            title: JUST_WATCH_TEXT,
+          ),
           MovieDescriptionWidget(
             title: model.isMovie ? "About Movie" : "About TV Show",
             description: model.description,
           ),
-          MovieJustWatch(
-            title: JUST_WATCH_TEXT,
-          )
         ],
       ),
     );

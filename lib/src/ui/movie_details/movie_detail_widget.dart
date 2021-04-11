@@ -6,6 +6,7 @@ import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/ui/country/country_list_pick.dart';
 import 'package:flutter_app/src/ui/movie_details/cast_details.dart';
+import 'package:flutter_app/src/ui/movie_details/country_picker_widget.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
 import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -89,17 +90,26 @@ class MovieDetailWidget extends StatelessWidget {
             duration: model.duration,
             homePage: model.homePage,
           ),
-          if (!model.isMovie) TvDetailsWidget(
-            nextEpisodeAirDate: model.nextEpisodeAirDate,
-            lastAirDate: model.lastAirDate,
-            numberOfSeasons: model.numberOfSeasons,
-          ),
+          if (!model.isMovie)
+            TvDetailsWidget(
+              nextEpisodeAirDate: model.nextEpisodeAirDate,
+              lastAirDate: model.lastAirDate,
+              numberOfSeasons: model.numberOfSeasons,
+            ),
           if (model.providers != null && model.providers.length > 0)
-            _buildCountryWidget(context, model, prefs,
-                model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT)
+            CountryPickerWidget(
+              id: model.id,
+              prefs: prefs,
+              text: model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT,
+              onCountryChanged: onCountryChanged,
+            )
           else
-            _buildCountryWidget(context, model, prefs,
-                model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT),
+            CountryPickerWidget(
+              id: model.id,
+              prefs: prefs,
+              text:  model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,
+              onCountryChanged: onCountryChanged,
+            ),
           if (model.providers != null)
             ...model.providers
                 .map((provider) => MovieProvider(
@@ -116,51 +126,6 @@ class MovieDetailWidget extends StatelessWidget {
             description: model.description,
           ),
           CastDetails(cast: model.cast)
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCountryWidget(BuildContext context,
-      MovieProvidersAndVideoModel model, SharedPreferences prefs, String text) {
-    return Container(
-      margin: EdgeInsets.only(left: 15.0, right: 15.0),
-      child: Row(
-        children: [
-          Text(text,
-              style: Platform.isIOS
-                  ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                  : Theme.of(context).textTheme.title),
-          Flexible(
-            child: CountryListPick(
-              appBar: Platform.isIOS
-                  ? CupertinoNavigationBar(
-                      leading: new CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child:
-                            new Icon(CupertinoIcons.back, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      middle: Text('Choose Country',
-                          style: CupertinoTheme.of(context)
-                              .textTheme
-                              .navTitleTextStyle),
-                    )
-                  : AppBar(title: Text('Choose Country')),
-              theme: CountryTheme(
-                isShowFlag: true,
-                isShowTitle: true,
-                isShowCode: false,
-                isDownIcon: false,
-                showEnglishName: true,
-              ),
-              initialSelection: prefs.getString(COUNTRY_CODE),
-              onChanged: (CountryCode code) async {
-                await prefs.setString(COUNTRY_CODE, code.code);
-                onCountryChanged.call(model.id, code.code);
-              },
-            ),
-          )
         ],
       ),
     );

@@ -689,8 +689,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _onCountryChanged(int id, String countryCode) async {
-    await _getWatchProvidersAndVideos(id.toString(), countryCode);
+  Future<void> _onCountryChanged(String id, String countryCode) async {
+    await _getWatchProvidersAndVideos(id, countryCode);
     _isCountryChanged = true;
   }
 }

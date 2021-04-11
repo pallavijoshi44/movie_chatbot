@@ -10,7 +10,7 @@ class CountryPickerWidget extends StatelessWidget {
   final String text;
   final SharedPreferences prefs;
   final Function onCountryChanged;
-  final int id;
+  final String id;
 
   const CountryPickerWidget({this.text, this.prefs, this.onCountryChanged, this.id});
 

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 
 class MovieProvidersAndVideoModel extends MessageModel {
-  int id;
+  String id;
   String title;
   String countryName;
   String imagePath;
@@ -25,7 +25,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
 
   MovieProvidersAndVideoModel(Map item) {
     if (item != null && item.isNotEmpty) {
-      this.id = item['id'];
+      this.id = item['id'].toString();
       this.title = item['title'];
       this.countryName = item['countryName'];
       this.imagePath = item['imagePath'];

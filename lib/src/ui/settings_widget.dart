@@ -101,10 +101,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isDownIcon: false,
           showEnglishName: true,
         ),
-        initialSelection: prefs.getString(COUNTRY_CODE) ?? 'IN',
+        initialSelection: prefs.getString(KEY_COUNTRY_CODE) ?? 'IN',
         onChanged: (CountryCode code) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString(COUNTRY_CODE, code.code);
+          await prefs.setString(KEY_COUNTRY_CODE, code.code);
         },
       ),
     );

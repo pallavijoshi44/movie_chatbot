@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
+import 'package:flutter_app/src/ui/location_check.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -121,7 +122,7 @@ class ChatBotFlow extends StatelessWidget {
           backgroundColor: Color.fromRGBO(249, 248, 235, 1),
           cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
           material: (_, target) => _buildMaterialScaffoldData(context),
-          body: ConnectivityCheck(child: ChatBotUI(_selectedTips))),
+          body: ConnectivityCheck(child: LocationCheck(child: ChatBotUI(_selectedTips)))),
     );
   }
 

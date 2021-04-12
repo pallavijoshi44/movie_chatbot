@@ -47,9 +47,9 @@ class CountryPickerWidget extends StatelessWidget {
                   isDownIcon: false,
                   showEnglishName: true,
                 ),
-                initialSelection: prefs.getString(COUNTRY_CODE),
+                initialSelection: prefs.getString(KEY_COUNTRY_CODE),
                 onChanged: (CountryCode code) async {
-                  await prefs.setString(COUNTRY_CODE, code.code);
+                  await prefs.setString(KEY_COUNTRY_CODE, code.code);
                   onCountryChanged.call(id, code.code);
                 },
               ),

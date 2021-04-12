@@ -237,75 +237,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isLoading = true;
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _countryCode = prefs.getString(COUNTRY_CODE);
+    String _countryCode = prefs.getString(KEY_COUNTRY_CODE);
 
-    if (_countryCode != null && _countryCode.isNotEmpty) {
-      await _getWatchProvidersAndVideos(movieId, _countryCode);
-    } else {
-      if (Platform.isIOS) {
-        var isGpsEnabled = await Geolocator.isLocationServiceEnabled();
-        if (!isGpsEnabled) {
-          _checkLocationServicesForIOS(isGpsEnabled, prefs);
-        } else {
-          await _handleCountryCode(_countryCode, movieId);
-        }
-      } else {
-        await _handleCountryCode(_countryCode, movieId);
-      }
-    }
-  }
-
-  Future _handleCountryCode(String _countryCode, String movieId) async {
-    try {
-      var currentPosition = await Geolocator.getCurrentPosition();
-      var placeMarks = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
-      if (placeMarks != null && placeMarks.length > 0) {
-        _countryCode = placeMarks[0].isoCountryCode;
-      }
-    } catch (error) {
+    if (_countryCode == null || _countryCode.isEmpty) {
       _countryCode = "IN";
-    } finally {
-      await _getWatchProvidersAndVideos(movieId, _countryCode);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(COUNTRY_CODE, _countryCode);
     }
-  }
-
-  _checkLocationServicesForIOS(
-      bool isGpsEnabled, SharedPreferences prefs) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext ctx) {
-        return CupertinoAlertDialog(
-          title: Text(
-              "Turn on Location Services to allow Mobo to recommend movies in your location"),
-          actions: <Widget>[
-            CupertinoButton(
-              child: Text('Go to Phone Settings'),
-              onPressed: () async {
-                Geolocator.openLocationSettings();
-                Navigator.of(ctx, rootNavigator: true).pop();
-              },
-            ),
-            CupertinoButton(
-              child: Text('Change location from app'),
-              onPressed: () async {
-                _showSettingsScreen(ctx, context, prefs);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future _showSettingsScreen(
-      BuildContext ctx, BuildContext context, SharedPreferences prefs) async {
-    var arguments = {'prefs': prefs};
-    Navigator.of(ctx).pop();
-    Navigator.pushNamed(context, SettingsWidget.routeName,
-        arguments: arguments);
+    await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
 
   Future _getWatchProvidersAndVideos(
@@ -552,50 +489,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               });
             } else {
               if (response.getWebHookPayload() != null) {
-                // setState(() {
-                //   var unreadMessageModel =
-                //       new UnreadMessageModel(type: MessageType.UNREAD_MESSAGE);
-                //   _messages.insert(0, unreadMessageModel);
-                // });
-
-                // var movieDetails = response.getWebHookPayload()['detail'];
-                // var videos = response.getWebHookPayload()['videos'];
-
                 MovieProvidersAndVideoModel movieProviders =
                     new MovieProvidersAndVideoModel(
                         response.getWebHookPayload());
                 setState(() {
                   _doNotShowTyping = true;
                   _handleNewUIForMovieDetails(movieProviders);
-
-                  // if (movieProviders.title != null &&
-                  //     movieProviders.title != "") {
-                  //   _messages.insert(
-                  //       0,
-                  //       new MovieJustWatchModel(
-                  //           type: MessageType.MOVIE_JUST_WATCH,
-                  //           title: movieProviders.title));
-                  // }
-                  // if (movieProviders.providers != null &&
-                  //     movieProviders.providers.length > 0) {
-                  //   movieProviders.providers.forEach((provider) {
-                  //     _messages.insert(
-                  //         0,
-                  //         new MovieProviderModel(
-                  //             text: provider.title,
-                  //             type: MessageType.MOVIE_PROVIDER,
-                  //             logos: provider.logos));
-                  //   });
-                  // }
-                  // if (movieProviders.videoUrl != null) {
-                  //   _messages.insert(
-                  //       0,
-                  //       new MovieTrailerModel(
-                  //         url: movieProviders.videoUrl,
-                  //         thumbNail: movieProviders.videoThumbnail,
-                  //         type: MessageType.MOVIE_TRAILER,
-                  //       ));
-                  // }
                 });
               } else {
                 _scrollToBottom();
@@ -669,23 +568,23 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isCountryChanged = false;
       Platform.isIOS
           ? Navigator.pushReplacement(
-        context,
-        cupertinoPageRoute,
-      )
+              context,
+              cupertinoPageRoute,
+            )
           : Navigator.pushReplacement(
-        context,
-        materialPageRoute,
-      );
+              context,
+              materialPageRoute,
+            );
     } else {
       Platform.isIOS
           ? Navigator.push(
-        context,
-        cupertinoPageRoute,
-      )
+              context,
+              cupertinoPageRoute,
+            )
           : Navigator.push(
-        context,
-        materialPageRoute,
-      );
+              context,
+              materialPageRoute,
+            );
     }
   }
 

@@ -37,7 +37,7 @@ const String MOVIE_RESPONSE =
     "I am looking for the best recommendations for you. You can tap on any of the movie cards to look for the legal means to watch that movie in your location. I will also try to show you the trailer.";
 const String ASK_FOR_MORE =
     "If you want more recommendations, just ask me to 'show more'";
-const String COUNTRY_CODE = 'country_code';
+const String KEY_COUNTRY_CODE = 'key_country_code';
 const String TIP_TEXT = 'Tip';
 const String EXPAND_TEXT = 'more';
 const String COLLAPSE_TEXT = 'less';
@@ -61,6 +61,9 @@ const String NO_MOVIE_WATCH_TEXT = 'No ways to watch this movie in';
 const String NO_TV_WATCH_TEXT = 'No ways to watch this tv show in';
 const String SET_COUNTRY_LOCATION_CONTENT = 'Country to search for movie availability in';
 const String HELP = 'Help';
+const LOCATION_PERMISSION_TEXT = "Turn on Location Services to allow Mobo to recommend ways to watch movies in your location";
+const PHONE_SETTINGS = 'Go to Phone Settings';
+const CHANGE_LOCATION_FROM_APP = 'Change location from app';
 const String DEFAULT_HELP_CONTENT =
     'I would love to help you out. Let me tell you how to make use of my ability to recommend the best movies for you to watch.' +
         '\n\n When you ask me to give you some movie recommendations, I always ask if you are interested in some specific genres. You can select one or more genres from the list of genres that I present. If you are not picky on genres, you can just tell me and I will not bother you with this list. Easy-peasy.' +

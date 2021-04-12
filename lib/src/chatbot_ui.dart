@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/models/carousel_model.dart';
 import 'package:flutter_app/src/models/chat_model.dart';
@@ -17,16 +17,15 @@ import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
+import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
-import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';

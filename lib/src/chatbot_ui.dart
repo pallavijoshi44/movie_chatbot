@@ -211,7 +211,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  void _selectGenres(List<dynamic> selectedGenres) {
+  Future<void> _selectGenres(List<dynamic> selectedGenres) async {
     setState(() {
       _messages.removeAt(0);
     });
@@ -225,7 +225,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     _scrollToBottom();
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());
-    var parameters = "'parameters' : { 'genres': $genres }";
+    var countryCode = await _getCountryCode();
+    var parameters =
+        "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
     _getDialogFlowResponseByEvent(
         GENRES_SELECTED_OR_IGNORED, parameters, false);
   }
@@ -235,13 +237,18 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _isLoading = true;
     });
+    String _countryCode = await _getCountryCode();
+    await _getWatchProvidersAndVideos(movieId, _countryCode);
+  }
+
+  Future<String> _getCountryCode() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String _countryCode = prefs.getString(KEY_COUNTRY_CODE);
 
     if (_countryCode == null || _countryCode.isEmpty) {
       _countryCode = "IN";
     }
-    await _getWatchProvidersAndVideos(movieId, _countryCode);
+    return _countryCode;
   }
 
   Future _getWatchProvidersAndVideos(
@@ -264,7 +271,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     );
   }
 
-  void _insertQuickReply(String reply) {
+  Future<void> _insertQuickReply(String reply) async {
     setState(() {
       _messages.removeAt(0);
     });
@@ -277,8 +284,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
     if (reply.toLowerCase() == IGNORE_GENRES) {
       _pageNumber = 2;
+      String countryCode = await _getCountryCode();
+      var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
       _getDialogFlowResponseByEvent(
-          GENRES_SELECTED_OR_IGNORED, DEFAULT_PARAMETERS_FOR_EVENT, false);
+          GENRES_SELECTED_OR_IGNORED, parameters, false);
       return;
     }
     if (reply.toLowerCase() == SAME_CRITERIA) {

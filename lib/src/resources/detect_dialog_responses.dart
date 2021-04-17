@@ -1,6 +1,6 @@
+import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/dialog_flow.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
-import 'package:flutter_dialogflow/v2/auth_google.dart';
 
 import '../domain/ai_response.dart';
 
@@ -65,6 +65,12 @@ class DetectDialogResponses {
     DialogFlow dialogflow =
         DialogFlow(authGoogle: authGoogle, language: Language.english);
     return dialogflow;
+  }
+
+  Future<void> deleteDialogFlowContexts() async {
+    AuthGoogle authGoogle = await getAuthGoogle();
+    DialogFlow dialogflow = getDialogFlow(authGoogle);
+    await dialogflow.deleteContexts();
   }
 }
 

@@ -62,6 +62,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    _deleteDialogFlowContexts();
     _getDialogFlowResponseByEvent(
         WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, true);
     super.initState();
@@ -226,10 +227,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     _selectedGenres = selectedGenres;
     var genres = jsonEncode(selectedGenres.toList());
     var countryCode = await _getCountryCode();
-    var parameters =
-        "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
-    _getDialogFlowResponseByEvent(
-        GENRES_SELECTED_OR_IGNORED, parameters, false);
+    // var parameters =
+    //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
+     var parameters =
+        "'parameters' : { 'movie-genres': $genres , 'watch-region' : '$countryCode' }";
+     _getDialogFlowResponseByEvent(
+         NEW_WELCOME_EVENT, parameters, false);
   }
 
   Future<void> _movieItemClicked(String movieId) async {
@@ -328,6 +331,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         defaultResponse: _defaultResponse);
 
     detectDialogResponses.callDialogFlow();
+  }
+
+  void _deleteDialogFlowContexts() {
+    DetectDialogResponses detectDialogResponses = new DetectDialogResponses();
+    detectDialogResponses.deleteDialogFlowContexts();
   }
 
   void _defaultResponse() {

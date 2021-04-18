@@ -66,6 +66,7 @@ const String HELP = 'Help';
 const LOCATION_PERMISSION_TEXT = "Turn on Location Services to allow Mobo to recommend ways to watch movies in your location";
 const PHONE_SETTINGS = 'Go to Phone Settings';
 const CHANGE_LOCATION_FROM_APP = 'Change location from app';
+const MOVIE_OR_TV_CARD_TAPPED_EVENT = 'MOVIE_OR_TV_CARD_TAPPED';
 const String DEFAULT_HELP_CONTENT =
     'I would love to help you out. Let me tell you how to make use of my ability to recommend the best movies for you to watch.' +
         '\n\n When you ask me to give you some movie recommendations, I always ask if you are interested in some specific genres. You can select one or more genres from the list of genres that I present. If you are not picky on genres, you can just tell me and I will not bother you with this list. Easy-peasy.' +

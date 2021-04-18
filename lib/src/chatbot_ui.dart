@@ -50,6 +50,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   int _unknownAction = 0;
   bool _isTextFieldEnabled = false;
   bool _isLoading = false;
+  bool _removeNoPreferenceQuickReply = false;
   int _movieSliderShownCount = 0;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
@@ -62,9 +63,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _deleteDialogFlowContexts();
-    _getDialogFlowResponseByEvent(
-        WELCOME_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, true);
+    _callWelcomeIntent();
     super.initState();
+  }
+
+  Future<void> _callWelcomeIntent() async {
+    var countryCode = await _getCountryCode();
+    var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
+    _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
   }
 
   @override
@@ -256,10 +262,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future _getWatchProvidersAndVideos(
-      String movieId, String _countryCode) async {
-    var parameters =
-        "'parameters' : { 'id':  $movieId, 'country_code': '$_countryCode'}";
-    _getDialogFlowResponseByEvent(MOVIE_TAPPED_EVENT, parameters, true);
+      String id, String _countryCode) async {
+     var parameters =
+         "'parameters' : { 'id':  $id, 'country_code': '$_countryCode'}";
+    _getDialogFlowResponseByEvent(MOVIE_OR_TV_CARD_TAPPED_EVENT, parameters, true);
   }
 
   void _stopAllTimers() {
@@ -345,7 +351,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
     setState(() {
-      //_isTextFieldEnabled = true;
+      _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);
@@ -406,13 +412,18 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
           if (payload != null) {
             QuickReplies replies = new QuickReplies(payload);
-
+            var quickReplies = replies.quickReplies;
             setState(() {
               _scrollToBottom();
-              _isTextFieldEnabled = false;
+              if (quickReplies != null && quickReplies.length == 1) {
+                _removeNoPreferenceQuickReply = true;
+                _isTextFieldEnabled = true;
+              } else {
+                _isTextFieldEnabled = false;
+              }
               var replyModel = ReplyModel(
                 text: replies.title,
-                quickReplies: replies.quickReplies,
+                quickReplies: quickReplies,
                 updateQuickReply: _insertQuickReply,
                 type: MessageType.QUICK_REPLY,
               );
@@ -511,7 +522,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 } else {
                   _scrollToBottom();
                   var queryText = element['text']['text'] != null &&
-                         element['text']['text'][0] != ""
+                          element['text']['text'][0] != ""
                       ? element['text']['text'][0]
                       : DEFAULT_RESPONSE;
 
@@ -539,6 +550,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _textController.clear();
       setState(() {
         _doNotShowTyping = false;
+        if(_removeNoPreferenceQuickReply && _messages.first is ReplyModel){
+          _messages.removeAt(0);
+          _removeNoPreferenceQuickReply = false;
+        }
         var chatModel = new ChatModel(
             type: MessageType.CHAT_MESSAGE, text: text, chatType: true);
         _messages.insert(0, chatModel);

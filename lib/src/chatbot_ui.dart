@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -230,16 +231,17 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
     _scrollToBottom();
     _selectedGenres = selectedGenres;
-    // var genres = jsonEncode(selectedGenres.toList());
+    var genres = jsonEncode(selectedGenres.toList());
     var countryCode = await _getCountryCode();
     // var parameters =
     //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
-    // var parameters =
-    //     "'parameters' : { 'movie-genres': $genres , 'watch-region' : '$countryCode' }";
-    // _getDialogFlowResponseByEvent(NEW_WELCOME_EVENT, parameters, false);
-    var genres =
-        _selectedGenres.reduce((value, element) => value + ", " + element);
-    _getDialogFlowResponse(genres);
+    //TODO - add tv genres
+    var parameters =
+        "'parameters' : { 'movie-genres': $genres  }";
+    _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
+    // var genres =
+    //     _selectedGenres.reduce((value, element) => value + ", " + element);
+    // _getDialogFlowResponse(genres);
   }
 
   Future<void> _movieItemClicked(String movieId) async {

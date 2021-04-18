@@ -34,17 +34,27 @@ class AIResponse {
     return _queryResult.fulfillmentText;
   }
 
-  String getChatMessage() {
-    return getMessage() ?? getDefaultOrChatMessage();
+  List<String> getChatMessage() {
+    return getDefaultOrChatMessage();
   }
 
-  String getDefaultOrChatMessage() {
-    var listMessage = getListMessage()[0]['text']['text'];
-    return (listMessage != null &&
+  List<String> getDefaultOrChatMessage() {
+    List<String> list = [];
+    if (getListMessage() != null && getListMessage().length > 0) {
+      getListMessage().forEach((element) {
+        var listMessage = element['text']['text'];
+        if (listMessage != null &&
             listMessage[0] != null &&
-            listMessage[0].toString().isNotEmpty)
-        ? listMessage[0]
-        : DEFAULT_RESPONSE;
+            listMessage[0].toString().isNotEmpty) {
+          list.add(listMessage[0]);
+        }
+      });
+    }
+    if (list.isEmpty) {
+      var message = getMessage() ?? DEFAULT_RESPONSE;
+      list.add(message);
+    }
+    return list;
   }
 
   List<dynamic> getListMessage() {

@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class QuickReply extends StatelessWidget {
   QuickReply({this.quickReplies, this.insertQuickReply});
@@ -14,7 +12,8 @@ class QuickReply extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 15.0),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+      child:
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         CircleAvatar(
           child: Text(''),
           backgroundColor: Colors.transparent,
@@ -26,11 +25,13 @@ class QuickReply extends StatelessWidget {
               direction: Axis.horizontal,
               children: quickReplies.map((quickReply) {
                 return Container(
+                    margin: EdgeInsets.all(5),
                     child: OutlineButton(
                       disabledBorderColor: Colors.grey[600],
                       disabledTextColor: Colors.grey[900],
                       child: Text(quickReply,
-                          style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
+                          style:
+                              TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
                       borderSide: BorderSide(color: Colors.lightGreen[900]),
                       textColor: Colors.lightGreen[900],
                       shape: RoundedRectangleBorder(
@@ -45,5 +46,4 @@ class QuickReply extends StatelessWidget {
     );
     //  BotChatMessage(text
   }
-
 }

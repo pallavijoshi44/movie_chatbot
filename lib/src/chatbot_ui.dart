@@ -31,7 +31,7 @@ import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
 import 'ui/movie_details/movie_just_watch.dart';
 import 'ui/movie_provider.dart';
-import 'ui/multi_select.dart';
+import 'ui/multiselect/multi_select.dart';
 import 'ui/quick_reply.dart';
 import 'ui/tips.dart';
 

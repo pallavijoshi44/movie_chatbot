@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:twinkle_button/twinkle_button.dart';
 
 import '../domain/constants.dart';
 
@@ -10,14 +11,16 @@ class TextComposer extends StatelessWidget {
   final Function textEditorChanged;
   final Function handleSubmitted;
   final bool isTextFieldEnabled;
-  final String placeHolderText;
+  final bool shouldShowTwinkleButton;
+  final Function handleTwinkleButton;
 
   TextComposer(
       {this.textController,
       this.textEditorChanged,
       this.handleSubmitted,
       this.isTextFieldEnabled,
-      this.placeHolderText});
+      this.shouldShowTwinkleButton,
+      this.handleTwinkleButton});
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +29,7 @@ class TextComposer extends StatelessWidget {
         : new IconTheme(
             data: new IconThemeData(color: Theme.of(context).accentColor),
             child: new Container(
+              height: 50,
               decoration: new BoxDecoration(color: Theme.of(context).cardColor),
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: new Row(
@@ -36,19 +40,39 @@ class TextComposer extends StatelessWidget {
                     controller: textController,
                     onChanged: textEditorChanged,
                     onSubmitted: handleSubmitted,
+                    style: TextStyle(fontSize: 14, fontFamily: 'QuickSand'),
                     maxLines: null,
-                    decoration: new InputDecoration.collapsed(
-                        hintText: HINT_TEXT),
+                    decoration:
+                        new InputDecoration.collapsed(hintText: HINT_TEXT),
                   )),
                   new Container(
-                      margin: new EdgeInsets.symmetric(horizontal: 4.0),
-                      child: new IconButton(
-                          icon: new Icon(Icons.send),
-                          onPressed: _handleTextEntered())),
+                      child: shouldShowTwinkleButton
+                          ? _buildTwinkleButton()
+                          : new IconButton(
+                              icon: new Icon(Icons.send),
+                              onPressed: _handleTextEntered())),
                 ],
               ),
             ),
           );
+  }
+
+  TwinkleButton _buildTwinkleButton() {
+    return TwinkleButton(
+        buttonHeight: 30,
+        buttonWidth: 60,
+        buttonTitle: Text(
+          'Send',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w300,
+            fontSize: 14.0,
+          ),
+        ),
+        buttonColor: Colors.green[100],
+        onclickButtonFunction: () {
+          handleTwinkleButton(textController.text);
+        });
   }
 
   Widget _buildForIOS(BuildContext context) {
@@ -78,7 +102,10 @@ class TextComposer extends StatelessWidget {
               ),
             ),
             CupertinoButton(
-                child: Icon(Icons.send), onPressed: _handleTextEntered())
+                child: shouldShowTwinkleButton
+                    ? _buildTwinkleButton()
+                    : Icon(Icons.send),
+                onPressed: _handleTextEntered())
           ],
         ),
       ),

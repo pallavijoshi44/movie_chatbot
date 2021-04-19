@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -56,7 +57,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
   bool _isCountryChanged = false;
-  String _placeHolderText = HINT_TEXT;
+  bool _shouldShowTwinkleButton = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -198,7 +199,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               textEditorChanged: _textEditorChanged,
               handleSubmitted: _handleSubmitted,
               isTextFieldEnabled: _isTextFieldEnabled,
-              placeHolderText: _placeHolderText,
+              shouldShowTwinkleButton: _shouldShowTwinkleButton,
+              handleTwinkleButton: _handleTwinkleButton,
             ),
           ]),
           Center(
@@ -223,11 +225,25 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _multiSelectItemClicked(String value) async {
+  Future<void> _multiSelectItemClicked(String value, bool isSelected) async {
     setState(() {
-     // _messages.removeAt(0);
-      _textController.text = _textController.text.isEmpty ? value : _textController.text + ', ' + value;
-      _isTextFieldEnabled = true;
+      // _messages.removeAt(0);
+      //_isTextFieldEnabled = true;
+      if (isSelected) {
+        _textController.text = _textController.text.isEmpty
+            ? value
+            : _textController.text + ' ' + value;
+      } else {
+        if (_textController.text.contains(value)) {
+          _textController.text =
+              _textController.text.replaceAll(value, "").trim();
+        }
+      }
+      if (_textController.text.isEmpty) {
+        _shouldShowTwinkleButton = false;
+      } else {
+        _shouldShowTwinkleButton = true;
+      }
     });
     // if (selectedGenres.isEmpty) {
     //   _showChatMessage(ALL_GENRES_TEXT, true, true);
@@ -238,16 +254,27 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
     _scrollToBottom();
     //_selectedGenres = selectedGenres;
-   // var genres = jsonEncode(selectedGenres.toList());
+    // var genres = jsonEncode(selectedGenres.toList());
     var countryCode = await _getCountryCode();
     // var parameters =
     //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
     //TODO - add tv genres
-  //  var parameters = "'parameters' : { 'movie-genres': $genres  }";
-  //  _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
+    //  var parameters = "'parameters' : { 'movie-genres': $genres  }";
+    //  _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
     // var genres =
     //     _selectedGenres.reduce((value, element) => value + ", " + element);
     // _getDialogFlowResponse(genres);
+  }
+
+  void _handleTwinkleButton(String text) {
+    setState(() {
+      _shouldShowTwinkleButton = false;
+      _messages.removeAt(0);
+    });
+    var list = text.split(" ");
+    var genres = jsonEncode(list);
+    var parameters = "'parameters' : { 'movie-genres': $genres  }";
+    _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
   }
 
   Future<void> _movieItemClicked(String movieId) async {

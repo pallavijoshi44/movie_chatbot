@@ -58,12 +58,12 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
               side: BorderSide(color: Colors.lightGreen[900]),
               borderRadius: BorderRadius.all(Radius.circular(15))),
           selected:  _selectedItems[index] ?? false ,
-          selectedColor: Colors.green[100],
+          selectedColor: Colors.lightGreen[100],
           onSelected: (value) {
-            if (widget.onTap != null) widget.onTap(item.label);
             setState(() {
               _selectedItems[index] = !_selectedItems[index];
             });
+            if (widget.onTap != null) widget.onTap(item.label, _selectedItems[index]);
           }),
     );
   }

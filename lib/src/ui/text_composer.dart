@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../domain/constants.dart';
 
 class TextComposer extends StatelessWidget {
@@ -9,9 +10,14 @@ class TextComposer extends StatelessWidget {
   final Function textEditorChanged;
   final Function handleSubmitted;
   final bool isTextFieldEnabled;
+  final String placeHolderText;
 
-  TextComposer(this.textController, this.textEditorChanged,
-      this.handleSubmitted, this.isTextFieldEnabled);
+  TextComposer(
+      {this.textController,
+      this.textEditorChanged,
+      this.handleSubmitted,
+      this.isTextFieldEnabled,
+      this.placeHolderText});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +36,9 @@ class TextComposer extends StatelessWidget {
                     controller: textController,
                     onChanged: textEditorChanged,
                     onSubmitted: handleSubmitted,
-                    decoration:
-                        new InputDecoration.collapsed(hintText: HINT_TEXT),
+                    maxLines: null,
+                    decoration: new InputDecoration.collapsed(
+                        hintText: HINT_TEXT),
                   )),
                   new Container(
                       margin: new EdgeInsets.symmetric(horizontal: 4.0),
@@ -55,8 +62,9 @@ class TextComposer extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.only(
                     top: 5.0, bottom: 5.0, left: 20.0, right: 0.0),
-                decoration: BoxDecoration(color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(30))),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
                 child: CupertinoTextField.borderless(
                     style: TextStyle(
                         color: Colors.black,
@@ -70,8 +78,7 @@ class TextComposer extends StatelessWidget {
               ),
             ),
             CupertinoButton(
-                child: Icon(Icons.send),
-                onPressed: _handleTextEntered())
+                child: Icon(Icons.send), onPressed: _handleTextEntered())
           ],
         ),
       ),
@@ -83,5 +90,4 @@ class TextComposer extends StatelessWidget {
         ? () => handleSubmitted(textController.text)
         : null;
   }
-
 }

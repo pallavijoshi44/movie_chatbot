@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -57,6 +56,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
   bool _isCountryChanged = false;
+  String _placeHolderText = HINT_TEXT;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -193,8 +193,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               ),
             ),
             Divider(height: 1.0),
-            TextComposer(_textController, _textEditorChanged, _handleSubmitted,
-                _isTextFieldEnabled),
+            TextComposer(
+              textController: _textController,
+              textEditorChanged: _textEditorChanged,
+              handleSubmitted: _handleSubmitted,
+              isTextFieldEnabled: _isTextFieldEnabled,
+              placeHolderText: _placeHolderText,
+            ),
           ]),
           Center(
             child: Container(
@@ -218,27 +223,28 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _selectGenres(List<dynamic> selectedGenres) async {
+  Future<void> _multiSelectItemClicked(String value) async {
     setState(() {
-      _messages.removeAt(0);
+     // _messages.removeAt(0);
+      _textController.text = _textController.text.isEmpty ? value : _textController.text + ', ' + value;
+      _isTextFieldEnabled = true;
     });
-    if (selectedGenres.isEmpty) {
-      _showChatMessage(ALL_GENRES_TEXT, true, true);
-    } else {
-      _showChatMessage(
-          SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
-    }
+    // if (selectedGenres.isEmpty) {
+    //   _showChatMessage(ALL_GENRES_TEXT, true, true);
+    // } else {
+    //   _showChatMessage(
+    //       SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
+    // }
 
     _scrollToBottom();
-    _selectedGenres = selectedGenres;
-    var genres = jsonEncode(selectedGenres.toList());
+    //_selectedGenres = selectedGenres;
+   // var genres = jsonEncode(selectedGenres.toList());
     var countryCode = await _getCountryCode();
     // var parameters =
     //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
     //TODO - add tv genres
-    var parameters =
-        "'parameters' : { 'movie-genres': $genres  }";
-    _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
+  //  var parameters = "'parameters' : { 'movie-genres': $genres  }";
+  //  _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
     // var genres =
     //     _selectedGenres.reduce((value, element) => value + ", " + element);
     // _getDialogFlowResponse(genres);
@@ -263,11 +269,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     return _countryCode;
   }
 
-  Future _getWatchProvidersAndVideos(
-      String id, String _countryCode) async {
-     var parameters =
-         "'parameters' : { 'id':  $id, 'country_code': '$_countryCode'}";
-    _getDialogFlowResponseByEvent(MOVIE_OR_TV_CARD_TAPPED_EVENT, parameters, true);
+  Future _getWatchProvidersAndVideos(String id, String _countryCode) async {
+    var parameters =
+        "'parameters' : { 'id':  $id, 'country_code': '$_countryCode'}";
+    _getDialogFlowResponseByEvent(
+        MOVIE_OR_TV_CARD_TAPPED_EVENT, parameters, true);
   }
 
   void _stopAllTimers() {
@@ -506,7 +512,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   var multiSelectModel = MultiSelectModel(
                     text: card.title,
                     buttons: card.buttons,
-                    updateMultiSelect: _selectGenres,
+                    updateMultiSelect: _multiSelectItemClicked,
                     type: MessageType.MULTI_SELECT,
                   );
                   _doNotShowTyping = true;
@@ -552,7 +558,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _textController.clear();
       setState(() {
         _doNotShowTyping = false;
-        if(_removeNoPreferenceQuickReply && _messages.first is ReplyModel){
+        if (_removeNoPreferenceQuickReply && _messages.first is ReplyModel) {
           _messages.removeAt(0);
           _removeNoPreferenceQuickReply = false;
         }

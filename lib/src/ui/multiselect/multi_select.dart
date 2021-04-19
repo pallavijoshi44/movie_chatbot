@@ -35,7 +35,7 @@ class MultiSelect extends StatelessWidget {
             child: Material(
                 child: MultiSelectChipDisplay(
               items: _items,
-              onTap: (values) => insertMultiSelect([values]),
+              onTap: (value) => insertMultiSelect(value),
             )
                 // MultiSelectBottomSheetField(
                 //   decoration: BoxDecoration(

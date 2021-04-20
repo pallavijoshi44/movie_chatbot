@@ -35,6 +35,7 @@ const String DEFAULT_RESPONSE =
 const String WAITING_MESSAGE = "Mobo is typing...";
 const String ALL_GENRES_TEXT = "I want to get recommendations for all genres";
 const String SELECTED_GENRES_TEXT = "I want to get recommendations for these genres: \n - ";
+const String SELECTED_GENRES = "I want to get recommendations for these genres: ";
 const String MOVIE_RESPONSE =
     "I am looking for the best recommendations for you. You can tap on any of the movie cards to look for the legal means to watch that movie in your location. I will also try to show you the trailer.";
 const String ASK_FOR_MORE =

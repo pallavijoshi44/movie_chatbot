@@ -232,7 +232,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       if (isSelected) {
         _textController.text = _textController.text.isEmpty
             ? value
-            : _textController.text + ' ' + value;
+            : _textController.text + ', ' + value;
       } else {
         if (_textController.text.contains(value)) {
           _textController.text =
@@ -274,6 +274,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _shouldShowTwinkleButton = false;
       _messages.removeAt(0);
+      _showChatMessage(
+          SELECTED_GENRES + text, true, true);
     });
     var list = text.split(" ");
     var genres = jsonEncode(list);

@@ -21,6 +21,7 @@ import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
+import 'package:flutter_app/src/ui/typing_indicator.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
@@ -182,15 +183,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               },
               itemCount: _messages.length,
             )),
-            Visibility(
-              visible: !_doNotShowTyping,
-              child: Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.all(10.0),
-                child: Text(WAITING_MESSAGE,
-                    style: Platform.isIOS
-                        ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-                        : Theme.of(context).textTheme.headline),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: TypingIndicator(
+                showIndicator: !_doNotShowTyping,
               ),
             ),
             Divider(height: 1.0),

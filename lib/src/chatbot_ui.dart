@@ -249,13 +249,17 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     //   _showChatMessage(ALL_GENRES_TEXT, true, true);
     // } else {
     //   _showChatMessage(
-    //       SELECTED_GENRES_TEXT + selectedGenres.join("\n - "), true, true);
+    //       SELECTED_GENRES_TEXT + selectedGenres
+    //
+    //
+    //
+    //    .join("\n - "), true, true);
     // }
 
-    _scrollToBottom();
+   // _scrollToBottom();
     //_selectedGenres = selectedGenres;
     // var genres = jsonEncode(selectedGenres.toList());
-    var countryCode = await _getCountryCode();
+   // var countryCode = await _getCountryCode();
     // var parameters =
     //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
     //TODO - add tv genres

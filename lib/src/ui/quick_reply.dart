@@ -1,6 +1,7 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'choice_chip_mobo.dart';
 
 class QuickReply extends StatelessWidget {
   QuickReply({this.quickReplies, this.insertQuickReply});
@@ -13,33 +14,23 @@ class QuickReply extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(top: 15.0),
       child:
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+      Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         CircleAvatar(
           child: Text(''),
           backgroundColor: Colors.transparent,
         ),
         Expanded(
           child: Wrap(
-              alignment: WrapAlignment.spaceAround,
+              alignment: WrapAlignment.spaceEvenly,
               runSpacing: 10,
               direction: Axis.horizontal,
               children: quickReplies.map((quickReply) {
-                return Container(
-                    margin: EdgeInsets.all(5),
-                    child: OutlineButton(
-                      disabledBorderColor: Colors.grey[600],
-                      disabledTextColor: Colors.grey[900],
-                      child: Text(quickReply,
-                          style:
-                              TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
-                      borderSide: BorderSide(color: Colors.lightGreen[900]),
-                      textColor: Colors.lightGreen[900],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15))),
-                      onPressed: () {
-                        return insertQuickReply(quickReply);
-                      },
-                    ));
+                return ChoiceChipMobo(
+                    label: quickReply,
+                    selected: false,
+                    onSelected: (isSelected) {
+                      return insertQuickReply(quickReply);
+                    });
               }).toList()),
         ),
       ]),

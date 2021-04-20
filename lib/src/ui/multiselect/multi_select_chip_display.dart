@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/ui/choice_chip_mobo.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class MultiSelectChipDisplay<V> extends StatefulWidget {
@@ -8,7 +9,8 @@ class MultiSelectChipDisplay<V> extends StatefulWidget {
   MultiSelectChipDisplay({this.items, this.onTap});
 
   @override
-  _MultiSelectChipDisplayState<V> createState() => _MultiSelectChipDisplayState<V>();
+  _MultiSelectChipDisplayState<V> createState() =>
+      _MultiSelectChipDisplayState<V>();
 }
 
 class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
@@ -38,33 +40,20 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
               controller: _scrollController,
               itemCount: widget.items.length,
               itemBuilder: (ctx, index) {
-                return _buildItem(widget.items[index], context, index);
+                var item = widget.items[index];
+                return ChoiceChipMobo(
+                    label: item.label,
+                    selected: _selectedItems[index] ?? false,
+                    onSelected: (value) {
+                      setState(() {
+                        _selectedItems[index] = !_selectedItems[index];
+                      });
+                      if (widget.onTap != null)
+                        widget.onTap(item.label, _selectedItems[index]);
+                    });
               },
             ),
           )),
-    );
-  }
-
-  Widget _buildItem(MultiSelectItem<V> item, BuildContext context, int index) {
-    return Container(
-      padding: const EdgeInsets.all(2.0),
-      child: ChoiceChip(
-          backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-          disabledColor: Colors.green[300],
-          label: Text(item.label,
-              style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
-          labelStyle: TextStyle(color: Colors.lightGreen[900]),
-          shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.lightGreen[900]),
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          selected:  _selectedItems[index] ?? false ,
-          selectedColor: Colors.lightGreen[100],
-          onSelected: (value) {
-            setState(() {
-              _selectedItems[index] = !_selectedItems[index];
-            });
-            if (widget.onTap != null) widget.onTap(item.label, _selectedItems[index]);
-          }),
     );
   }
 }

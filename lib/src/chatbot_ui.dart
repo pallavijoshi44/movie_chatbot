@@ -256,10 +256,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     //    .join("\n - "), true, true);
     // }
 
-   // _scrollToBottom();
+    // _scrollToBottom();
     //_selectedGenres = selectedGenres;
     // var genres = jsonEncode(selectedGenres.toList());
-   // var countryCode = await _getCountryCode();
+    // var countryCode = await _getCountryCode();
     // var parameters =
     //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
     //TODO - add tv genres
@@ -547,6 +547,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     type: MessageType.MULTI_SELECT,
                   );
                   _doNotShowTyping = true;
+                  _messages.insert(
+                      0,
+                      new ChatModel(
+                          type: MessageType.CHAT_MESSAGE,
+                          text: card.title,
+                          chatType: false));
+
                   _messages.insert(0, multiSelectModel);
                 });
               } else {

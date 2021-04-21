@@ -222,8 +222,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _multiSelectItemClicked(
-      String value, bool isSelected) async {
+  Future<void> _multiSelectItemClicked(String value, bool isSelected) async {
     setState(() {
       if (isSelected) {
         _textController.text = _textController.text.isEmpty
@@ -311,32 +310,34 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _insertQuickReply(String reply) async {
-    setState(() {
-      _messages.removeAt(0);
-    });
-    _showChatMessage(reply, true, true);
+  Future<void> _insertQuickReply(String reply, bool isTapped) async {
+    if (isTapped) {
+      setState(() {
+        _messages.removeAt(0);
+      });
+      _showChatMessage(reply, true, true);
 
-    if (reply.toLowerCase() == SHOW_GENRES) {
-      _pageNumber = 2;
+      if (reply.toLowerCase() == SHOW_GENRES) {
+        _pageNumber = 2;
+        _getDialogFlowResponse(reply);
+        return;
+      }
+      if (reply.toLowerCase() == IGNORE_GENRES) {
+        _pageNumber = 2;
+        String countryCode = await _getCountryCode();
+        var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
+        _getDialogFlowResponseByEvent(
+            GENRES_SELECTED_OR_IGNORED, parameters, false);
+        return;
+      }
+      if (reply.toLowerCase() == SAME_CRITERIA) {
+        var param = "'parameters' : { 'page-number':  $_pageNumber }";
+        _getDialogFlowResponseByEvent(SAME_CRITERIA_EVENT, param, false);
+        _pageNumber = _pageNumber + 1;
+        return;
+      }
       _getDialogFlowResponse(reply);
-      return;
     }
-    if (reply.toLowerCase() == IGNORE_GENRES) {
-      _pageNumber = 2;
-      String countryCode = await _getCountryCode();
-      var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
-      _getDialogFlowResponseByEvent(
-          GENRES_SELECTED_OR_IGNORED, parameters, false);
-      return;
-    }
-    if (reply.toLowerCase() == SAME_CRITERIA) {
-      var param = "'parameters' : { 'page-number':  $_pageNumber }";
-      _getDialogFlowResponseByEvent(SAME_CRITERIA_EVENT, param, false);
-      _pageNumber = _pageNumber + 1;
-      return;
-    }
-    _getDialogFlowResponse(reply);
   }
 
   void _getDialogFlowResponse(query) async {
@@ -511,7 +512,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             0,
             new ChatModel(
                 type: MessageType.CHAT_MESSAGE,
-                text: card.title,
+                text: additionalText,
                 chatType: false));
       }
 
@@ -527,57 +528,57 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _constructCarousel(element) {
-      CarouselSelect carouselSelect = new CarouselSelect(element);
+    CarouselSelect carouselSelect = new CarouselSelect(element);
 
-      if (_movieSliderShownCount == 0) {
-        _stopAllTimers();
-        _movieSliderShownCount++;
+    if (_movieSliderShownCount == 0) {
+      _stopAllTimers();
+      _movieSliderShownCount++;
+      setState(() {
+        _isTextFieldEnabled = false;
+        var chatModel = new ChatModel(
+            type: MessageType.CHAT_MESSAGE,
+            text: MOVIE_RESPONSE,
+            chatType: false);
+        _messages.insert(0, chatModel);
+      });
+
+      Future.delayed(const Duration(milliseconds: 2000), () {
         setState(() {
           _isTextFieldEnabled = false;
           var chatModel = new ChatModel(
               type: MessageType.CHAT_MESSAGE,
-              text: MOVIE_RESPONSE,
+              text: ASK_FOR_MORE,
               chatType: false);
           _messages.insert(0, chatModel);
         });
-
         Future.delayed(const Duration(milliseconds: 2000), () {
           setState(() {
-            _isTextFieldEnabled = false;
-            var chatModel = new ChatModel(
-                type: MessageType.CHAT_MESSAGE,
-                text: ASK_FOR_MORE,
-                chatType: false);
-            _messages.insert(0, chatModel);
-          });
-          Future.delayed(const Duration(milliseconds: 2000), () {
-            setState(() {
-              _doNotShowTyping = true;
-              _isTextFieldEnabled = true;
-              var carouselModel = CarouselModel(
-                carouselSelect: carouselSelect,
-                type: MessageType.CAROUSEL,
-              );
-              _messages.insert(0, carouselModel);
-            });
+            _doNotShowTyping = true;
+            _isTextFieldEnabled = true;
+            var carouselModel = CarouselModel(
+              carouselSelect: carouselSelect,
+              type: MessageType.CAROUSEL,
+            );
+            _messages.insert(0, carouselModel);
           });
         });
-      } else {
-        if (_movieSliderShownCount < 5)
-          _movieSliderShownCount++;
-        else
-          _movieSliderShownCount = 0;
+      });
+    } else {
+      if (_movieSliderShownCount < 5)
+        _movieSliderShownCount++;
+      else
+        _movieSliderShownCount = 0;
 
-        setState(() {
-          _doNotShowTyping = true;
-          _isTextFieldEnabled = true;
-          var carouselModel = CarouselModel(
-            carouselSelect: carouselSelect,
-            type: MessageType.CAROUSEL,
-          );
-          _messages.insert(0, carouselModel);
-        });
-      }
+      setState(() {
+        _doNotShowTyping = true;
+        _isTextFieldEnabled = true;
+        var carouselModel = CarouselModel(
+          carouselSelect: carouselSelect,
+          type: MessageType.CAROUSEL,
+        );
+        _messages.insert(0, carouselModel);
+      });
+    }
   }
 
   void _constructQuickReplies(payload) {

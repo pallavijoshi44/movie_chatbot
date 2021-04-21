@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 
 import 'choice_chip_mobo.dart';
 
-class QuickReply extends StatelessWidget {
+class QuickReply extends StatefulWidget {
   QuickReply({this.quickReplies, this.insertQuickReply});
 
   final List<String> quickReplies;
   final Function insertQuickReply;
 
+  @override
+  _QuickReplyState createState() => _QuickReplyState();
+}
+
+class _QuickReplyState extends State<QuickReply> {
+  bool _isSelected = true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,12 +30,16 @@ class QuickReply extends StatelessWidget {
               alignment: WrapAlignment.spaceEvenly,
               runSpacing: 10,
               direction: Axis.horizontal,
-              children: quickReplies.map((quickReply) {
+              children: widget.quickReplies.map((quickReply) {
                 return ChoiceChipMobo(
                     label: quickReply,
                     selected: false,
                     onSelected: (isSelected) {
-                      return insertQuickReply(quickReply);
+                      var isTapped = _isSelected;
+                      setState(() {
+                        _isSelected = false;
+                      });
+                      return widget.insertQuickReply(quickReply, isTapped);
                     });
               }).toList()),
         ),

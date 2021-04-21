@@ -555,10 +555,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                   _messages.insert(0, multiSelectModel);
                 });
               } else {
-                if (response.getWebHookPayload() != null) {
+                if (response.getWatchProviders() != null) {
                   MovieProvidersAndVideoModel movieProviders =
                       new MovieProvidersAndVideoModel(
-                          response.getWebHookPayload());
+                          response.getWatchProviders());
                   setState(() {
                     _doNotShowTyping = true;
                     _handleNewUIForMovieDetails(movieProviders);

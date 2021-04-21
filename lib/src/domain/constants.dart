@@ -92,3 +92,8 @@ const String DEFAULT_HELP_CONTENT =
         '\n\nOf course, it is likely that you don\'t like any of my recommendations, or that you have watched all those movies. If this is the case, I will still stand by your side. You can just ask me to \'Show more\'. I will give you two simple choices. One will be to show more recommendations on the same criteria that you previously chose. The other will be to start over the search with new criteria.' +
         '\n\nI hope that I am able to provide you with awesome recommendations and you enjoy every movie you watch.' +
         '\n\nHappy binging!;';
+
+
+const MULTI_SELECT_TYPE_WATCH_PROVIDERS = "watchProviders";
+const MULTI_SELECT_TYPE_GENRES = "genres";
+const MULTI_SELECT_TYPE_MOVIE_DETAILS = "movieDetails";

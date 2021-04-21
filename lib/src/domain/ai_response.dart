@@ -88,4 +88,11 @@ class AIResponse {
   QueryResult get queryResult {
     return _queryResult;
   }
+
+  dynamic getWatchProviders() {
+    if (_webhookPayload != null && _webhookPayload['type']  == MULTI_SELECT_TYPE_MOVIE_DETAILS) {
+      return _webhookPayload['details'];
+    }
+    return null;
+  }
 }

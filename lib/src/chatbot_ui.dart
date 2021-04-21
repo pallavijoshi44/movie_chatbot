@@ -184,10 +184,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               },
               itemCount: _messages.length,
             )),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: TypingIndicator(
-                showIndicator: !_doNotShowTyping,
+            Visibility(
+              visible: !_doNotShowTyping ,
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: TypingIndicator(
+                  showIndicator: !_doNotShowTyping,
+                ),
               ),
             ),
             Divider(height: 1.0),

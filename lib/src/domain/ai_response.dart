@@ -34,12 +34,18 @@ class AIResponse {
     return _queryResult.fulfillmentText;
   }
 
+  String getEntertainmentType() {
+    if (_queryResult.parameters != null) return _queryResult.parameters['entertainment-content-type'];
+    return null;
+  }
+
   List<String> getChatMessage() {
     return getDefaultOrChatMessage();
   }
   bool containsFulfillmentMessages() => getListMessage() != null;
   bool containsMultiSelect() => getMultiSelectResponse() != null;
   bool containsMovieDetails() => getMovieDetails() != null;
+
 
   List<String> getDefaultOrChatMessage() {
     List<String> list = [];

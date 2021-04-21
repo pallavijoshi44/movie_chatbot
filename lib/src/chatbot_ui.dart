@@ -60,6 +60,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
   String _multiSelectType = "";
+  String _entertainmentType = "";
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -149,9 +150,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                             buttons: (message as MultiSelectModel).buttons,
                             insertMultiSelect:
                                 (message as MultiSelectModel).updateMultiSelect,
-                            previouslySelected: _selectedGenres,
-                            multiSelectType:
-                                (message as MultiSelectModel).multiSelectType);
+                            previouslySelected: _selectedGenres);
                       }
                     case MessageType.CAROUSEL:
                       {
@@ -224,11 +223,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> _multiSelectItemClicked(
-      String value, bool isSelected, String multiSelectType) async {
+      String value, bool isSelected) async {
     setState(() {
-      _multiSelectType = multiSelectType;
-      // _messages.removeAt(0);
-      //_isTextFieldEnabled = true;
       if (isSelected) {
         _textController.text = _textController.text.isEmpty
             ? value
@@ -245,29 +241,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _shouldShowTwinkleButton = true;
       }
     });
-    // if (selectedGenres.isEmpty) {
-    //   _showChatMessage(ALL_GENRES_TEXT, true, true);
-    // } else {
-    //   _showChatMessage(
-    //       SELECTED_GENRES_TEXT + selectedGenres
-    //
-    //
-    //
-    //    .join("\n - "), true, true);
-    // }
-
-    // _scrollToBottom();
-    //_selectedGenres = selectedGenres;
-    // var genres = jsonEncode(selectedGenres.toList());
-    // var countryCode = await _getCountryCode();
-    // var parameters =
-    //     "'parameters' : { 'genres': $genres , 'watch-region' : '$countryCode' }";
-    //TODO - add tv genres
-    //  var parameters = "'parameters' : { 'movie-genres': $genres  }";
-    //  _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
-    // var genres =
-    //     _selectedGenres.reduce((value, element) => value + ", " + element);
-    // _getDialogFlowResponse(genres);
   }
 
   void _handleTwinkleButton(String text) {
@@ -280,11 +253,21 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (_multiSelectType.isNotEmpty &&
         _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
       var genres = jsonEncode(text.split(" "));
-      parameters = "'parameters' : { 'movie-genres': $genres  }";
+
+      if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
+        parameters = "'parameters' : { 'movie-genres': $genres  }";
+      } else {
+        parameters = "'parameters' : { 'tv-genres': $genres  }";
+      }
     } else if (_multiSelectType.isNotEmpty &&
         _multiSelectType == MULTI_SELECT_TYPE_WATCH_PROVIDERS) {
       var providers = jsonEncode(text.split(" "));
-      parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
+
+      if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
+        parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
+      } else {
+        parameters = "'parameters' : { 'tv-watch-provider': $providers  }";
+      }
     }
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
   }
@@ -433,6 +416,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _handleTimers(action);
 
       if (response.containsMultiSelect()) {
+        _entertainmentType = response.getEntertainmentType();
         _constructMultiSelect(response.getMultiSelectResponse());
         return;
       }
@@ -509,17 +493,16 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     CardDialogflow card = new CardDialogflow(response);
     String multiSelectType = response['type'];
     String additionalText = response['title'];
-    String entertainmentType = response['title'];
 
     setState(() {
       _selectedGenres = [];
       _isTextFieldEnabled = false;
+      _multiSelectType = multiSelectType;
       var multiSelectModel = MultiSelectModel(
         text: card.title,
         buttons: card.buttons,
         updateMultiSelect: _multiSelectItemClicked,
         type: MessageType.MULTI_SELECT,
-        multiSelectType: multiSelectType,
       );
       _doNotShowTyping = true;
 

@@ -6,9 +6,9 @@ class TypingIndicator extends StatefulWidget {
   const TypingIndicator({
     Key key,
     this.showIndicator = false,
-    this.bubbleColor =  Colors.lightGreen,
+    this.bubbleColor =  const Color(0xFFAED581),
     this.flashingCircleDarkColor = Colors.white,
-    this.flashingCircleBrightColor = const Color(0xFFaec1dd),
+    this.flashingCircleBrightColor = const Color(0xFF33691E),
   }) : super(key: key);
 
   final bool showIndicator;
@@ -53,7 +53,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
       reverseCurve: const Interval(0.0, 1.0, curve: Curves.easeOut),
     ).drive(Tween<double>(
       begin: 0.0,
-      end: 30.0,
+      end: 80.0,
     ));
 
     _smallBubbleAnimation = CurvedAnimation(
@@ -121,9 +121,12 @@ class _TypingIndicatorState extends State<TypingIndicator>
     return AnimatedBuilder(
       animation: _indicatorSpaceAnimation,
       builder: (context, child) {
-        return SizedBox(
-          height: _indicatorSpaceAnimation.value,
-          child: child,
+        return Padding(
+          padding: const EdgeInsets.only(left: 5, bottom: 2, top: 5, right: 5),
+          child: SizedBox(
+            height: 50,
+            child: child,
+          ),
         );
       },
       child: Stack(
@@ -136,14 +139,14 @@ class _TypingIndicatorState extends State<TypingIndicator>
           ),
           _buildAnimatedBubble(
             animation: _mediumBubbleAnimation,
-            left: 6,
-            bottom: 6,
+            left: 5,
+            bottom: 5,
             bubble: _buildCircleBubble(8),
           ),
           _buildAnimatedBubble(
             animation: _largeBubbleAnimation,
-            left: 8,
-            bottom: 8,
+            left: 7,
+            bottom: 7,
             bubble: _buildStatusBubble(),
           ),
         ],
@@ -187,8 +190,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
 
   Widget _buildStatusBubble() {
     return Container(
-      width: 40,
-      height: 20,
+      width: 45,
+      height: 30,
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -214,8 +217,8 @@ class _TypingIndicatorState extends State<TypingIndicator>
         final circleColorPercent = sin(pi * circleFlashPercent);
 
         return Container(
-          width: 5,
-          height: 5,
+          width: 4,
+          height: 4,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Color.lerp(widget.flashingCircleDarkColor,

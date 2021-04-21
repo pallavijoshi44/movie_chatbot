@@ -59,6 +59,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   int _pageNumber = 2;
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
+  String _multiSelectType = "";
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -144,12 +145,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       {
                         _disableKeyboardForAndroid(context);
                         return MultiSelect(
-                          title: (message as MultiSelectModel).text,
-                          buttons: (message as MultiSelectModel).buttons,
-                          insertMultiSelect:
-                              (message as MultiSelectModel).updateMultiSelect,
-                          previouslySelected: _selectedGenres,
-                        );
+                            title: (message as MultiSelectModel).text,
+                            buttons: (message as MultiSelectModel).buttons,
+                            insertMultiSelect:
+                                (message as MultiSelectModel).updateMultiSelect,
+                            previouslySelected: _selectedGenres,
+                            multiSelectType:
+                                (message as MultiSelectModel).multiSelectType);
                       }
                     case MessageType.CAROUSEL:
                       {
@@ -221,8 +223,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _multiSelectItemClicked(String value, bool isSelected) async {
+  Future<void> _multiSelectItemClicked(
+      String value, bool isSelected, String multiSelectType) async {
     setState(() {
+      _multiSelectType = multiSelectType;
       // _messages.removeAt(0);
       //_isTextFieldEnabled = true;
       if (isSelected) {
@@ -270,12 +274,18 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _shouldShowTwinkleButton = false;
       _messages.removeAt(0);
-      _showChatMessage(
-          SELECTED_GENRES + text, true, true);
+      _showChatMessage(SELECTED_GENRES + text, true, true);
     });
-    var list = text.split(" ");
-    var genres = jsonEncode(list);
-    var parameters = "'parameters' : { 'movie-genres': $genres  }";
+    var parameters = DEFAULT_PARAMETERS_FOR_EVENT;
+    if (_multiSelectType.isNotEmpty &&
+        _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
+      var genres = jsonEncode(text.split(" "));
+      parameters = "'parameters' : { 'movie-genres': $genres  }";
+    } else if (_multiSelectType.isNotEmpty &&
+        _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
+      var providers = jsonEncode(text.split(" "));
+      parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
+    }
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
   }
 
@@ -420,171 +430,202 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _stopAllTimers();
         return;
       }
-      if (ACTION_MOVIE_RECOMMENDATIONS == action ||
-          ACTION_MORE_MOVIE_RECOMMENDATIONS == action) {
-        _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-        _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-      }
-      // if (ACTION_MOVIE_WATCH_PROVIDERS_TRAILER_VIDEOS == action) {
-      //   _startUIInactivityTimer(POST_WATCH_PROVIDERS_TIPS_EVENT);
-      //   _startAbsoluteInactivityTimer(POST_WATCH_PROVIDERS_TIPS_EVENT);
-      // }
-      if (ACTION_UNKNOWN == action) {
-        _unknownAction++;
-
-        if (widget.selectedTips && _unknownAction == 2) {
-          setState(() {
-            _unknownAction = 0;
-          });
-          _startUIInactivityTimer(POST_ERROR_TIPS_EVENT);
-          _startAbsoluteInactivityTimer(POST_ERROR_TIPS_EVENT);
-        }
-      }
-
-      if (response.getListMessage() != null) {
+      _handleTimers(action);
+      if (response.containsFulfillmentMessages()) {
         response.getListMessage().forEach((element) {
-          var payload = element.containsKey('quickReplies')
-              ? element
-              : element['payload'];
 
+          var payload = element.containsKey('quickReplies') ? element : element['payload'];
           if (payload != null) {
-            QuickReplies replies = new QuickReplies(payload);
-            var quickReplies = replies.quickReplies;
-            setState(() {
-              _scrollToBottom();
-              if (quickReplies != null && quickReplies.length == 1) {
-                _removeNoPreferenceQuickReply = true;
-                _isTextFieldEnabled = true;
-              } else {
-                _isTextFieldEnabled = false;
-              }
-              var replyModel = ReplyModel(
-                text: replies.title,
-                quickReplies: quickReplies,
-                updateQuickReply: _insertQuickReply,
-                type: MessageType.QUICK_REPLY,
-              );
-              _doNotShowTyping = true;
-              _messages.insert(
-                  0,
-                  new ChatModel(
-                      type: MessageType.CHAT_MESSAGE,
-                      text: replies.title,
-                      chatType: false));
-
-              _messages.insert(0, replyModel);
-            });
-          } else {
-            var carouselSelect = element['carouselSelect'];
-            if (carouselSelect != null) {
-              CarouselSelect carouselSelect = new CarouselSelect(element);
-
-              if (_movieSliderShownCount == 0) {
-                _stopAllTimers();
-                _movieSliderShownCount++;
-                setState(() {
-                  _isTextFieldEnabled = false;
-                  var chatModel = new ChatModel(
-                      type: MessageType.CHAT_MESSAGE,
-                      text: MOVIE_RESPONSE,
-                      chatType: false);
-                  _messages.insert(0, chatModel);
-                });
-
-                Future.delayed(const Duration(milliseconds: 2000), () {
-                  setState(() {
-                    _isTextFieldEnabled = false;
-                    var chatModel = new ChatModel(
-                        type: MessageType.CHAT_MESSAGE,
-                        text: ASK_FOR_MORE,
-                        chatType: false);
-                    _messages.insert(0, chatModel);
-                  });
-                  Future.delayed(const Duration(milliseconds: 2000), () {
-                    setState(() {
-                      _doNotShowTyping = true;
-                      _isTextFieldEnabled = true;
-                      var carouselModel = CarouselModel(
-                        carouselSelect: carouselSelect,
-                        type: MessageType.CAROUSEL,
-                      );
-                      _messages.insert(0, carouselModel);
-                    });
-                  });
-                });
-              } else {
-                if (_movieSliderShownCount < 5)
-                  _movieSliderShownCount++;
-                else
-                  _movieSliderShownCount = 0;
-
-                setState(() {
-                  _doNotShowTyping = true;
-                  _isTextFieldEnabled = true;
-                  var carouselModel = CarouselModel(
-                    carouselSelect: carouselSelect,
-                    type: MessageType.CAROUSEL,
-                  );
-                  _messages.insert(0, carouselModel);
-                });
-              }
-            } else {
-              _scrollToBottom();
-              var multiSelect = element.containsKey('card');
-
-              if (multiSelect) {
-                CardDialogflow card = new CardDialogflow(element);
-
-                setState(() {
-                  _selectedGenres = [];
-                  _isTextFieldEnabled = false;
-                  var multiSelectModel = MultiSelectModel(
-                    text: card.title,
-                    buttons: card.buttons,
-                    updateMultiSelect: _multiSelectItemClicked,
-                    type: MessageType.MULTI_SELECT,
-                  );
-                  _doNotShowTyping = true;
-                  _messages.insert(
-                      0,
-                      new ChatModel(
-                          type: MessageType.CHAT_MESSAGE,
-                          text: card.title,
-                          chatType: false));
-
-                  _messages.insert(0, multiSelectModel);
-                });
-              } else {
-                if (response.getWatchProviders() != null) {
-                  MovieProvidersAndVideoModel movieProviders =
-                      new MovieProvidersAndVideoModel(
-                          response.getWatchProviders());
-                  setState(() {
-                    _doNotShowTyping = true;
-                    _handleNewUIForMovieDetails(movieProviders);
-                  });
-                } else {
-                  _scrollToBottom();
-                  var queryText = element['text']['text'] != null &&
-                          element['text']['text'][0] != ""
-                      ? element['text']['text'][0]
-                      : DEFAULT_RESPONSE;
-
-                  setState(() {
-                    _doNotShowTyping = true;
-                    var chatModel = new ChatModel(
-                        type: MessageType.CHAT_MESSAGE,
-                        text: queryText,
-                        chatType: false);
-                    _messages.insert(0, chatModel);
-                  });
-                }
-              }
-            }
+            _constructQuickReplies(payload);
+            return;
           }
+          var carouselPresent =  element.containsKey('carouselSelect');
+          if (carouselPresent) {
+            _constructCarousel(element['carouselSelect']);
+            return;
+          }
+          _constructChatMessage(element);
+        });
+        return;
+      }
+
+      if (response.containsMultiSelect()) {
+        _constructMultiSelect(response.getMultiSelectResponse());
+        return;
+      }
+
+      if (response.containsMovieDetails()) {
+        _constructMovieDetails(response.getMovieDetails());
+        return;
+      }
+    }
+  }
+
+  void _handleTimers(String action) {
+    if (ACTION_MOVIE_RECOMMENDATIONS == action ||
+        ACTION_MORE_MOVIE_RECOMMENDATIONS == action) {
+      _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+      _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
+    }
+    if (ACTION_UNKNOWN == action) {
+      _unknownAction++;
+
+      if (widget.selectedTips && _unknownAction == 2) {
+        setState(() {
+          _unknownAction = 0;
+        });
+        _startUIInactivityTimer(POST_ERROR_TIPS_EVENT);
+        _startAbsoluteInactivityTimer(POST_ERROR_TIPS_EVENT);
+      }
+    }
+  }
+
+  void _constructChatMessage(element) {
+    _scrollToBottom();
+    var queryText =
+        element['text']['text'] != null && element['text']['text'][0] != ""
+            ? element['text']['text'][0]
+            : DEFAULT_RESPONSE;
+
+    setState(() {
+      _doNotShowTyping = true;
+      var chatModel = new ChatModel(
+          type: MessageType.CHAT_MESSAGE, text: queryText, chatType: false);
+      _messages.insert(0, chatModel);
+    });
+  }
+
+  void _constructMovieDetails(response) {
+      MovieProvidersAndVideoModel movieProviders =
+          new MovieProvidersAndVideoModel(response);
+      setState(() {
+        _doNotShowTyping = true;
+        _handleNewUIForMovieDetails(movieProviders);
+      });
+    
+  }
+
+  void _constructMultiSelect(response) {
+      CardDialogflow card =
+          new CardDialogflow(response['card']);
+      String multiSelectType = response['type'];
+      String additionalText = response['title'];
+
+      setState(() {
+        _selectedGenres = [];
+        _isTextFieldEnabled = false;
+        var multiSelectModel = MultiSelectModel(
+          text: card.title,
+          buttons: card.buttons,
+          updateMultiSelect: _multiSelectItemClicked,
+          type: MessageType.MULTI_SELECT,
+          multiSelectType: multiSelectType,
+        );
+        _doNotShowTyping = true;
+
+        if (additionalText != null && additionalText.isNotEmpty) {
+          _messages.insert(
+              0,
+              new ChatModel(
+                  type: MessageType.CHAT_MESSAGE,
+                  text: card.title,
+                  chatType: false));
+        }
+
+        _messages.insert(
+            0,
+            new ChatModel(
+                type: MessageType.CHAT_MESSAGE,
+                text: card.title,
+                chatType: false));
+
+        _messages.insert(0, multiSelectModel);
+      });
+  }
+
+  void _constructCarousel(element) {
+    if (element != null && element['carouselSelect'] != null) {
+      CarouselSelect carouselSelect = new CarouselSelect(element);
+
+      if (_movieSliderShownCount == 0) {
+        _stopAllTimers();
+        _movieSliderShownCount++;
+        setState(() {
+          _isTextFieldEnabled = false;
+          var chatModel = new ChatModel(
+              type: MessageType.CHAT_MESSAGE,
+              text: MOVIE_RESPONSE,
+              chatType: false);
+          _messages.insert(0, chatModel);
+        });
+
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          setState(() {
+            _isTextFieldEnabled = false;
+            var chatModel = new ChatModel(
+                type: MessageType.CHAT_MESSAGE,
+                text: ASK_FOR_MORE,
+                chatType: false);
+            _messages.insert(0, chatModel);
+          });
+          Future.delayed(const Duration(milliseconds: 2000), () {
+            setState(() {
+              _doNotShowTyping = true;
+              _isTextFieldEnabled = true;
+              var carouselModel = CarouselModel(
+                carouselSelect: carouselSelect,
+                type: MessageType.CAROUSEL,
+              );
+              _messages.insert(0, carouselModel);
+            });
+          });
+        });
+      } else {
+        if (_movieSliderShownCount < 5)
+          _movieSliderShownCount++;
+        else
+          _movieSliderShownCount = 0;
+
+        setState(() {
+          _doNotShowTyping = true;
+          _isTextFieldEnabled = true;
+          var carouselModel = CarouselModel(
+            carouselSelect: carouselSelect,
+            type: MessageType.CAROUSEL,
+          );
+          _messages.insert(0, carouselModel);
         });
       }
     }
+  }
+
+  void _constructQuickReplies(payload) {
+     QuickReplies replies = new QuickReplies(payload);
+      var quickReplies = replies.quickReplies;
+      setState(() {
+        _scrollToBottom();
+        if (quickReplies != null && quickReplies.length == 1) {
+          _removeNoPreferenceQuickReply = true;
+          _isTextFieldEnabled = true;
+        } else {
+          _isTextFieldEnabled = false;
+        }
+        var replyModel = ReplyModel(
+          text: replies.title,
+          quickReplies: quickReplies,
+          updateQuickReply: _insertQuickReply,
+          type: MessageType.QUICK_REPLY,
+        );
+        _doNotShowTyping = true;
+        _messages.insert(
+            0,
+            new ChatModel(
+                type: MessageType.CHAT_MESSAGE,
+                text: replies.title,
+                chatType: false));
+
+        _messages.insert(0, replyModel);
+      });
   }
 
   void _handleSubmitted(String text) {

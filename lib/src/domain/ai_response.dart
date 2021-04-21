@@ -37,6 +37,9 @@ class AIResponse {
   List<String> getChatMessage() {
     return getDefaultOrChatMessage();
   }
+  bool containsFulfillmentMessages() => getListMessage() != null;
+  bool containsMultiSelect() => getMultiSelectResponse() != null;
+  bool containsMovieDetails() => getMovieDetails() != null;
 
   List<String> getDefaultOrChatMessage() {
     List<String> list = [];
@@ -89,9 +92,20 @@ class AIResponse {
     return _queryResult;
   }
 
-  dynamic getWatchProviders() {
-    if (_webhookPayload != null && _webhookPayload['type']  == MULTI_SELECT_TYPE_MOVIE_DETAILS) {
+  dynamic getMovieDetails() {
+    if (_webhookPayload != null &&
+        _webhookPayload['type'] == MULTI_SELECT_TYPE_MOVIE_DETAILS) {
       return _webhookPayload['details'];
+    }
+    return null;
+  }
+
+  dynamic getMultiSelectResponse() {
+    if (_webhookPayload != null &&
+        (_webhookPayload['type'] == MULTI_SELECT_TYPE_WATCH_PROVIDERS ||
+            _webhookPayload['type'] == MULTI_SELECT_TYPE_GENRES)) {
+
+      return _webhookPayload;
     }
     return null;
   }

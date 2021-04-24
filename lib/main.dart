@@ -2,13 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
+import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
+import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/location_check.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
 
@@ -122,8 +125,10 @@ class ChatBotFlow extends StatelessWidget {
           backgroundColor: Color.fromRGBO(249, 248, 235, 1),
           cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
           material: (_, target) => _buildMaterialScaffoldData(context),
-          body: ConnectivityCheck(child: LocationCheck(child: ChatBotUI(_selectedTips)))),
-    );
+          body:  BlocProvider(
+              create: (BuildContext context) => MovieDetailsBloc(),
+              child: ConnectivityCheck(child: LocationCheck(child: ChatBotUI(_selectedTips)))),
+    ));
   }
 
   Future<bool> _onBackPressed(BuildContext context) {

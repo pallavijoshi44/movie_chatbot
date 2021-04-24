@@ -16,6 +16,7 @@ import 'package:flutter_app/src/models/movie_trailer_model.dart';
 import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
+import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
@@ -24,6 +25,7 @@ import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/typing_indicator.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -185,7 +187,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               itemCount: _messages.length,
             )),
             Visibility(
-              visible: !_doNotShowTyping ,
+              visible: !_doNotShowTyping,
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: TypingIndicator(
@@ -203,18 +205,32 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               handleTwinkleButton: _handleTwinkleButton,
             ),
           ]),
-          Center(
-            child: Container(
-              width: 40,
-              height: 40,
-              child: Visibility(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.white,
-                ),
-                visible: _isLoading,
-              ),
-            ),
-          )
+          BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
+              buildWhen: (previous, newState) {
+                return previous != newState;
+              }, builder: (BuildContext context, MovieDetailsState state) {
+            if (state is MovieDetailsLoaded) {
+              return Container(
+                child: Text("yippie"),
+              );
+            }
+            if (state is MovieDetailsLoading) {
+              return CircularProgressIndicator();
+            }
+            return Container();
+          }),
+          // Center(
+          //   child: Container(
+          //     width: 40,
+          //     height: 40,
+          //     child: Visibility(
+          //       child: CircularProgressIndicator(
+          //         backgroundColor: Colors.white,
+          //       ),
+          //       visible: _isLoading,
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );
@@ -280,7 +296,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isLoading = true;
     });
     String _countryCode = await _getCountryCode();
-    await _getWatchProvidersAndVideos(movieId, _countryCode);
+    context.read<MovieDetailsBloc>().add(MovieDetailsEvent.fetchMovieDetails);
+    //  await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
 
   Future<String> _getCountryCode() async {

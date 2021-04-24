@@ -36,6 +36,8 @@ dependencies:
   get_version: ^0.2.2
   intl: ^0.17.0
   twinkle_button: ^0.0.3
+  equatable: ^2.0.0
+  flutter_bloc: ^7.0.0
 
 dev_dependencies:
   flutter_test:

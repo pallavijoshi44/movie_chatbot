@@ -1,24 +1,35 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:flutter_app/src/models/tmdb/moviedetails/movie_details_model.dart';
+import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:http/http.dart' show Client;
-
-import '../api_key.dart';
 
 class ApiProvider {
   Client client = Client();
 
   final _baseUrl =
-  "https://api.themoviedb.org/3/movie/560144?api_key=$API_KEY&append_to_response=videos,watch/providers";
+      "https://us-central1-movie-chatbot-api.cloudfunctions.net/dev/get-movie_watch_providers_and_videos";
 
-  Future<MovieDetailsModel> fetchMovieDetails() async {
-    final response = await client.get("$_baseUrl"); // Make the network call asynchronously to fetch the London weather data.
+  //final _baseUrl = "http://localhost:5001/movie-chatbot-api/us-central1/dev";
+
+  Future<MovieProvidersAndVideoModel> fetchMovieDetails() async {
+    Map data = {
+      'queryResult': {
+        'action': 'fetchMovieWatchProvidersAndVideos',
+        'parameters': {'id': '466550', 'country_code': 'BE'}
+      }
+    };
+    var body = json.encode(data);
+    var response = await client.post(_baseUrl,
+        headers: {HttpHeaders.contentTypeHeader: "application/json"},
+        body: body);
+
     print(response.body.toString());
 
     if (response.statusCode == 200) {
-      return MovieDetailsModel.fromJson(json.decode(response.body)); //Return decoded response
+      return MovieProvidersAndVideoModel(json.decode(response.body)['payload']['details']);
     } else {
-      throw Exception('Failed to load weather');
+      throw Exception('Failed to load movie details');
     }
   }
 }

@@ -205,32 +205,27 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               handleTwinkleButton: _handleTwinkleButton,
             ),
           ]),
-          BlocBuilder<MovieDetailsBloc, MovieDetailsState>(
-              buildWhen: (previous, newState) {
-                return previous != newState;
-              }, builder: (BuildContext context, MovieDetailsState state) {
-            if (state is MovieDetailsLoaded) {
-              return Container(
-                child: Text("yippie"),
-              );
-            }
-            if (state is MovieDetailsLoading) {
-              return CircularProgressIndicator();
-            }
-            return Container();
-          }),
-          // Center(
-          //   child: Container(
-          //     width: 40,
-          //     height: 40,
-          //     child: Visibility(
-          //       child: CircularProgressIndicator(
-          //         backgroundColor: Colors.white,
-          //       ),
-          //       visible: _isLoading,
-          //     ),
-          //   ),
-          // )
+          BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
+            builder: (BuildContext context, state) {
+              if (state is MovieDetailsLoading) {
+                return Center(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
+                  );
+              }
+              return Container();
+            },
+            listener: (BuildContext context, state) {
+              if (state is MovieDetailsLoaded) {
+                _handleNewUIForMovieDetails(state.model);
+              }
+            },
+          ),
         ],
       ),
     );

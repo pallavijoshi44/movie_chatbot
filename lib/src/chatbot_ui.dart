@@ -22,7 +22,6 @@ import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
-import 'package:flutter_app/src/ui/triangle_painter.dart';
 import 'package:flutter_app/src/ui/typing_indicator.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
@@ -219,7 +218,16 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                         borderRadius: BorderRadius.circular(30)),
                     width: MediaQuery.of(context).size.width * 0.8,
                     height: MediaQuery.of(context).size.height * 0.7,
-                    child: _buildOverlayScreen()),
+                    child: Column(
+                      children: [
+                        _buildOverlayScreen(),
+                        Expanded(
+                          child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: _buildNextButton()),
+                        )
+                      ],
+                    )),
               )),
           BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
             builder: (BuildContext context, state) {
@@ -276,41 +284,44 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     fontFamily: 'QuickSand', fontSize: 16, color: Colors.black),
               ),
             ),
-            CustomPaint(
-              painter: TrianglePainter(
-                strokeColor:  Colors.orange[400],
-                strokeWidth: 10,
-                paintingStyle: PaintingStyle.fill,
-              ),
-              child: Container(
-                height: 180,
-                width: 200,
-              ),
+            // CustomPaint(
+            //   painter: TrianglePainter(
+            //     strokeColor: Colors.orange[400],
+            //     strokeWidth: 10,
+            //     paintingStyle: PaintingStyle.fill,
+            //   ),
+            //   child: Container(
+            //     height: 100,
+            //     width: constraints.maxWidth,
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return TextButton(
+      onPressed: null,
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              "Next",
+              style: TextStyle(
+                  fontFamily: 'QuickSand',
+                  fontSize: 16,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold),
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: TextButton(
-                onPressed: null,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Next",
-                      style: TextStyle(
-                          fontFamily: 'QuickSand',
-                          fontSize: 20,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    Icon(
-                      Icons.navigate_next_outlined,
-                      color: Colors.red,
-                      size: 20,
-                    )
-                  ],
-                ),
-              ),
+            Icon(
+              Icons.navigate_next_outlined,
+              color: Colors.red,
+              size: 15,
             )
           ],
         ),

@@ -23,9 +23,10 @@ class TrianglePainter extends CustomPainter {
 
   Path getTrianglePath(double x, double y) {
     return Path()
-      ..moveTo(0, 0)
-      ..lineTo(x / 3, 0)
-      ..lineTo(-50, y / 3);
+      ..moveTo(x / 2, 0)
+      ..lineTo(x / 5, 0)
+      ..lineTo(0, y / 2)
+      ..lineTo(0, y / 2);
   }
 
 /*

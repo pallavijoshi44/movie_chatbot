@@ -12,19 +12,17 @@ class ApiProvider {
 
   //final _baseUrl = "http://localhost:5001/movie-chatbot-api/us-central1/dev";
 
-  Future<MovieProvidersAndVideoModel> fetchMovieDetails() async {
+  Future<MovieProvidersAndVideoModel> fetchMovieDetails(String id, String countryCode) async {
     Map data = {
       'queryResult': {
         'action': 'fetchMovieWatchProvidersAndVideos',
-        'parameters': {'id': '466550', 'country_code': 'BE'}
+        'parameters': {'id': '$id', 'country_code': '$countryCode'}
       }
     };
     var body = json.encode(data);
     var response = await client.post(_baseUrl,
         headers: {HttpHeaders.contentTypeHeader: "application/json"},
         body: body);
-
-    print(response.body.toString());
 
     if (response.statusCode == 200) {
       return MovieProvidersAndVideoModel(json.decode(response.body)['payload']['details']);

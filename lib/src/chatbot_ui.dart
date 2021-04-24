@@ -209,14 +209,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             builder: (BuildContext context, state) {
               if (state is MovieDetailsLoading) {
                 return Center(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.white,
-                      ),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.white,
                     ),
-                  );
+                  ),
+                );
               }
               return Container();
             },
@@ -291,7 +291,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isLoading = true;
     });
     String _countryCode = await _getCountryCode();
-    context.read<MovieDetailsBloc>().add(MovieDetailsEvent.fetchMovieDetails);
+    context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
+        id: movieId,
+        countryCode: _countryCode,
+        eventStatus: EventStatus.fetchMovieDetails));
     //  await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
 

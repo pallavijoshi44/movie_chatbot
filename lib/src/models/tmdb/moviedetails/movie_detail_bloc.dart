@@ -12,11 +12,11 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
 
   @override
   Stream<MovieDetailsState> mapEventToState(MovieDetailsEvent event) async* {
-    switch (event) {
-      case MovieDetailsEvent.fetchMovieDetails:
+    switch (event.eventStatus) {
+      case EventStatus.fetchMovieDetails:
         yield MovieDetailsLoading();
         try {
-          MovieProvidersAndVideoModel response = await _repository.fetchMovieDetails();
+          MovieProvidersAndVideoModel response = await _repository.fetchMovieDetails(event.id, event.countryCode);
           yield MovieDetailsLoaded(response);
         } catch (error) {
           yield MovieDetailsError();
@@ -26,7 +26,15 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
   }
 }
 
-enum MovieDetailsEvent { fetchMovieDetails }
+class MovieDetailsEvent {
+  final String countryCode;
+  final String id;
+  final EventStatus eventStatus;
+
+  MovieDetailsEvent(
+      {this.countryCode, this.id, this.eventStatus});
+}
+enum EventStatus { fetchMovieDetails }
 
 abstract class MovieDetailsState extends Equatable {
   @override

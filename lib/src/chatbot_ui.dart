@@ -224,6 +224,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               if (state is MovieDetailsLoaded) {
                 _handleNewUIForMovieDetails(state.model);
               }
+              if (state is MovieDetailsError) {
+                _defaultResponse();
+              }
             },
           ),
         ],
@@ -707,7 +710,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> _onCountryChanged(String id, String countryCode) async {
-    await _getWatchProvidersAndVideos(id, countryCode);
+    context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
+        id: id,
+        countryCode: countryCode,
+        eventStatus: EventStatus.fetchMovieDetails));
+    // await _getWatchProvidersAndVideos(id, countryCode);
     _isCountryChanged = true;
   }
 }

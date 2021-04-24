@@ -38,6 +38,7 @@ dependencies:
   twinkle_button: ^0.0.3
   equatable: ^2.0.0
   flutter_bloc: ^7.0.0
+  overlay_screen: ^1.2.0+1
 
 dev_dependencies:
   flutter_test:

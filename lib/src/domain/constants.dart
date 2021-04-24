@@ -97,6 +97,7 @@ const String DEFAULT_HELP_CONTENT =
 const MULTI_SELECT_TYPE_WATCH_PROVIDERS = "watchProviders";
 const MULTI_SELECT_TYPE_GENRES = "genres";
 const MULTI_SELECT_TYPE_MOVIE_DETAILS = "movieDetails";
+const WELCOME_TEXT_OVERLAY = "Hello, it is so great to meet you. I am Mobo. I am an expert in recommending movies and TV shows to watch.";
 
 const ENTERTAINMENT_CONTENT_TYPE_MOVIES = "Movie";
 const ENTERTAINMENT_CONTENT_TYPE_TV_SHOWS = "TV show";

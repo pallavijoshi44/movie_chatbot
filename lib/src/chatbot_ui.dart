@@ -22,6 +22,7 @@ import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
+import 'package:flutter_app/src/ui/triangle_painter.dart';
 import 'package:flutter_app/src/ui/typing_indicator.dart';
 import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
@@ -63,6 +64,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _shouldShowTwinkleButton = false;
   String _multiSelectType = "";
   String _entertainmentType = "";
+  bool _shouldShowOverlay = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -71,6 +73,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _deleteDialogFlowContexts();
     _callWelcomeIntent();
+    _shouldShowOverlay = true;
     super.initState();
   }
 
@@ -205,6 +208,19 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               handleTwinkleButton: _handleTwinkleButton,
             ),
           ]),
+          Visibility(
+              visible: _shouldShowOverlay,
+              child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: Colors.redAccent, width: 3),
+                        borderRadius: BorderRadius.circular(30)),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: _buildOverlayScreen()),
+              )),
           BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
             builder: (BuildContext context, state) {
               if (state is MovieDetailsLoading) {
@@ -230,6 +246,74 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildOverlayScreen() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/icon/app_icon.png',
+              width: 150,
+              height: 200,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                  color: Colors.orange[400],
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: Text(
+                WELCOME_TEXT_OVERLAY,
+                style: TextStyle(
+                    fontFamily: 'QuickSand', fontSize: 16, color: Colors.black),
+              ),
+            ),
+            CustomPaint(
+              painter: TrianglePainter(
+                strokeColor:  Colors.orange[400],
+                strokeWidth: 10,
+                paintingStyle: PaintingStyle.fill,
+              ),
+              child: Container(
+                height: 180,
+                width: 200,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton(
+                onPressed: null,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Next",
+                      style: TextStyle(
+                          fontFamily: 'QuickSand',
+                          fontSize: 20,
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Icon(
+                      Icons.navigate_next_outlined,
+                      color: Colors.red,
+                      size: 20,
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -78,7 +78,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> _callWelcomeIntent() async {
     var countryCode = await _getCountryCode();
-    var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
+    var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
   }
 
@@ -207,28 +207,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               handleTwinkleButton: _handleTwinkleButton,
             ),
           ]),
-          Visibility(
-              visible: _shouldShowOverlay,
-              child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.redAccent, width: 3),
-                        borderRadius: BorderRadius.circular(30)),
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    child: Column(
-                      children: [
-                        _buildOverlayScreen(),
-                        Expanded(
-                          child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: _buildNextButton()),
-                        )
-                      ],
-                    )),
-              )),
+          // _firstTimeOverlayWidget(context),
           BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
             builder: (BuildContext context, state) {
               if (state is MovieDetailsLoading) {
@@ -258,6 +237,35 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     );
   }
 
+  Visibility _firstTimeOverlayWidget(BuildContext context) {
+    return Visibility(
+        visible: _shouldShowOverlay,
+        child: Align(
+          alignment: Alignment.center,
+          child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: <Color>[Colors.lightGreen[100], Colors.white]),
+                  border: Border.all(color: Colors.redAccent, width: 3),
+                  borderRadius: BorderRadius.circular(30)),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Column(
+                children: [
+                  _buildOverlayScreen(),
+                  Expanded(
+                    child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: _buildNextButton()),
+                  )
+                ],
+              )),
+        ));
+  }
+
   Widget _buildOverlayScreen() {
     return SingleChildScrollView(
       child: Padding(
@@ -276,7 +284,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             Container(
               padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
-                  color: Colors.orange[400],
+                  color: Colors.orange[300],
                   borderRadius: BorderRadius.circular(15.0)),
               child: Text(
                 WELCOME_TEXT_OVERLAY,
@@ -543,21 +551,23 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         return;
       }
       if (response.containsFulfillmentMessages()) {
-        response.getListMessage().forEach((element) {
-          var payload = element.containsKey('quickReplies')
-              ? element
-              : element['payload'];
-          if (payload != null) {
-            _constructQuickReplies(payload);
+        response.getListMessage().forEach((element) async {
+          await Future.delayed(Duration(seconds: 2)).then((value) {
+            var payload = element.containsKey('quickReplies')
+                ? element
+                : element['payload'];
+            if (payload != null) {
+              _constructQuickReplies(payload);
+              return;
+            }
+            var carouselPresent = element.containsKey('carouselSelect');
+            if (carouselPresent) {
+              _constructCarousel(element);
+              return;
+            }
+            _constructChatMessage(element);
             return;
-          }
-          var carouselPresent = element.containsKey('carouselSelect');
-          if (carouselPresent) {
-            _constructCarousel(element);
-            return;
-          }
-          _constructChatMessage(element);
-          return;
+          });
         });
       }
     }

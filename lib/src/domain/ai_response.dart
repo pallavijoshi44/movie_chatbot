@@ -1,3 +1,4 @@
+
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
@@ -35,17 +36,60 @@ class AIResponse {
   }
 
   String getEntertainmentType() {
-    if (_queryResult.parameters != null) return _queryResult.parameters['entertainment-content-type'];
+    if (_queryResult.parameters != null)
+      return _queryResult.parameters['entertainment-content-type'];
     return null;
   }
 
   List<String> getChatMessage() {
     return getDefaultOrChatMessage();
   }
-  bool containsFulfillmentMessages() => getListMessage() != null;
-  bool containsMultiSelect() => getMultiSelectResponse() != null;
-  bool containsMovieDetails() => getMovieDetails() != null;
 
+  dynamic getPayload() {
+    var payload = getListMessage()
+        .firstWhere((element) => element.containsKey('payload'));
+    return payload['payload'];
+  }
+
+  dynamic getCarousel() {
+    return getListMessage()
+        .firstWhere((element) => element.containsKey('carouselSelect'));
+  }
+
+  List<dynamic> getListMessage() {
+    return _queryResult.fulfillmentMessages;
+  }
+
+  bool containsFulfillmentMessages() => getListMessage() != null;
+
+  bool containsMultiSelect() {
+    var payload = getListMessage().firstWhere(
+        (element) => element.containsKey('payload'),
+        orElse: () => null);
+    return (payload != null &&
+        payload['payload'] != null &&
+        payload['payload']['payload'] != null &&
+        payload['payload']['payload'].containsKey('card'));
+  }
+
+  bool containsCard() {
+    return getCard() != null;
+  }
+
+  bool containsQuickReplies() {
+    var payload = getListMessage()
+        .firstWhere((element) => element.containsKey('payload'), orElse: () => null);
+    if (payload != null) {
+      return payload['payload'].containsKey('quickReplies');
+    }
+    return false;
+  }
+
+  bool containsCarousel() =>
+      getListMessage()
+          .firstWhere((element) => element.containsKey('carouselSelect')) != null;
+
+  bool containsMovieDetails() => getMovieDetails() != null;
 
   List<String> getDefaultOrChatMessage() {
     List<String> list = [];
@@ -64,10 +108,6 @@ class AIResponse {
       list.add(message);
     }
     return list;
-  }
-
-  List<dynamic> getListMessage() {
-    return _queryResult.fulfillmentMessages;
   }
 
   String getAction() {
@@ -106,13 +146,21 @@ class AIResponse {
     return null;
   }
 
-  dynamic getMultiSelectResponse() {
+  dynamic getOldMultiSelectResponse() {
     if (_webhookPayload != null &&
         (_webhookPayload['type'] == MULTI_SELECT_TYPE_WATCH_PROVIDERS ||
             _webhookPayload['type'] == MULTI_SELECT_TYPE_GENRES)) {
-
       return _webhookPayload;
     }
     return null;
+  }
+
+  dynamic getMultiSelectResponse() {
+    return getPayload()['payload'];
+  }
+
+  dynamic getCard() {
+    return getListMessage().firstWhere((element) => element.containsKey('card'),
+        orElse: () => null);
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -369,26 +368,27 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _showChatMessage(SELECTED_GENRES + text, true, true);
     });
     var parameters = DEFAULT_PARAMETERS_FOR_EVENT;
-    if (_multiSelectType.isNotEmpty &&
-        _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
-      var genres = jsonEncode(text.split(" "));
-
-      if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
-        parameters = "'parameters' : { 'movie-genres': $genres  }";
-      } else {
-        parameters = "'parameters' : { 'tv-genres': $genres  }";
-      }
-    } else if (_multiSelectType.isNotEmpty &&
-        _multiSelectType == MULTI_SELECT_TYPE_WATCH_PROVIDERS) {
-      var providers = jsonEncode(text.split(" "));
-
-      if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
-        parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
-      } else {
-        parameters = "'parameters' : { 'tv-watch-provider': $providers  }";
-      }
-    }
-    _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
+    // if (_multiSelectType.isNotEmpty &&
+    //     _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
+    //   var genres = jsonEncode(text.split(" "));
+    //
+    //   if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
+    //     parameters = "'parameters' : { 'movie-genres': $genres  }";
+    //   } else {
+    //     parameters = "'parameters' : { 'tv-genres': $genres  }";
+    //   }
+    // } else if (_multiSelectType.isNotEmpty &&
+    //     _multiSelectType == MULTI_SELECT_TYPE_WATCH_PROVIDERS) {
+    //   var providers = jsonEncode(text.split(" "));
+    //
+    //   if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
+    //     parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
+    //   } else {
+    //     parameters = "'parameters' : { 'tv-watch-provider': $providers  }";
+    //   }
+    // }
+    _getDialogFlowResponse(text);
+    // _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
   }
 
   Future<void> _movieItemClicked(String movieId) async {
@@ -546,30 +546,28 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         return;
       }
 
-      if (response.containsMovieDetails()) {
-        _constructMovieDetails(response.getMovieDetails());
+      if (response.containsCard()) {
+        _entertainmentType = response.getEntertainmentType();
+        _constructMultiSelect(response.getCard());
         return;
       }
-      if (response.containsFulfillmentMessages()) {
-        response.getListMessage().forEach((element) async {
-          await Future.delayed(Duration(seconds: 2)).then((value) {
-            var payload = element.containsKey('quickReplies')
-                ? element
-                : element['payload'];
-            if (payload != null) {
-              _constructQuickReplies(payload);
-              return;
-            }
-            var carouselPresent = element.containsKey('carouselSelect');
-            if (carouselPresent) {
-              _constructCarousel(element);
-              return;
-            }
-            _constructChatMessage(element);
-            return;
-          });
-        });
+
+      // if (response.containsMovieDetails()) {
+      //   _constructMovieDetails(response.getMovieDetails());
+      //   return;
+      // }
+      if (response.containsQuickReplies()) {
+        var payload = response.getPayload();
+        _constructQuickReplies(payload);
+        return;
       }
+
+      if (response.containsCarousel()) {
+        _constructCarousel(response.getCarousel());
+        return;
+      }
+      _constructChatMessage(response.getDefaultOrChatMessage());
+      return;
     }
   }
 
@@ -619,12 +617,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _constructMultiSelect(response) {
     CardDialogflow card = new CardDialogflow(response);
     String multiSelectType = response['type'];
-    String additionalText = response['title'];
+    // String additionalText = response['title'];
 
     setState(() {
       _selectedGenres = [];
       _isTextFieldEnabled = false;
-      _multiSelectType = multiSelectType;
+      // _multiSelectType = multiSelectType;
       var multiSelectModel = MultiSelectModel(
         text: card.title,
         buttons: card.buttons,
@@ -633,14 +631,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       );
       _doNotShowTyping = true;
 
-      if (additionalText != null && additionalText.isNotEmpty) {
-        _messages.insert(
-            0,
-            new ChatModel(
-                type: MessageType.CHAT_MESSAGE,
-                text: additionalText,
-                chatType: false));
-      }
+      // if (additionalText != null && additionalText.isNotEmpty) {
+      //   _messages.insert(
+      //       0,
+      //       new ChatModel(
+      //           type: MessageType.CHAT_MESSAGE,
+      //           text: additionalText,
+      //           chatType: false));
+      // }
 
       _messages.insert(
           0,

@@ -592,15 +592,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _constructChatMessage(element) {
     _scrollToBottom();
-    var queryText =
-        element['text']['text'] != null && element['text']['text'][0] != ""
-            ? element['text']['text'][0]
-            : DEFAULT_RESPONSE;
-
-    setState(() {
+   setState(() {
       _doNotShowTyping = true;
       var chatModel = new ChatModel(
-          type: MessageType.CHAT_MESSAGE, text: queryText, chatType: false);
+          type: MessageType.CHAT_MESSAGE, text: element, chatType: false);
       _messages.insert(0, chatModel);
     });
   }

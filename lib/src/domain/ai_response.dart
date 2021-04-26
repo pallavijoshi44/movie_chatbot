@@ -104,7 +104,7 @@ class AIResponse {
       });
     }
     if (list.isEmpty) {
-      var message = getMessage() ?? DEFAULT_RESPONSE;
+      var message = getMessage() != null && getMessage() != "" ? getMessage() : DEFAULT_RESPONSE;
       list.add(message);
     }
     return list;

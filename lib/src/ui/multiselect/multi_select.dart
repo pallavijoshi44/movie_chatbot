@@ -6,17 +6,18 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'multi_select_chip_display.dart';
 
 class MultiSelect extends StatelessWidget {
-
   MultiSelect(
       {this.buttons,
       this.insertMultiSelect,
       this.title,
-      this.previouslySelected});
+      this.previouslySelected,
+      this.containsNoPreference});
 
   final List<ButtonDialogflow> buttons;
   final String title;
   final Function insertMultiSelect;
   final List<dynamic> previouslySelected;
+  final bool containsNoPreference;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +31,19 @@ class MultiSelect extends StatelessWidget {
       child: Material(
           child: MultiSelectChipDisplay(
         items: _items,
-        onTap: (value, isSelected) => insertMultiSelect(value, isSelected),
-      )
-          ),
+        onTap: (value, isSelected, selectedItems) {
+          var list = _items.where((item) => selectedItems.elementAt(_items.indexOf(item)) == true);
+          String selectedText = list.fold("",
+              (previousValue, element) => previousValue + " " + element.label);
+          if (_items != null &&
+              value == _items.last.label &&
+              containsNoPreference) {
+            var text = selectedText.replaceAll(value, "").trim();
+            return insertMultiSelect(value, isSelected, text, true);
+          }
+          return insertMultiSelect(value, isSelected, selectedText, false);
+        },
+      )),
     );
   }
 }

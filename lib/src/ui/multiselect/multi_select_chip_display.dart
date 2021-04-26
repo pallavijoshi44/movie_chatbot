@@ -16,6 +16,7 @@ class MultiSelectChipDisplay<V> extends StatefulWidget {
 class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
   final ScrollController _scrollController = ScrollController();
   List<bool> _selectedItems = [];
+  List<MultiSelectItem<V>> multiSelectedItems = [];
 
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                         _selectedItems[index] = !_selectedItems[index];
                       });
                       if (widget.onTap != null)
-                        widget.onTap(item.label, _selectedItems[index]);
+                        widget.onTap(item.label, _selectedItems[index], _selectedItems);
                     });
               },
             ),

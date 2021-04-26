@@ -153,7 +153,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                             buttons: (message as MultiSelectModel).buttons,
                             insertMultiSelect:
                                 (message as MultiSelectModel).updateMultiSelect,
-                            previouslySelected: _selectedGenres);
+                            previouslySelected: _selectedGenres,
+                            containsNoPreference: (message as MultiSelectModel).containsNoPreference);
                       }
                     case MessageType.CAROUSEL:
                       {
@@ -341,18 +342,22 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _multiSelectItemClicked(String value, bool isSelected) async {
+  Future<void> _multiSelectItemClicked(String value, bool isSelected, String selectedText, bool noPreferenceSelected) async {
     setState(() {
-      if (isSelected) {
-        _textController.text = _textController.text.isEmpty
-            ? value
-            : _textController.text + ', ' + value;
+      if (noPreferenceSelected && isSelected) {
+        _textController.text = value;
       } else {
-        if (_textController.text.contains(value)) {
-          _textController.text =
-              _textController.text.replaceAll(value, "").trim();
-        }
+        _textController.text = selectedText;
+        // if (isSelected) {
+        //   _textController.text = value;
+        // } else {
+        //   if (_textController.text.contains(value)) {
+        //     _textController.text =
+        //         _textController.text.replaceAll(value, "").trim();
+        //   }
+        // }
       }
+
       if (_textController.text.isEmpty) {
         _shouldShowTwinkleButton = false;
       } else {
@@ -592,7 +597,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _constructChatMessage(element) {
     _scrollToBottom();
-   setState(() {
+    setState(() {
       _doNotShowTyping = true;
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE, text: element, chatType: false);
@@ -612,6 +617,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _constructMultiSelect(response) {
     CardDialogflow card = new CardDialogflow(response);
     bool isTextFieldEnabled = response['enableTextField'];
+    bool containsNoPreference = response['containsNoPreference'];
     // String additionalText = response['title'];
 
     setState(() {
@@ -619,11 +625,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isTextFieldEnabled = isTextFieldEnabled ?? false;
       // _multiSelectType = multiSelectType;
       var multiSelectModel = MultiSelectModel(
-        text: card.title,
-        buttons: card.buttons,
-        updateMultiSelect: _multiSelectItemClicked,
-        type: MessageType.MULTI_SELECT,
-      );
+          text: card.title,
+          buttons: card.buttons,
+          updateMultiSelect: _multiSelectItemClicked,
+          type: MessageType.MULTI_SELECT,
+          containsNoPreference: containsNoPreference ?? false);
       _doNotShowTyping = true;
 
       // if (additionalText != null && additionalText.isNotEmpty) {

@@ -33,7 +33,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
       alignment: Alignment.centerLeft,
       child: Container(
           width: MediaQuery.of(context).size.width,
-          height: 100,
+          height: widget.containsNoPreference ? 100 : 40,
           child: Scrollbar(
             controller: _scrollController,
             isAlwaysShown: false,

@@ -600,7 +600,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _doNotShowTyping = true;
       var chatModel = new ChatModel(
-          type: MessageType.CHAT_MESSAGE, text: element, chatType: false);
+          type: MessageType.CHAT_MESSAGE, text: element[0] ?? DEFAULT_RESPONSE, chatType: false);
       _messages.insert(0, chatModel);
     });
   }

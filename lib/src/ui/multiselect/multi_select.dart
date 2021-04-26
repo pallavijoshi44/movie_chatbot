@@ -33,9 +33,7 @@ class MultiSelect extends StatelessWidget {
         items: _items,
         containsNoPreference: containsNoPreference,
         onTap: (value, isSelected, selectedItems) {
-          var list = _items.where((item) => selectedItems.elementAt(_items.indexOf(item)) == true);
-          String selectedText = list.fold("",
-              (previousValue, element) => previousValue + " " + element.label);
+          String selectedText = _constructSelectedText(_items, selectedItems);
           if (_items != null &&
               value == _items.last.label &&
               containsNoPreference) {
@@ -46,5 +44,14 @@ class MultiSelect extends StatelessWidget {
         },
       )),
     );
+  }
+
+  String _constructSelectedText(
+      List<MultiSelectItem<String>> _items, selectedItems) {
+    var list = _items
+        .where((item) => selectedItems.elementAt(_items.indexOf(item)) == true);
+    String selectedText = list.fold(
+        "", (previousValue, element) => previousValue + " " + element.label);
+    return selectedText;
   }
 }

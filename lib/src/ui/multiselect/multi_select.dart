@@ -31,6 +31,7 @@ class MultiSelect extends StatelessWidget {
       child: Material(
           child: MultiSelectChipDisplay(
         items: _items,
+        containsNoPreference: containsNoPreference,
         onTap: (value, isSelected, selectedItems) {
           var list = _items.where((item) => selectedItems.elementAt(_items.indexOf(item)) == true);
           String selectedText = list.fold("",

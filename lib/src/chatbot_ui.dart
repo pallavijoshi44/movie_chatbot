@@ -365,7 +365,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _shouldShowTwinkleButton = false;
       _messages.removeAt(0);
-      _showChatMessage(SELECTED_GENRES + text, true, true);
+      _showChatMessage(text, true, true);
     });
     var parameters = DEFAULT_PARAMETERS_FOR_EVENT;
     // if (_multiSelectType.isNotEmpty &&
@@ -616,12 +616,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _constructMultiSelect(response) {
     CardDialogflow card = new CardDialogflow(response);
-    String multiSelectType = response['type'];
+    bool isTextFieldEnabled = response['enableTextField'];
     // String additionalText = response['title'];
 
     setState(() {
       _selectedGenres = [];
-      _isTextFieldEnabled = false;
+      _isTextFieldEnabled = isTextFieldEnabled ?? false;
       // _multiSelectType = multiSelectType;
       var multiSelectModel = MultiSelectModel(
         text: card.title,

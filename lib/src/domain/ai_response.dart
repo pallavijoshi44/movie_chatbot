@@ -87,7 +87,7 @@ class AIResponse {
 
   bool containsCarousel() =>
       getListMessage()
-          .firstWhere((element) => element.containsKey('carouselSelect')) != null;
+          .firstWhere((element) => element.containsKey('carouselSelect'), orElse: () => null) != null;
 
   bool containsMovieDetails() => getMovieDetails() != null;
 

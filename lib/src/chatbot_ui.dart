@@ -557,10 +557,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         return;
       }
 
-      // if (response.containsMovieDetails()) {
-      //   _constructMovieDetails(response.getMovieDetails());
-      //   return;
-      // }
+      if (response.containsMovieDetails()) {
+        _constructMovieDetails(response.getMovieDetails());
+        return;
+      }
       if (response.containsQuickReplies()) {
         var payload = response.getPayload();
         _constructQuickReplies(payload);

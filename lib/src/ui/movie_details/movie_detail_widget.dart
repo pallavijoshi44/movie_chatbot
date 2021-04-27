@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
-import 'package:flutter_app/src/models/movie_providers_model.dart';
-import 'package:flutter_app/src/ui/country/country_list_pick.dart';
+import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/ui/movie_details/cast_details.dart';
 import 'package:flutter_app/src/ui/movie_details/country_picker_widget.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
 import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'movie_description.dart';
 import 'movie_just_watch.dart';
 import 'movie_provider.dart';
@@ -17,7 +17,7 @@ import 'movie_thumbnail.dart';
 
 class MovieDetailWidget extends StatelessWidget {
   static const routeName = '/movie-detail';
-  final MovieProvidersAndVideoModel model;
+  final MovieTvDetailsModel model;
   final SharedPreferences prefs;
   final Function onCountryChanged;
 
@@ -73,7 +73,7 @@ class MovieDetailWidget extends StatelessWidget {
   }
 
   SingleChildScrollView _buildSingleChildScrollView(BuildContext context,
-      MovieProvidersAndVideoModel model, SharedPreferences prefs) {
+      MovieTvDetailsModel model, SharedPreferences prefs) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

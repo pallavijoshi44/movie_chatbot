@@ -10,12 +10,12 @@ import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_app/src/models/movie_just_watch_model.dart';
 import 'package:flutter_app/src/models/movie_provider_model.dart';
 import 'package:flutter_app/src/models/movie_provider_url_model.dart';
-import 'package:flutter_app/src/models/movie_providers_model.dart';
 import 'package:flutter_app/src/models/movie_trailer_model.dart';
 import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
+import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
@@ -606,8 +606,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _constructMovieDetails(response) {
-    MovieProvidersAndVideoModel movieProviders =
-        new MovieProvidersAndVideoModel(response);
+    MovieTvDetailsModel movieProviders =
+        new MovieTvDetailsModel(response);
     setState(() {
       _doNotShowTyping = true;
       _handleNewUIForMovieDetails(movieProviders);
@@ -780,7 +780,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> _handleNewUIForMovieDetails(
-      MovieProvidersAndVideoModel movieProviders) async {
+      MovieTvDetailsModel movieProviders) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var cupertinoPageRoute = CupertinoPageRoute(
         builder: (context) =>

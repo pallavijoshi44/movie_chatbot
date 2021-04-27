@@ -2,7 +2,7 @@ import 'package:flutter_app/src/models/message_model.dart';
 import 'package:intl/intl.dart';
 
 
-class MovieProvidersAndVideoModel extends MessageModel {
+class MovieTvDetailsModel extends MessageModel {
   String id;
   String title;
   String countryName;
@@ -23,7 +23,7 @@ class MovieProvidersAndVideoModel extends MessageModel {
   String tagline;
   List<dynamic> cast = [];
 
-  MovieProvidersAndVideoModel(Map item) {
+  MovieTvDetailsModel(Map item) {
     if (item != null && item.isNotEmpty) {
       this.id = item['id'].toString();
       this.title = item['title'];

@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../movie_providers_model.dart';
+import 'movie_tv_details.dart';
 import 'repository.dart';
 
 class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
@@ -16,7 +16,7 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
       case EventStatus.fetchMovieDetails:
         yield MovieDetailsLoading();
         try {
-          MovieProvidersAndVideoModel response = await _repository.fetchMovieDetails(event.id, event.countryCode);
+          MovieTvDetailsModel response = await _repository.fetchMovieDetails(event.id, event.countryCode);
           yield MovieDetailsLoaded(response);
         } catch (error) {
           yield MovieDetailsError();
@@ -48,7 +48,7 @@ class MovieDetailsLoading extends MovieDetailsState {
 }
 
 class MovieDetailsLoaded extends MovieDetailsState {
-  final MovieProvidersAndVideoModel model;
+  final MovieTvDetailsModel model;
 
   MovieDetailsLoaded(this.model);
 }

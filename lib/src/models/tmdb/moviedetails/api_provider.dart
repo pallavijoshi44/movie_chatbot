@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_app/src/models/movie_providers_model.dart';
+import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:http/http.dart' show Client;
 
 class ApiProvider {
@@ -12,7 +12,7 @@ class ApiProvider {
 
   //final _baseUrl = "http://localhost:5001/movie-chatbot-api/us-central1/dev";
 
-  Future<MovieProvidersAndVideoModel> fetchMovieDetails(String id, String countryCode) async {
+  Future<MovieTvDetailsModel> fetchMovieDetails(String id, String countryCode) async {
     Map data = {
       'queryResult': {
         'action': 'fetchMovieWatchProvidersAndVideos',
@@ -25,7 +25,7 @@ class ApiProvider {
         body: body);
 
     if (response.statusCode == 200) {
-      return MovieProvidersAndVideoModel(json.decode(response.body)['payload']['details']);
+      return MovieTvDetailsModel(json.decode(response.body)['payload']['details']);
     } else {
       throw Exception('Failed to load movie details');
     }

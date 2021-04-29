@@ -18,6 +18,7 @@ import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart'
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
+import 'package:flutter_app/src/ui/content_filtering_tabs.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
@@ -29,6 +30,7 @@ import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
+import 'models/content_filtering_tabs_model.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
 import 'ui/movie_details/movie_just_watch.dart';
@@ -182,6 +184,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return Tips(text: (message as TipsModel).text);
                     case MessageType.UNREAD_MESSAGE:
                       return UnreadMessage();
+                    case MessageType.CONTENT_FILTERING_TABS:
+                      return ContentFilteringTabs();
+                      break;
                   }
                 }
                 return Container();
@@ -665,6 +670,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             text: MOVIE_RESPONSE,
             chatType: false);
         _messages.insert(0, chatModel);
+
+        var contentFilteringTabsModel = new ContentFilteringTabsModel(
+            type: MessageType.CONTENT_FILTERING_TABS);
+        _messages.insert(0, contentFilteringTabsModel);
       });
 
       Future.delayed(const Duration(milliseconds: 2000), () {

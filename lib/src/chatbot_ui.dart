@@ -156,7 +156,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                             insertMultiSelect:
                                 (message as MultiSelectModel).updateMultiSelect,
                             previouslySelected: _selectedGenres,
-                            containsNoPreference: (message as MultiSelectModel).containsNoPreference);
+                            containsNoPreference: (message as MultiSelectModel)
+                                .containsNoPreference);
                       }
                     case MessageType.CAROUSEL:
                       {
@@ -347,7 +348,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  Future<void> _multiSelectItemClicked(String value, bool isSelected, String selectedText, bool noPreferenceSelected) async {
+  Future<void> _multiSelectItemClicked(String value, bool isSelected,
+      String selectedText, bool noPreferenceSelected) async {
     setState(() {
       if (noPreferenceSelected && isSelected) {
         _textController.text = value;
@@ -573,7 +575,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       }
 
       if (response.containsCarousel()) {
-        _constructCarousel(response.getCarousel());
+        _constructCarousel(response);
         return;
       }
       _constructChatMessage(response.getDefaultOrChatMessage());
@@ -605,14 +607,15 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _doNotShowTyping = true;
       var chatModel = new ChatModel(
-          type: MessageType.CHAT_MESSAGE, text: element[0] ?? DEFAULT_RESPONSE, chatType: false);
+          type: MessageType.CHAT_MESSAGE,
+          text: element[0] ?? DEFAULT_RESPONSE,
+          chatType: false);
       _messages.insert(0, chatModel);
     });
   }
 
   void _constructMovieDetails(response) {
-    MovieTvDetailsModel movieProviders =
-        new MovieTvDetailsModel(response);
+    MovieTvDetailsModel movieProviders = new MovieTvDetailsModel(response);
     setState(() {
       _doNotShowTyping = true;
       _handleNewUIForMovieDetails(movieProviders);
@@ -657,7 +660,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     });
   }
 
-  void _constructCarousel(element) {
+  void _constructCarousel(AIResponse response) {
+    var element = response.getCarousel();
     CarouselSelect carouselSelect = new CarouselSelect(element);
 
     if (_movieSliderShownCount == 0) {
@@ -671,9 +675,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             chatType: false);
         _messages.insert(0, chatModel);
 
-        var contentFilteringTabsModel = new ContentFilteringTabsModel(
-            type: MessageType.CONTENT_FILTERING_TABS);
-        _messages.insert(0, contentFilteringTabsModel);
       });
 
       Future.delayed(const Duration(milliseconds: 2000), () {
@@ -694,6 +695,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               type: MessageType.CAROUSEL,
             );
             _messages.insert(0, carouselModel);
+
+            var contentFilteringTabsModel = new ContentFilteringTabsModel(
+                response: response, type: MessageType.CONTENT_FILTERING_TABS);
+            _messages.insert(0, contentFilteringTabsModel);
+
           });
         });
       });

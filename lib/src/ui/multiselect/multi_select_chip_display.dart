@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/choice_chip_mobo.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class MultiSelectChipDisplay<V> extends StatefulWidget {
-  final List<MultiSelectItem<V>> items;
+  final List<String> items;
   final Function onTap;
   final bool containsNoPreference;
 
@@ -18,7 +17,6 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
   final ScrollController _scrollController = ScrollController();
   List<bool> _selectedItems = [];
   bool isNoPreferenceSelected = false;
-  List<MultiSelectItem<V>> multiSelectedItems = [];
 
   @override
   void initState() {
@@ -45,7 +43,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                         Flexible(child: _buildListView()),
                         ChoiceChipMobo(
                             isNoPreferenceSelected: isNoPreferenceSelected,
-                            label: widget.items.last.label,
+                            label: widget.items.last,
                             selected: _selectedItems[widget.items.length - 1] ??
                                 false,
                             onSelected: (value) {
@@ -57,7 +55,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                               });
                               if (widget.onTap != null)
                                 widget.onTap(
-                                    widget.items.last.label,
+                                    widget.items.last,
                                     _selectedItems[widget.items.length - 1],
                                     _selectedItems);
                             })
@@ -80,7 +78,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
         var item = widget.items[index];
         return ChoiceChipMobo(
             isNoPreferenceSelected: isNoPreferenceSelected,
-            label: item.label,
+            label: item,
             selected: _selectedItems[index] ?? false,
             onSelected: isNoPreferenceSelected
                 ? null
@@ -90,7 +88,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                     });
                     if (widget.onTap != null)
                       widget.onTap(
-                          item.label, _selectedItems[index], _selectedItems);
+                          item, _selectedItems[index], _selectedItems);
                   });
       },
     );

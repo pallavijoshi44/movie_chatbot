@@ -188,7 +188,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.CONTENT_FILTERING_TABS:
                       return ContentFilteringTabs(
                         entertainmentItems: (message as ContentFilteringTabsModel).getEntertainmentTypes(),
-                      );
+                          filterContents: (message as ContentFilteringTabsModel).handleFilterContents);
                       break;
                   }
                 }
@@ -477,6 +477,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _getDialogFlowResponse(reply);
     }
   }
+  
+  Future<void> handleFilterContents(eventName, parameters) async {
+    await _getDialogFlowResponseByEvent(eventName, parameters, false);
+  }
 
   void _getDialogFlowResponse(query) async {
     _textController.clear();
@@ -533,6 +537,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isTextFieldEnabled = true;
       _isLoading = false;
       _messages.removeWhere((element) => element is UnreadMessageModel);
+      _messages.removeWhere((element) => element is ContentFilteringTabsModel);
     });
     if (response != null) {
       var action = response.getAction();
@@ -699,8 +704,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             _messages.insert(0, carouselModel);
 
             var contentFilteringTabsModel = new ContentFilteringTabsModel(
-                response: response, type: MessageType.CONTENT_FILTERING_TABS);
+                response: response, type: MessageType.CONTENT_FILTERING_TABS, handleFilterContents: handleFilterContents);
             _messages.insert(0, contentFilteringTabsModel);
+
 
           });
         });
@@ -719,6 +725,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           type: MessageType.CAROUSEL,
         );
         _messages.insert(0, carouselModel);
+
+        var contentFilteringTabsModel = new ContentFilteringTabsModel(
+            response: response, type: MessageType.CONTENT_FILTERING_TABS, handleFilterContents: handleFilterContents);
+        _messages.insert(0, contentFilteringTabsModel);
+
       });
     }
   }

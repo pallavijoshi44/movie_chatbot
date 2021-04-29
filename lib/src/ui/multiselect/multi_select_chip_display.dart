@@ -6,12 +6,14 @@ class MultiSelectChipDisplay<V> extends StatefulWidget {
   final Function onTap;
   final bool containsNoPreference;
   final List<bool> initialSelectedItems;
+  final bool isToggleNeeded;
 
   MultiSelectChipDisplay(
       {this.items,
       this.onTap,
       this.containsNoPreference,
-      this.initialSelectedItems});
+      this.initialSelectedItems,
+      this.isToggleNeeded});
 
   @override
   _MultiSelectChipDisplayState<V> createState() =>
@@ -22,11 +24,13 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
   final ScrollController _scrollController = ScrollController();
   List<bool> _selectedItems = [];
   bool isNoPreferenceSelected = false;
+  bool _isToggleNeeded = false;
 
   @override
   void initState() {
     _selectedItems = widget.initialSelectedItems ??
         new List.filled(widget.items.length, false);
+    _isToggleNeeded = widget.isToggleNeeded ?? false;
     super.initState();
   }
 
@@ -90,7 +94,11 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                 ? null
                 : (value) {
                     setState(() {
-                      _selectedItems[index] = !_selectedItems[index];
+                      bool currentIndex = _selectedItems[index];
+                      if (_isToggleNeeded) {
+                        _selectedItems = List.filled(widget.items.length, false);
+                      }
+                      _selectedItems[index] = !currentIndex;
                     });
                     if (widget.onTap != null)
                       widget.onTap(item, _selectedItems[index], _selectedItems);

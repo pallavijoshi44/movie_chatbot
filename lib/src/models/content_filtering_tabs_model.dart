@@ -8,11 +8,14 @@ class ContentFilteringTabsModel extends MessageModel {
   final String title;
   final MessageType type;
   final AIResponse response;
+  final Function handleFilterContents;
+
   List<EntertainmentContentType> _entertainmentTypes;
   Map<String, String> _items;
 
-  ContentFilteringTabsModel({this.title, @required this.type, this.response})
+  ContentFilteringTabsModel({this.title, @required this.type, this.response, this.handleFilterContents})
       : super(type: type, name: title) {
+
     Map parameters = response.getParameters();
 
     _entertainmentTypes = [

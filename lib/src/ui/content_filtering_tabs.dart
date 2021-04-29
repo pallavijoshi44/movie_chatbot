@@ -15,25 +15,23 @@ class ContentFilteringTabs extends StatefulWidget {
 }
 
 class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
-  List<bool> _initialItemsSelected;
 
   @override
   void initState() {
-    _initialItemsSelected =
-        widget.entertainmentItems.map((e) => e.selected).toList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     var entertainmentContentItems =
-        widget.entertainmentItems.map((e) => e.value).toList();
+    widget.entertainmentItems.map((e) => e.value).toList();
 
     return Container(
       padding: EdgeInsets.all(15),
       child: MultiSelectChipDisplay(
         items: entertainmentContentItems,
-        initialSelectedItems: _initialItemsSelected,
+        initialSelectedItems: widget.entertainmentItems.map((e) => e.selected)
+            .toList(),
         isToggleNeeded: true,
         onTap: (value, isSelected, selectedItems) {
           // 'parameters': {'id': '$id', 'country_code': '$countryCode'}
@@ -41,9 +39,7 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
           var eventName = value == ENTERTAINMENT_CONTENT_TYPE_MOVIES
               ? MOVIE_RECOMMENDATIONS_EVENT
               : TV_RECOMMENDATIONS_EVENT;
-          setState(() {
-            _initialItemsSelected = selectedItems;
-          });
+
           return widget.filterContents(eventName, DEFAULT_PARAMETERS_FOR_EVENT);
         },
         containsNoPreference: false,

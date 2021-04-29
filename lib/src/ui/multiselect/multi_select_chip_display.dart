@@ -17,6 +17,7 @@ class MultiSelectChipDisplay<V> extends StatefulWidget {
 class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
   final ScrollController _scrollController = ScrollController();
   List<bool> _selectedItems = [];
+  bool isNoPreferenceSelected = false;
   List<MultiSelectItem<V>> multiSelectedItems = [];
 
   @override
@@ -39,24 +40,30 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
             isAlwaysShown: false,
             child: widget.containsNoPreference
                 ? Container(
-                  child: Column(
+                    child: Column(
                       children: [
                         Flexible(child: _buildListView()),
                         ChoiceChipMobo(
+                            isNoPreferenceSelected: isNoPreferenceSelected,
                             label: widget.items.last.label,
-                            selected:
-                                _selectedItems[widget.items.length - 1] ?? false,
+                            selected: _selectedItems[widget.items.length - 1] ??
+                                false,
                             onSelected: (value) {
                               setState(() {
-                                _selectedItems[widget.items.length - 1] = ! _selectedItems[widget.items.length - 1];
+                                _selectedItems[widget.items.length - 1] =
+                                    !_selectedItems[widget.items.length - 1];
+                                isNoPreferenceSelected =
+                                    _selectedItems[widget.items.length - 1];
                               });
                               if (widget.onTap != null)
-                                widget.onTap(widget.items.last.label, _selectedItems[widget.items.length - 1] ,
+                                widget.onTap(
+                                    widget.items.last.label,
+                                    _selectedItems[widget.items.length - 1],
                                     _selectedItems);
                             })
                       ],
                     ),
-                )
+                  )
                 : _buildListView(),
           )),
     );
@@ -72,15 +79,19 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
       itemBuilder: (ctx, index) {
         var item = widget.items[index];
         return ChoiceChipMobo(
+            isNoPreferenceSelected: isNoPreferenceSelected,
             label: item.label,
             selected: _selectedItems[index] ?? false,
-            onSelected: (value) {
-              setState(() {
-                _selectedItems[index] = !_selectedItems[index];
-              });
-              if (widget.onTap != null)
-                widget.onTap(item.label, _selectedItems[index], _selectedItems);
-            });
+            onSelected: isNoPreferenceSelected
+                ? null
+                : (value) {
+                    setState(() {
+                      _selectedItems[index] = !_selectedItems[index];
+                    });
+                    if (widget.onTap != null)
+                      widget.onTap(
+                          item.label, _selectedItems[index], _selectedItems);
+                  });
       },
     );
   }

@@ -15,12 +15,13 @@ class QuickReply extends StatefulWidget {
 
 class _QuickReplyState extends State<QuickReply> {
   bool _isSelected = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 15.0),
       child:
-      Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+          Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
         CircleAvatar(
           child: Text(''),
           backgroundColor: Colors.transparent,
@@ -32,6 +33,7 @@ class _QuickReplyState extends State<QuickReply> {
               direction: Axis.horizontal,
               children: widget.quickReplies.map((quickReply) {
                 return ChoiceChipMobo(
+                    isNoPreferenceSelected: false,
                     label: quickReply,
                     selected: false,
                     onSelected: (isSelected) {

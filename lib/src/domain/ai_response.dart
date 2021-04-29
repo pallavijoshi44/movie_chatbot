@@ -1,4 +1,3 @@
-
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
@@ -25,6 +24,17 @@ class AIResponse {
     _webhookPayload = body['queryResult']['webhookPayload'] != null
         ? body['queryResult']['webhookPayload']
         : null;
+  }
+
+  Map getParameters() {
+    return _queryResult.parameters;
+  }
+
+  EntertainmentType getEntertainmentContentType() {
+    if (_queryResult.action == ACTION_MOVIE_RECOMMENDATIONS)
+      return EntertainmentType.MOVIE;
+    else
+      return EntertainmentType.TV;
   }
 
   String get responseId {
@@ -77,8 +87,9 @@ class AIResponse {
   }
 
   bool containsQuickReplies() {
-    var payload = getListMessage()
-        .firstWhere((element) => element.containsKey('payload'), orElse: () => null);
+    var payload = getListMessage().firstWhere(
+        (element) => element.containsKey('payload'),
+        orElse: () => null);
     if (payload != null) {
       return payload['payload'].containsKey('quickReplies');
     }
@@ -86,8 +97,10 @@ class AIResponse {
   }
 
   bool containsCarousel() =>
-      getListMessage()
-          .firstWhere((element) => element.containsKey('carouselSelect'), orElse: () => null) != null;
+      getListMessage().firstWhere(
+          (element) => element.containsKey('carouselSelect'),
+          orElse: () => null) !=
+      null;
 
   bool containsMovieDetails() => getMovieDetails() != null;
 
@@ -104,7 +117,9 @@ class AIResponse {
       });
     }
     if (list.isEmpty) {
-      var message = getMessage() != null && getMessage() != "" ? getMessage() : DEFAULT_RESPONSE;
+      var message = getMessage() != null && getMessage() != ""
+          ? getMessage()
+          : DEFAULT_RESPONSE;
       list.add(message);
     }
     return list;
@@ -164,3 +179,5 @@ class AIResponse {
         orElse: () => null);
   }
 }
+
+enum EntertainmentType { MOVIE, TV }

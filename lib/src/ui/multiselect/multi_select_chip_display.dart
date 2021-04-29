@@ -5,8 +5,13 @@ class MultiSelectChipDisplay<V> extends StatefulWidget {
   final List<String> items;
   final Function onTap;
   final bool containsNoPreference;
+  final List<bool> initialSelectedItems;
 
-  MultiSelectChipDisplay({this.items, this.onTap, this.containsNoPreference});
+  MultiSelectChipDisplay(
+      {this.items,
+      this.onTap,
+      this.containsNoPreference,
+      this.initialSelectedItems});
 
   @override
   _MultiSelectChipDisplayState<V> createState() =>
@@ -20,7 +25,8 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
 
   @override
   void initState() {
-    _selectedItems = new List.filled(widget.items.length, false);
+    _selectedItems = widget.initialSelectedItems ??
+        new List.filled(widget.items.length, false);
     super.initState();
   }
 
@@ -87,8 +93,7 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
                       _selectedItems[index] = !_selectedItems[index];
                     });
                     if (widget.onTap != null)
-                      widget.onTap(
-                          item, _selectedItems[index], _selectedItems);
+                      widget.onTap(item, _selectedItems[index], _selectedItems);
                   });
       },
     );

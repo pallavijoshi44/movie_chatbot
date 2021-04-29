@@ -186,7 +186,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.UNREAD_MESSAGE:
                       return UnreadMessage();
                     case MessageType.CONTENT_FILTERING_TABS:
-                      return ContentFilteringTabs();
+                      return ContentFilteringTabs(
+                        entertainmentItems: (message as ContentFilteringTabsModel).getEntertainmentTypes(),
+                      );
                       break;
                   }
                 }

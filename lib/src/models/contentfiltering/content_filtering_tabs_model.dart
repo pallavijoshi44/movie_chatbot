@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 
-import 'message_model.dart';
+import '../message_model.dart';
+import 'entertainment_type.dart';
+import 'genre_content_type.dart';
 
 class ContentFilteringTabsModel extends MessageModel {
   final String title;
@@ -11,11 +13,15 @@ class ContentFilteringTabsModel extends MessageModel {
   final Function handleFilterContents;
 
   List<EntertainmentContentType> _entertainmentTypes;
+  List<GenresContentType> _genreTypes;
   Map<String, String> _items;
 
-  ContentFilteringTabsModel({this.title, @required this.type, this.response, this.handleFilterContents})
+  ContentFilteringTabsModel(
+      {this.title,
+      @required this.type,
+      this.response,
+      this.handleFilterContents})
       : super(type: type, name: title) {
-
     Map parameters = response.getParameters();
 
     _entertainmentTypes = [
@@ -24,31 +30,21 @@ class ContentFilteringTabsModel extends MessageModel {
       EntertainmentContentType(ENTERTAINMENT_CONTENT_TYPE_TV_SHOWS,
           response.getEntertainmentContentType() == EntertainmentType.TV)
     ];
+
+    if (isValid(parameters, 'genres')) {
+      _genreTypes = parameters['genres'].map((genre) {
+        return GenresContentType(genre, true);
+      });
+    }
   }
+
+  bool isValid(Map parameters, key) =>
+      parameters != null && parameters[key] != null && parameters[key].size > 0;
 
   List<EntertainmentContentType> getEntertainmentTypes() {
     return _entertainmentTypes;
   }
 }
-
-class EntertainmentContentType {
-  final bool selected;
-  final String value;
-
-  EntertainmentContentType(this.value, this.selected);
-}
-// enum ContentType {
-//   ENTERTAINMENT_TYPE,
-//   LANGUAGES,
-//   CUSTOM_DATE_TYPE,
-//   DATE_PERIOD,
-//   WATCH_PROVIDERS,
-//   GENRES,
-//   SHORT,
-//   LONG,
-//   MUSIC_ARTIST,
-//   SEARCH_KEYWORD
-// }
 
 // "parameters": {
 // "operator-selector": "",

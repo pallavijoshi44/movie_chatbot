@@ -30,7 +30,7 @@ import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
-import 'models/content_filtering_tabs_model.dart';
+import 'models/contentfiltering/content_filtering_tabs_model.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
 import 'ui/movie_details/movie_just_watch.dart';

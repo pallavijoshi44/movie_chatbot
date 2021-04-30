@@ -34,7 +34,7 @@ class DetectDialogResponses {
         }
         executeResponse.call(response);
       } catch (error) {
-        defaultResponse.call();
+         defaultResponse.call();
         print(error);
       }
     } catch (error) {

@@ -484,7 +484,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> handleFilterContents(eventName, parameters) async {
-    await _getDialogFlowResponseByEvent(eventName, parameters, false);
+     _getDialogFlowResponseByEvent(eventName, parameters, false);
   }
 
   void _getDialogFlowResponse(query) async {

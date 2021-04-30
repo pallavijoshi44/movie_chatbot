@@ -10,10 +10,11 @@ class ContentFilteringTabsModel extends MessageModel {
   final String title;
   final MessageType type;
   final AIResponse response;
-  final Function handleFilterContents;
 
+  final Function handleFilterContents;
   List<EntertainmentContentType> _entertainmentTypes;
   List<GenresContentType> _genreTypes = [];
+
   Map<String, String> _items;
 
   ContentFilteringTabsModel(
@@ -26,7 +27,6 @@ class ContentFilteringTabsModel extends MessageModel {
 
     bool isMovie =
         response.getEntertainmentContentType() == EntertainmentType.MOVIE;
-
     _constructEntertainmentType(isMovie);
     _constructGenres(parameters, isMovie);
   }
@@ -91,6 +91,7 @@ class ContentFilteringTabsModel extends MessageModel {
   List<GenresContentType> getGenreContentType() {
     return _genreTypes;
   }
+
 }
 
 // "parameters": {

@@ -31,7 +31,7 @@ const String ROMANCE = "Romance";
 const String MUSIC = "Music";
 
 const String FANTASY = "Fantasy";
-const String SCI_FI = "Sci-Fi";
+const String SCI_FI = "Science Fiction";
 const String ANIMATION = "Animation";
 
 const String DOCUMENTARY = "Documentary";

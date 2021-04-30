@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/contentfiltering/entertainment_type.dart';
+import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart';
 import 'package:flutter_app/src/ui/multiselect/multi_select_chip_display.dart';
 
 class ContentFilteringTabs extends StatefulWidget {
   final List<EntertainmentContentType> entertainmentItems;
+  final List<GenresContentType> genreTypes;
   final Function filterContents;
 
-  ContentFilteringTabs({this.entertainmentItems, this.filterContents});
+  ContentFilteringTabs({this.entertainmentItems, this.genreTypes, this.filterContents});
 
   @override
   _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
@@ -24,13 +26,13 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   @override
   Widget build(BuildContext context) {
     var entertainmentContentItems =
-    widget.entertainmentItems.map((e) => e.value).toList();
+    widget.genreTypes.map((e) => e.value).toList();
 
     return Container(
       padding: EdgeInsets.all(15),
       child: MultiSelectChipDisplay(
         items: entertainmentContentItems,
-        initialSelectedItems: widget.entertainmentItems.map((e) => e.selected)
+        initialSelectedItems: widget.genreTypes.map((e) => e.selected)
             .toList(),
         isToggleNeeded: true,
         onTap: (value, isSelected, selectedItems) {

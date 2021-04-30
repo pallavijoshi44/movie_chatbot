@@ -187,8 +187,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return UnreadMessage();
                     case MessageType.CONTENT_FILTERING_TABS:
                       return ContentFilteringTabs(
-                        entertainmentItems: (message as ContentFilteringTabsModel).getEntertainmentTypes(),
-                          filterContents: (message as ContentFilteringTabsModel).handleFilterContents);
+                          entertainmentItems:
+                              (message as ContentFilteringTabsModel)
+                                  .getEntertainmentTypes(),
+                          genreTypes: (message as ContentFilteringTabsModel)
+                              .getGenreContentType(),
+                          filterContents: (message as ContentFilteringTabsModel)
+                              .handleFilterContents);
                       break;
                   }
                 }
@@ -477,7 +482,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _getDialogFlowResponse(reply);
     }
   }
-  
+
   Future<void> handleFilterContents(eventName, parameters) async {
     await _getDialogFlowResponseByEvent(eventName, parameters, false);
   }
@@ -681,7 +686,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             text: MOVIE_RESPONSE,
             chatType: false);
         _messages.insert(0, chatModel);
-
       });
 
       Future.delayed(const Duration(milliseconds: 2000), () {
@@ -704,10 +708,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             _messages.insert(0, carouselModel);
 
             var contentFilteringTabsModel = new ContentFilteringTabsModel(
-                response: response, type: MessageType.CONTENT_FILTERING_TABS, handleFilterContents: handleFilterContents);
+                response: response,
+                type: MessageType.CONTENT_FILTERING_TABS,
+                handleFilterContents: handleFilterContents);
             _messages.insert(0, contentFilteringTabsModel);
-
-
           });
         });
       });
@@ -727,9 +731,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _messages.insert(0, carouselModel);
 
         var contentFilteringTabsModel = new ContentFilteringTabsModel(
-            response: response, type: MessageType.CONTENT_FILTERING_TABS, handleFilterContents: handleFilterContents);
+            response: response,
+            type: MessageType.CONTENT_FILTERING_TABS,
+            handleFilterContents: handleFilterContents);
         _messages.insert(0, contentFilteringTabsModel);
-
       });
     }
   }

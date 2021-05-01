@@ -190,8 +190,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return ContentFilteringTabs(
                           entertainmentItems:
                               (message as ContentFilteringTabsModel).entertainmentTypes,
-                          movieGenreItems: (message as ContentFilteringTabsModel).genreTypes,
-                          tvGenreItems: (message as ContentFilteringTabsModel).otherGenreTypes,
+                          movieGenreItems: (message as ContentFilteringTabsModel).movieGenreTypes,
+                          tvGenreItems: (message as ContentFilteringTabsModel).tvGenreTypes,
+                          musicArtists: (message as ContentFilteringTabsModel).musicArtists,
                           filterContents: (message as ContentFilteringTabsModel)
                               .handleFilterContents);
                       break;
@@ -737,8 +738,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     var contentResponse = new ContentFilteringParser(response: response);
     var contentFilteringTabsModel = new ContentFilteringTabsModel(
         entertainmentTypes: contentResponse.getEntertainmentTypes(),
-        genreTypes: contentResponse.getMovieGenreContentType(),
-        otherGenreTypes: contentResponse.getTVGenreItems(),
+        movieGenreTypes: contentResponse.getMovieGenreContentType(),
+        tvGenreTypes: contentResponse.getTVGenreItems(),
+        musicArtists: contentResponse.getMusicArtists(),
         type: MessageType.CONTENT_FILTERING_TABS,
         handleFilterContents: handleFilterContents);
     _messages.insert(0, contentFilteringTabsModel);

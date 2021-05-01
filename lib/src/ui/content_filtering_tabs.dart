@@ -12,13 +12,15 @@ class ContentFilteringTabs extends StatefulWidget {
   final List<EntertainmentContentType> entertainmentItems;
   final List<GenresContentType> movieGenreItems;
   final List<GenresContentType> tvGenreItems;
+  final List<String> musicArtists;
   final Function filterContents;
 
   ContentFilteringTabs(
       {this.entertainmentItems,
       this.movieGenreItems,
       this.filterContents,
-      this.tvGenreItems});
+      this.tvGenreItems,
+      this.musicArtists});
 
   @override
   _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
@@ -27,8 +29,10 @@ class ContentFilteringTabs extends StatefulWidget {
 class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   String _eventName;
   List<String> _genres;
+  List<String> _musicArtists;
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
+  List<bool> _selectedMusicArtists;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
   bool _isFetchContentNotTriggered = true;
@@ -42,6 +46,11 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
     _selectedMovieGenreItems =
         widget.movieGenreItems.map((e) => e.selected).toList();
     _selectedTVGenreItems = widget.tvGenreItems.map((e) => e.selected).toList();
+
+    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
+      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
+    }
+
     EntertainmentContentType originalEntertainmentType = widget
         .entertainmentItems
         .firstWhere((e) => e.selected == true, orElse: () => null);
@@ -57,6 +66,8 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
         ? _createGenresForDialogflow(widget.movieGenreItems)
         : _createGenresForDialogflow(widget.tvGenreItems);
 
+    _musicArtists =
+        _createRequestFor(widget.musicArtists, _selectedMusicArtists);
     super.initState();
   }
 
@@ -70,109 +81,110 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> movieGenreItemValues =
+        widget.movieGenreItems.map((e) => e.value).toList();
+    List<String> entertainmentTypeValues =
+        widget.entertainmentItems.map((e) => e.value).toList();
+    List<String> tvGenreItemValues =
+        widget.tvGenreItems.map((e) => e.value).toList();
+
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 40,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _scrollController,
-              itemCount: widget.entertainmentItems.length,
-              itemBuilder: (ctx, index) {
-                var item = widget.entertainmentItems[index];
-                return ChoiceChipMobo(
-                    isNoPreferenceSelected: false,
-                    label: item.value,
-                    selected: _selectedEntertainmentItems[index],
-                    onSelected: (value) {
-                      setState(() {
-                        _selectedEntertainmentItems = List.filled(
-                            widget.entertainmentItems.length, false);
-                        _selectedEntertainmentItems[index] = true;
-                        _isEntertainmentTypeMovie =
-                            item.value == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
-                        _eventName = _isEntertainmentTypeMovie
-                            ? MOVIE_RECOMMENDATIONS_EVENT
-                            : TV_RECOMMENDATIONS_EVENT;
-                      });
-                    });
-              },
-            ),
-          ),
+          _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
+              (index, item) {
+            setState(() {
+              _selectedEntertainmentItems =
+                  List.filled(widget.entertainmentItems.length, false);
+              _selectedEntertainmentItems[index] = true;
+              _isEntertainmentTypeMovie =
+                  item == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
+              _eventName = _isEntertainmentTypeMovie
+                  ? MOVIE_RECOMMENDATIONS_EVENT
+                  : TV_RECOMMENDATIONS_EVENT;
+              _selectedMusicArtists = _isEntertainmentTypeMovie
+                  ? List.filled(widget.musicArtists.length, true)
+                  : [];
+              _musicArtists = _isEntertainmentTypeMovie
+                  ? _createRequestFor(
+                      widget.musicArtists, _selectedMusicArtists)
+                  : [];
+            });
+          }),
           _isEntertainmentTypeMovie
-              ? Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    controller: _scrollController,
-                    itemCount: widget.movieGenreItems.length,
-                    itemBuilder: (ctx, index) {
-                      var item = widget.movieGenreItems[index];
-                      return ChoiceChipMobo(
-                          isNoPreferenceSelected: false,
-                          label: item.value,
-                          selected: _selectedMovieGenreItems[index],
-                          onSelected: (value) async {
-                            setState(() {
-                              _selectedMovieGenreItems[index] =
-                                  !_selectedMovieGenreItems[index];
-                              _genres = widget.movieGenreItems.map((item) {
-                                if (_selectedMovieGenreItems.elementAt(
-                                        widget.movieGenreItems.indexOf(item)) ==
-                                    true) return item.value;
-                              }).toList();
+              ? _buildListView(movieGenreItemValues, _selectedMovieGenreItems,
+                  (index, item) async {
+                  setState(() {
+                    _selectedMovieGenreItems[index] =
+                        !_selectedMovieGenreItems[index];
 
-                              _genres.removeWhere((value) => value == null);
-                              _selectedTVGenreItems = List.filled(
-                                  widget.tvGenreItems.length, false);
-                            });
-                            await _fetchContent();
-                          });
-                    },
-                  ),
-                )
-              : Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    controller: _scrollController,
-                    itemCount: widget.tvGenreItems.length,
-                    itemBuilder: (ctx, index) {
-                      var item = widget.tvGenreItems[index];
-                      return ChoiceChipMobo(
-                          isNoPreferenceSelected: false,
-                          label: item.value,
-                          selected: _selectedTVGenreItems[index],
-                          onSelected: (value) async {
-                            setState(() {
-                              _selectedTVGenreItems[index] =
-                                  !_selectedTVGenreItems[index];
-                              _genres = widget.tvGenreItems.map((item) {
-                                if (_selectedTVGenreItems.elementAt(
-                                        widget.tvGenreItems.indexOf(item)) ==
-                                    true) return item.value;
-                              }).toList();
-                              _genres.removeWhere((value) => value == null);
-                              _selectedMovieGenreItems = List.filled(
-                                  widget.movieGenreItems.length, false);
-                            });
-                            await _fetchContent();
-                          });
-                    },
-                  ),
-                )
+                    _genres = _createRequestFor(
+                        movieGenreItemValues, _selectedMovieGenreItems);
+                    _selectedTVGenreItems =
+                        List.filled(widget.tvGenreItems.length, false);
+                  });
+                  await _fetchContent();
+                })
+              : _buildListView(tvGenreItemValues, _selectedTVGenreItems,
+                  (index, item) async {
+                  setState(() {
+                    _selectedTVGenreItems[index] =
+                        !_selectedTVGenreItems[index];
+                    _genres = _createRequestFor(
+                        tvGenreItemValues, _selectedTVGenreItems);
+                    _selectedMovieGenreItems =
+                        List.filled(widget.movieGenreItems.length, false);
+                  });
+                  await _fetchContent();
+                }),
+          if (_selectedMusicArtists != null && _selectedMusicArtists.isNotEmpty)
+            _buildListView(widget.musicArtists, _selectedMusicArtists,
+                (index, item) async {
+              setState(() {
+                _selectedMusicArtists[index] = !_selectedMusicArtists[index];
+                _musicArtists = _createRequestFor(
+                    widget.musicArtists, _selectedMusicArtists);
+              });
+              await _fetchContent();
+            })
         ],
       ),
     );
   }
 
+  List<String> _createRequestFor(List<String> source, selectedItems) {
+    var list = source.map((item) {
+      if (selectedItems.elementAt(source.indexOf(item)) == true) return item;
+    }).toList();
+    list.removeWhere((value) => value == null);
+    return list;
+  }
+
+  Widget _buildListView(source, List<bool> selectedItems, Function onTap) {
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: 40,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          controller: _scrollController,
+          itemCount: source.length,
+          itemBuilder: (ctx, index) {
+            var item = source[index];
+            return ChoiceChipMobo(
+                isNoPreferenceSelected: false,
+                label: item,
+                selected: selectedItems[index],
+                onSelected: (value) {
+                  onTap.call(index, item);
+                });
+          },
+        ));
+  }
+
   Future _fetchContent() async {
-    var parameters = "'parameters' : { 'genres' :  ${jsonEncode(_genres)}}";
+    var parameters =
+        "'parameters' : { 'genres' :  ${jsonEncode(_genres)}, 'music-artist' : ${jsonEncode(_musicArtists)}}";
 
     if (_isFetchContentNotTriggered) {
       _isFetchContentNotTriggered = false;

@@ -9,18 +9,34 @@ class ContentFilteringParser {
   List<EntertainmentContentType> _entertainmentTypes;
   List<GenresContentType> _movieGenreItems = [];
   List<GenresContentType> _tvGenreItems = [];
+  List<String> _musicArtists = [];
 
   ContentFilteringParser({this.response}) {
+    var parameters = response.getParameters();
     bool isMovie =
         response.getEntertainmentContentType() == EntertainmentType.MOVIE;
 
     _constructEntertainmentType(isMovie);
-    _constructGenres(response.getParameters(), isMovie);
+    _constructGenres(parameters, isMovie);
+    _constructMusicArtists(parameters);
+    
+  }
+
+  void _constructMusicArtists(Map parameters) {
+     if(isValidList(parameters, 'music-artist')) {
+      List<dynamic> list = parameters['music-artist'];
+      list.forEach((element) {
+        _musicArtists.add(element);
+      });
+    } else {
+      _musicArtists = [];
+    }
   }
 
   void _constructGenres(Map parameters, bool isMovie) {
     _movieGenreItems = [];
     _tvGenreItems = [];
+    _musicArtists = [];
 
     List<String> list1 = isMovie
         ? GenresContentType.movieGenresGroup1
@@ -38,7 +54,7 @@ class ContentFilteringParser {
         ? GenresContentType.movieGenresGroup5
         : GenresContentType.tvGenresGroup5;
 
-    if (isValid(parameters, 'genres')) {
+    if (isValidList(parameters, 'genres')) {
       List<dynamic> selectedGenres = parameters['genres'];
       selectedGenres.forEach((genre) {
         if (list1.contains(genre)) {
@@ -161,7 +177,7 @@ class ContentFilteringParser {
     ];
   }
 
-  bool isValid(Map parameters, String key) =>
+  bool isValidList(Map parameters, String key) =>
       parameters != null &&
       parameters[key] != null &&
       parameters[key].length > 0;
@@ -176,6 +192,10 @@ class ContentFilteringParser {
 
   List<GenresContentType> getTVGenreItems() {
     return _removeDuplicates(_tvGenreItems);
+  }
+
+  List<String> getMusicArtists() {
+    return _musicArtists;
   }
 
   List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {
@@ -196,23 +216,3 @@ class ContentFilteringParser {
     return result;
   }
 }
-
-// "parameters": {
-// "operator-selector": "",
-// "watch-provider": [],
-// "music-artist": [],
-// "custom-date-period": "old",
-// "language": [
-// "Hindi",
-// "French",
-// "Mandarin"
-// ],
-// "date-period": "",
-// "watch-provider-original": [],
-// "country-name": "",
-// "genres": [
-// "Action",
-// "Adventure"
-// ],
-// "country-code": ""
-// }

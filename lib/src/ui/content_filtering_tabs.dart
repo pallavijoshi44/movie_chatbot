@@ -7,31 +7,35 @@ import 'package:flutter_app/src/models/contentfiltering/entertainment_type.dart'
 import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart';
 import 'package:flutter_app/src/ui/multiselect/multi_select_chip_display.dart';
 
+import 'choice_chip_mobo.dart';
+
 class ContentFilteringTabs extends StatefulWidget {
   final List<EntertainmentContentType> entertainmentItems;
   final List<GenresContentType> genreTypes;
   final Function filterContents;
-  final String eventName;
 
   ContentFilteringTabs(
-      {this.entertainmentItems,
-      this.genreTypes,
-      this.filterContents,
-      this.eventName});
+      {this.entertainmentItems, this.genreTypes, this.filterContents});
 
   @override
   _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
 }
 
 class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
+  final ScrollController _scrollController = ScrollController();
+  List<bool> _selectedGenreItems = [];
   String _eventName;
   List<String> _genres;
+  List<String> _genresContentItems;
 
   @override
   void initState() {
+    // _genresContentItems = widget.genreTypes.map((e) => e.value).toList();
+
     EntertainmentContentType originalEntertainmentType = widget
         .entertainmentItems
         .firstWhere((e) => e.selected == true, orElse: () => null);
+
     _eventName =
         originalEntertainmentType.value == ENTERTAINMENT_CONTENT_TYPE_MOVIES
             ? MOVIE_RECOMMENDATIONS_EVENT
@@ -42,31 +46,21 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
     }).toList();
     _genres.removeWhere((value) => value == null);
 
+    _selectedGenreItems = widget.genreTypes.map((e) => e.selected).toList();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var entertainmentContentItems =
-        widget.entertainmentItems.map((e) => e.value).toList();
-    var genresContentItems = widget.genreTypes.map((e) => e.value).toList();
-
-    // List<String> multiSelectList = [];
-    // multiSelectList.addAll(entertainmentContentItems);
-    // multiSelectList.addAll(genresContentItems);
-    //
-    // List<bool> initialSelectedItems = [];
-    // initialSelectedItems
-    //     .addAll(widget.entertainmentItems.map((e) => e.selected).toList());
-    // initialSelectedItems
-    //     .addAll(widget.genreTypes.map((e) => e.selected).toList());
+    _genresContentItems = widget.genreTypes.map((e) => e.value).toList();
 
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
         children: [
           MultiSelectChipDisplay(
-            items: entertainmentContentItems,
+            items: widget.entertainmentItems.map((e) => e.value).toList(),
             initialSelectedItems:
                 widget.entertainmentItems.map((e) => e.selected).toList(),
             isToggleNeeded: true,
@@ -82,26 +76,39 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
             },
             containsNoPreference: false,
           ),
-          MultiSelectChipDisplay(
-            items: genresContentItems,
-            initialSelectedItems:
-                widget.genreTypes.map((e) => e.selected).toList(),
-            isToggleNeeded: false,
-            onTap: (value, isSelected, selectedItems) {
-              setState(() {
-                _genres = widget.genreTypes.map((item) {
-                  if (selectedItems
-                          .elementAt(widget.genreTypes.indexOf(item)) ==
-                      true) return item.value;
-                }).toList();
-                _genres.removeWhere((value) => value == null);
-              });
-              // 'parameters': {'id': '$id', 'country_code': '$countryCode'}
-              var parameters =
-                  "'parameters' : { 'genres' :  ${jsonEncode(_genres)}}";
-              return widget.filterContents(_eventName, parameters);
-            },
-            containsNoPreference: false,
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 40,
+            child: Scrollbar(
+              controller: _scrollController,
+              isAlwaysShown: false,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                controller: _scrollController,
+                itemCount: _genresContentItems.length,
+                itemBuilder: (ctx, index) {
+                  var item = _genresContentItems[index];
+                  return ChoiceChipMobo(
+                      isNoPreferenceSelected: false,
+                      label: item,
+                      selected: _selectedGenreItems[index] ?? false,
+                      onSelected: (value) {
+                        setState(() {
+                          _selectedGenreItems[index] = !_selectedGenreItems[index];
+                          _genres = widget.genreTypes.map((item) {
+                            if (_selectedGenreItems
+                                .elementAt(widget.genreTypes.indexOf(item)) ==
+                                true) return item.value;
+                          }).toList();
+                          _genres.removeWhere((value) => value == null);
+                        });
+                        var parameters =
+                            "'parameters' : { 'genres' :  ${jsonEncode(_genres)}}";
+                        return widget.filterContents(_eventName, parameters);
+                      });
+                },
+              ),
+            ),
           ),
         ],
       ),

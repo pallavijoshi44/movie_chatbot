@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/models/carousel_model.dart';
 import 'package:flutter_app/src/models/chat_model.dart';
+import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_app/src/models/movie_just_watch_model.dart';
 import 'package:flutter_app/src/models/movie_provider_model.dart';
@@ -188,10 +189,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.CONTENT_FILTERING_TABS:
                       return ContentFilteringTabs(
                           entertainmentItems:
-                              (message as ContentFilteringTabsModel)
-                                  .getEntertainmentTypes(),
-                          genreTypes: (message as ContentFilteringTabsModel)
-                              .getGenreContentType(),
+                              (message as ContentFilteringTabsModel).entertainmentTypes,
+                          genreTypes: (message as ContentFilteringTabsModel).genreTypes,
                           filterContents: (message as ContentFilteringTabsModel)
                               .handleFilterContents);
                       break;
@@ -541,7 +540,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _isTextFieldEnabled = true;
       _isLoading = false;
-      _messages.removeWhere((element) => element is UnreadMessageModel);
+      //_messages.removeWhere((element) => element is UnreadMessageModel);
       _messages.removeWhere((element) => element is ContentFilteringTabsModel);
     });
     if (response != null) {
@@ -707,11 +706,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             );
             _messages.insert(0, carouselModel);
 
-            var contentFilteringTabsModel = new ContentFilteringTabsModel(
-                response: response,
-                type: MessageType.CONTENT_FILTERING_TABS,
-                handleFilterContents: handleFilterContents);
-            _messages.insert(0, contentFilteringTabsModel);
+            _constructContentFilteringParser(response);
           });
         });
       });
@@ -729,14 +724,19 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           type: MessageType.CAROUSEL,
         );
         _messages.insert(0, carouselModel);
-
-        var contentFilteringTabsModel = new ContentFilteringTabsModel(
-            response: response,
-            type: MessageType.CONTENT_FILTERING_TABS,
-            handleFilterContents: handleFilterContents);
-        _messages.insert(0, contentFilteringTabsModel);
+        _constructContentFilteringParser(response);
       });
     }
+  }
+
+  void _constructContentFilteringParser(AIResponse response) {
+    var contentResponse = new ContentFilteringParser(response: response);
+    var contentFilteringTabsModel = new ContentFilteringTabsModel(
+        entertainmentTypes: contentResponse.getEntertainmentTypes(),
+        genreTypes: contentResponse.getGenreContentType(),
+        type: MessageType.CONTENT_FILTERING_TABS,
+        handleFilterContents: handleFilterContents);
+    _messages.insert(0, contentFilteringTabsModel);
   }
 
   void _constructQuickReplies(payload) {

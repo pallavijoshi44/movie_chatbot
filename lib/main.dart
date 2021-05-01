@@ -52,7 +52,7 @@ final cupertinoTheme = CupertinoThemeData(
 
 void main() => runApp(ChatBot());
 
-bool _selectedTips = true;
+bool _selectedTips = false;
 
 class ChatBot extends StatefulWidget {
   @override

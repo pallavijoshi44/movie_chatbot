@@ -171,11 +171,25 @@ class ContentFilteringParser {
   }
 
   List<GenresContentType> getMovieGenreContentType() {
-    return _movieGenreItems;
+    return _removeDuplicates(_movieGenreItems);
   }
 
   List<GenresContentType> getTVGenreItems() {
-    return _tvGenreItems;
+    return _removeDuplicates(_tvGenreItems);
+  }
+
+  List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {
+    List<GenresContentType> result = [];
+    var _genreValues = source.map((item) => item.value).toList();
+    _genreValues = _genreValues.toSet().toList();
+    _genreValues.forEach((element) {
+      GenresContentType item = source
+          .firstWhere((item) => item.value == element, orElse: () => null);
+      if (item != null) {
+        result.add(item);
+      }
+    });
+    return result;
   }
 }
 

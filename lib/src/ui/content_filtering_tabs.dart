@@ -26,12 +26,12 @@ class ContentFilteringTabs extends StatefulWidget {
 
 class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   String _eventName;
-  List<String> _movieGenres;
-  List<String> _tvGenres;
+  List<String> _genres;
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
+  bool _isFetchContentNotTriggered = true;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -53,8 +53,10 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
         ? MOVIE_RECOMMENDATIONS_EVENT
         : TV_RECOMMENDATIONS_EVENT;
 
-    _movieGenres = _createGenresForDialogflow(widget.movieGenreItems);
-    _tvGenres = _createGenresForDialogflow(widget.tvGenreItems);
+    _genres = _isEntertainmentTypeMovie
+        ? _createGenresForDialogflow(widget.movieGenreItems)
+        : _createGenresForDialogflow(widget.tvGenreItems);
+
     super.initState();
   }
 
@@ -113,26 +115,22 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                       return ChoiceChipMobo(
                           isNoPreferenceSelected: false,
                           label: item.value,
-                          selected: item.selected,
-                          onSelected: (value) {
+                          selected: _selectedMovieGenreItems[index],
+                          onSelected: (value) async {
                             setState(() {
                               _selectedMovieGenreItems[index] =
                                   !_selectedMovieGenreItems[index];
-                              _movieGenres = widget.movieGenreItems.map((item) {
+                              _genres = widget.movieGenreItems.map((item) {
                                 if (_selectedMovieGenreItems.elementAt(
                                         widget.movieGenreItems.indexOf(item)) ==
                                     true) return item.value;
                               }).toList();
 
-                              _movieGenres
-                                  .removeWhere((value) => value == null);
+                              _genres.removeWhere((value) => value == null);
                               _selectedTVGenreItems = List.filled(
                                   widget.tvGenreItems.length, false);
                             });
-                            var parameters =
-                                "'parameters' : { 'genres' :  ${jsonEncode(_movieGenres)}}";
-                            return widget.filterContents(
-                                _eventName, parameters);
+                            await _fetchContent();
                           });
                     },
                   ),
@@ -150,23 +148,20 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                           isNoPreferenceSelected: false,
                           label: item.value,
                           selected: _selectedTVGenreItems[index],
-                          onSelected: (value) {
+                          onSelected: (value) async {
                             setState(() {
                               _selectedTVGenreItems[index] =
                                   !_selectedTVGenreItems[index];
-                              _tvGenres = widget.tvGenreItems.map((item) {
+                              _genres = widget.tvGenreItems.map((item) {
                                 if (_selectedTVGenreItems.elementAt(
                                         widget.tvGenreItems.indexOf(item)) ==
                                     true) return item.value;
                               }).toList();
-                              _tvGenres.removeWhere((value) => value == null);
+                              _genres.removeWhere((value) => value == null);
                               _selectedMovieGenreItems = List.filled(
                                   widget.movieGenreItems.length, false);
                             });
-                            var parameters =
-                                "'parameters' : { 'genres' :  ${jsonEncode(_tvGenres)}}";
-                            return widget.filterContents(
-                                _eventName, parameters);
+                            await _fetchContent();
                           });
                     },
                   ),
@@ -174,5 +169,15 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
         ],
       ),
     );
+  }
+
+  Future _fetchContent() async {
+    var parameters = "'parameters' : { 'genres' :  ${jsonEncode(_genres)}}";
+
+    if (_isFetchContentNotTriggered) {
+      _isFetchContentNotTriggered = false;
+      await Future<void>.delayed(const Duration(milliseconds: 3000))
+          .then((value) => widget.filterContents(_eventName, parameters));
+    }
   }
 }

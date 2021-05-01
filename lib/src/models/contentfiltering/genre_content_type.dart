@@ -1,27 +1,26 @@
 class GenresContentType {
   static const movieGenresGroup1 = [ACTION, ADVENTURE, CRIME];
-  static const movieGenresGroup2 = [THRILLER, MYSTERY, HORROR];
-  static const movieGenresGroup3 = [COMEDY, DRAMA, FAMILY, ROMANCE, MUSIC];
-  static const movieGenresGroup4 = [FANTASY, SCI_FI, ANIMATION];
-  static const movieGenresGroup5 = [DOCUMENTARY, WAR, WESTERN, HISTORY];
   static const tvGenresGroup1 = [TV_ACTION_ADVENTURE_GENRE, WAR, MYSTERY];
-  static const tvGenresGroup2 = [ANIMATION, COMEDY, TV_KIDS_GENRE, FAMILY];
-  static const tvGenresGroup3 = [DOCUMENTARY, TV_NEWS, TV_REALITY, TV_TALK];
-  static const tvGenresGroup4 = [DRAMA, TV_SOAP, TV_WAR_POLITICS, WESTERN];
-  static const tvGenresGroup5 = [MYSTERY, SCI_FI, FANTASY];
-
   static const tvMovieGroup1 = [TV_ACTION_ADVENTURE_GENRE, CRIME,  WAR, MYSTERY];
   static const movieTvGroup1 = [ACTION, ADVENTURE, CRIME,  WAR, MYSTERY];
 
+  static const movieGenresGroup2 = [THRILLER, MYSTERY, HORROR];
+  static const tvGenresGroup2 = [MYSTERY, SCI_FI, FANTASY];
   static const tvMovieGroup2 = [MYSTERY, SCI_FI, FANTASY];
   static const movieTvGroup2 = [THRILLER, MYSTERY, HORROR];
 
+  static const movieGenresGroup3 = [COMEDY, DRAMA, FAMILY, ROMANCE, MUSIC];
+  static const tvGenresGroup3 = [ANIMATION, COMEDY, TV_KIDS_GENRE, FAMILY];
   static const tvMovieGroup3 = [COMEDY, DRAMA, FAMILY];
   static const movieTvGroup3 = [COMEDY, DRAMA, FAMILY, ROMANCE, MUSIC];
 
+  static const movieGenresGroup4 = [FANTASY, SCI_FI, ANIMATION];
+  static const tvGenresGroup4 = [DRAMA, TV_SOAP, TV_WAR_POLITICS, WESTERN];
   static const tvMovieGroup4 = [FANTASY, SCI_FI, ANIMATION];
   static const movieTvGroup4 = [FANTASY, SCI_FI, ANIMATION];
 
+  static const movieGenresGroup5 = [DOCUMENTARY, WAR, WESTERN, HISTORY];
+  static const tvGenresGroup5 = [DOCUMENTARY, TV_NEWS, TV_REALITY, TV_TALK];
   static const tvMovieGroup5 = [DOCUMENTARY, TV_WAR_POLITICS,WESTERN ];
   static const movieTvGroup5 = [DOCUMENTARY, WAR, WESTERN, HISTORY];
 

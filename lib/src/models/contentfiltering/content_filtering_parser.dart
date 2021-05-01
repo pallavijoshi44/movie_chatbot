@@ -189,6 +189,10 @@ class ContentFilteringParser {
         result.add(item);
       }
     });
+    result.sort((a, b) {
+      if (b.selected) return 1;
+      return -1;
+    });
     return result;
   }
 }

@@ -13,6 +13,7 @@ class ContentFilteringTabs extends StatefulWidget {
   final List<GenresContentType> movieGenreItems;
   final List<GenresContentType> tvGenreItems;
   final List<String> musicArtists;
+  final List<String> watchProviders;
   final Function filterContents;
 
   ContentFilteringTabs(
@@ -20,7 +21,8 @@ class ContentFilteringTabs extends StatefulWidget {
       this.movieGenreItems,
       this.filterContents,
       this.tvGenreItems,
-      this.musicArtists});
+      this.musicArtists,
+      this.watchProviders});
 
   @override
   _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
@@ -30,9 +32,11 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   String _eventName;
   List<String> _genres;
   List<String> _musicArtists;
+  List<String> _watchProviders;
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedMusicArtists;
+  List<bool> _selectedWatchProviders;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
   bool _isFetchContentNotTriggered = true;
@@ -46,10 +50,6 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
     _selectedMovieGenreItems =
         widget.movieGenreItems.map((e) => e.selected).toList();
     _selectedTVGenreItems = widget.tvGenreItems.map((e) => e.selected).toList();
-
-    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
-      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
-    }
 
     EntertainmentContentType originalEntertainmentType = widget
         .entertainmentItems
@@ -66,8 +66,18 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
         ? _createGenresForDialogflow(widget.movieGenreItems)
         : _createGenresForDialogflow(widget.tvGenreItems);
 
+    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
+      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
+    }
     _musicArtists =
         _createRequestFor(widget.musicArtists, _selectedMusicArtists);
+
+    if (widget.watchProviders != null && widget.watchProviders.isNotEmpty) {
+      _selectedWatchProviders = List.filled(widget.watchProviders.length, true);
+    }
+    _watchProviders =
+        _createRequestFor(widget.watchProviders, _selectedWatchProviders);
+
     super.initState();
   }
 
@@ -147,6 +157,18 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                     widget.musicArtists, _selectedMusicArtists);
               });
               await _fetchContent();
+            }),
+          if (_selectedWatchProviders != null &&
+              _selectedWatchProviders.isNotEmpty)
+            _buildListView(widget.watchProviders, _selectedWatchProviders,
+                (index, item) async {
+              setState(() {
+                _selectedWatchProviders[index] =
+                    !_selectedWatchProviders[index];
+                _watchProviders = _createRequestFor(
+                    widget.watchProviders, _selectedWatchProviders);
+              });
+              await _fetchContent();
             })
         ],
       ),
@@ -184,7 +206,7 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
 
   Future _fetchContent() async {
     var parameters =
-        "'parameters' : { 'genres' :  ${jsonEncode(_genres)}, 'music-artist' : ${jsonEncode(_musicArtists)}}";
+        "'parameters' : { 'genres' :  ${jsonEncode(_genres)}, 'music-artist' : ${jsonEncode(_musicArtists)}, 'watch-provider-original' : ${jsonEncode(_watchProviders)}}";
 
     if (_isFetchContentNotTriggered) {
       _isFetchContentNotTriggered = false;

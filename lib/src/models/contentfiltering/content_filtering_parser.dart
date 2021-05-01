@@ -10,6 +10,7 @@ class ContentFilteringParser {
   List<GenresContentType> _movieGenreItems = [];
   List<GenresContentType> _tvGenreItems = [];
   List<String> _musicArtists = [];
+  List<String> _watchProviders = [];
 
   ContentFilteringParser({this.response}) {
     var parameters = response.getParameters();
@@ -19,7 +20,8 @@ class ContentFilteringParser {
     _constructEntertainmentType(isMovie);
     _constructGenres(parameters, isMovie);
     _constructMusicArtists(parameters);
-    
+    _constructWatchProviders(parameters);
+
   }
 
   void _constructMusicArtists(Map parameters) {
@@ -30,6 +32,17 @@ class ContentFilteringParser {
       });
     } else {
       _musicArtists = [];
+    }
+  }
+
+  void _constructWatchProviders(Map parameters) {
+    if(isValidList(parameters, 'watch-provider-original')) {
+      List<dynamic> list = parameters['watch-provider-original'];
+      list.forEach((element) {
+        _watchProviders.add(element);
+      });
+    } else {
+      _watchProviders = [];
     }
   }
 
@@ -196,6 +209,10 @@ class ContentFilteringParser {
 
   List<String> getMusicArtists() {
     return _musicArtists;
+  }
+
+  List<String> getWatchProviders() {
+    return _watchProviders;
   }
 
   List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {

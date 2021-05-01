@@ -10,6 +10,23 @@ class GenresContentType {
   static const tvGenresGroup4 = [DRAMA, TV_SOAP, TV_WAR_POLITICS, WESTERN];
   static const tvGenresGroup5 = [MYSTERY, SCI_FI, FANTASY];
 
+  static const tvMovieGroup1 = [TV_ACTION_ADVENTURE_GENRE, CRIME,  WAR, MYSTERY];
+  static const movieTvGroup1 = [ACTION, ADVENTURE, CRIME,  WAR, MYSTERY];
+
+  static const tvMovieGroup2 = [MYSTERY, SCI_FI, FANTASY];
+  static const movieTvGroup2 = [THRILLER, MYSTERY, HORROR];
+
+  static const tvMovieGroup3 = [COMEDY, DRAMA, FAMILY];
+  static const movieTvGroup3 = [COMEDY, DRAMA, FAMILY, ROMANCE, MUSIC];
+
+  static const tvMovieGroup4 = [FANTASY, SCI_FI, ANIMATION];
+  static const movieTvGroup4 = [FANTASY, SCI_FI, ANIMATION];
+
+  static const tvMovieGroup5 = [DOCUMENTARY, TV_WAR_POLITICS,WESTERN ];
+  static const movieTvGroup5 = [DOCUMENTARY, WAR, WESTERN, HISTORY];
+
+  static const movieTvGroup6 = [TV_SOAP, TV_KIDS_GENRE, TV_REALITY, TV_TALK, TV_NEWS];
+
   final bool selected;
   final String value;
 

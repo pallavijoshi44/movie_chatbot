@@ -20,7 +20,7 @@ class ContentFilteringParser {
 
   void _constructGenres(Map parameters, bool isMovie) {
     _movieGenreItems = [];
-    _tvGenreItems =[];
+    _tvGenreItems = [];
 
     List<String> list1 = isMovie
         ? GenresContentType.movieGenresGroup1
@@ -38,50 +38,76 @@ class ContentFilteringParser {
         ? GenresContentType.movieGenresGroup5
         : GenresContentType.tvGenresGroup5;
 
-    List<String> list6 = isMovie
-        ? GenresContentType.tvGenresGroup1
-        : GenresContentType.movieGenresGroup1;
-    List<String> list7 = isMovie
-        ? GenresContentType.tvGenresGroup2
-        : GenresContentType.movieGenresGroup2;
-    List<String> list8 = isMovie
-        ? GenresContentType.tvGenresGroup3
-        : GenresContentType.movieGenresGroup3;
-    List<String> list9 = isMovie
-        ? GenresContentType.tvGenresGroup4
-        : GenresContentType.movieGenresGroup4;
-    List<String> list10 = isMovie
-        ? GenresContentType.tvGenresGroup5
-        : GenresContentType.movieGenresGroup5;
-
     if (isValid(parameters, 'genres')) {
       List<dynamic> selectedGenres = parameters['genres'];
       selectedGenres.forEach((genre) {
         if (list1.contains(genre)) {
-          _constructGenreGroups(list1, genre);
+          if (isMovie) {
+            _constructGenreGroups(GenresContentType.movieGenresGroup1, genre,
+                GenresContentType.tvMovieGroup1);
+          } else {
+            _constructGenreGroupsForTV(GenresContentType.tvGenresGroup1, genre,
+                GenresContentType.movieTvGroup1);
+          }
           return;
         }
         if (list2.contains(genre)) {
-          _constructGenreGroups(list2, genre);
+          if (isMovie) {
+            _constructGenreGroups(GenresContentType.movieGenresGroup2, genre,
+                GenresContentType.tvMovieGroup2);
+          } else {
+            _constructGenreGroupsForTV(GenresContentType.tvGenresGroup2, genre,
+                GenresContentType.movieTvGroup2);
+          }
           return;
         }
         if (list3.contains(genre)) {
-          _constructGenreGroups(list3, genre);
+          if (isMovie) {
+            _constructGenreGroups(GenresContentType.movieGenresGroup3, genre,
+                GenresContentType.tvMovieGroup3);
+          } else {
+            _constructGenreGroupsForTV(GenresContentType.tvGenresGroup3, genre,
+                GenresContentType.movieTvGroup3);
+          }
           return;
         }
         if (list4.contains(genre)) {
-          _constructGenreGroups(list4, genre);
+          if (isMovie) {
+            _constructGenreGroups(GenresContentType.movieGenresGroup4, genre,
+                GenresContentType.tvMovieGroup4);
+          } else {
+            _constructGenreGroupsForTV(GenresContentType.tvGenresGroup4, genre,
+                GenresContentType.movieTvGroup4);
+          }
           return;
         }
         if (list5.contains(genre)) {
-          _constructGenreGroups(list5, genre);
+          if (isMovie) {
+            _constructGenreGroups(GenresContentType.movieGenresGroup5, genre,
+                GenresContentType.tvMovieGroup5);
+          } else {
+            _constructGenreGroupsForTV(GenresContentType.tvGenresGroup5, genre,
+                GenresContentType.movieTvGroup5);
+          }
           return;
         }
       });
     } else {
-      _addAllGenresWhenNoneSelected(_movieGenreItems, list1, list2, list3, list4, list5);
+      _addAllGenresWhenNoneSelected(
+          _movieGenreItems,
+          GenresContentType.movieGenresGroup1,
+          GenresContentType.movieGenresGroup2,
+          GenresContentType.movieGenresGroup3,
+          GenresContentType.movieGenresGroup4,
+          GenresContentType.movieGenresGroup5);
+      _addAllGenresWhenNoneSelected(
+          _tvGenreItems,
+          GenresContentType.tvGenresGroup1,
+          GenresContentType.tvGenresGroup2,
+          GenresContentType.tvGenresGroup3,
+          GenresContentType.tvGenresGroup4,
+          GenresContentType.tvGenresGroup5);
     }
-    _addAllGenresWhenNoneSelected(_tvGenreItems, list6, list7, list8, list9, list10);
   }
 
   void _addAllGenresWhenNoneSelected(
@@ -91,30 +117,37 @@ class ContentFilteringParser {
       List<String> list3,
       List<String> list4,
       List<String> list5) {
-
-     result
-        .addAll(list1.map((e) => GenresContentType(e, false)).toList());
-    result
-        .addAll(list2.map((e) => GenresContentType(e, false)).toList());
-    result
-        .addAll(list3.map((e) => GenresContentType(e, false)).toList());
-    result
-        .addAll(list4.map((e) => GenresContentType(e, false)).toList());
-    result
-        .addAll(list5.map((e) => GenresContentType(e, false)).toList());
+    result.addAll(list1.map((e) => GenresContentType(e, false)).toList());
+    result.addAll(list2.map((e) => GenresContentType(e, false)).toList());
+    result.addAll(list3.map((e) => GenresContentType(e, false)).toList());
+    result.addAll(list4.map((e) => GenresContentType(e, false)).toList());
+    result.addAll(list5.map((e) => GenresContentType(e, false)).toList());
   }
 
-  void _constructGenreGroups(List<String> list1, String genre) {
-    final _genreValues = _movieGenreItems.map((item) => item.value).toList();
+  void _constructGenreGroups(
+      List<String> list1, String genre, List<String> list2) {
+    _setResult(_movieGenreItems, genre, list1);
+    _setResult(_tvGenreItems, genre, list2);
+  }
+
+  void _constructGenreGroupsForTV(
+      List<String> list1, String genre, List<String> list2) {
+    _setResult(_tvGenreItems, genre, list1);
+    _setResult(_movieGenreItems, genre, list2);
+  }
+
+  void _setResult(
+      List<GenresContentType> source, String genre, List<String> list1) {
+    final _genreValues = source.map((item) => item.value).toList();
     var index = _genreValues.indexOf(genre);
     if (index != -1) {
-      GenresContentType item = _movieGenreItems[index];
+      GenresContentType item = source[index];
       if (!item.selected) {
-        _movieGenreItems.remove(item);
-        _movieGenreItems.add(GenresContentType(genre, true));
+        source.remove(item);
+        source.add(GenresContentType(genre, true));
       }
     } else {
-      _movieGenreItems.addAll(list1.map((e) => e == genre
+      source.addAll(list1.map((e) => e == genre
           ? GenresContentType(e, true)
           : GenresContentType(e, false)));
     }
@@ -140,6 +173,7 @@ class ContentFilteringParser {
   List<GenresContentType> getMovieGenreContentType() {
     return _movieGenreItems;
   }
+
   List<GenresContentType> getTVGenreItems() {
     return _tvGenreItems;
   }

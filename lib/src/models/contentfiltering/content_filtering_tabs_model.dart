@@ -10,11 +10,14 @@ class ContentFilteringTabsModel extends MessageModel {
   final Function handleFilterContents;
   final List<EntertainmentContentType> entertainmentTypes;
   final List<GenresContentType> genreTypes;
+  final List<GenresContentType> otherGenreTypes;
 
-  ContentFilteringTabsModel({this.title,
-    @required this.type,
-    this.handleFilterContents,
-    this.entertainmentTypes,
-    this.genreTypes})
+  ContentFilteringTabsModel(
+      {this.title,
+      @required this.type,
+      this.handleFilterContents,
+      this.entertainmentTypes,
+      this.genreTypes,
+      this.otherGenreTypes})
       : super(type: type, name: title);
 }

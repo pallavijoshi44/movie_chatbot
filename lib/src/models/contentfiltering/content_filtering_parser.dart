@@ -7,11 +7,10 @@ import 'genre_content_type.dart';
 class ContentFilteringParser {
   final AIResponse response;
   List<EntertainmentContentType> _entertainmentTypes;
-  List<GenresContentType> _genreTypes = [];
+  List<GenresContentType> _movieGenreItems = [];
+  List<GenresContentType> _tvGenreItems = [];
 
   ContentFilteringParser({this.response}) {
-    _genreTypes = [];
-
     bool isMovie =
         response.getEntertainmentContentType() == EntertainmentType.MOVIE;
 
@@ -20,6 +19,9 @@ class ContentFilteringParser {
   }
 
   void _constructGenres(Map parameters, bool isMovie) {
+    _movieGenreItems = [];
+    _tvGenreItems =[];
+
     List<String> list1 = isMovie
         ? GenresContentType.movieGenresGroup1
         : GenresContentType.tvGenresGroup1;
@@ -35,6 +37,22 @@ class ContentFilteringParser {
     List<String> list5 = isMovie
         ? GenresContentType.movieGenresGroup5
         : GenresContentType.tvGenresGroup5;
+
+    List<String> list6 = isMovie
+        ? GenresContentType.tvGenresGroup1
+        : GenresContentType.movieGenresGroup1;
+    List<String> list7 = isMovie
+        ? GenresContentType.tvGenresGroup2
+        : GenresContentType.movieGenresGroup2;
+    List<String> list8 = isMovie
+        ? GenresContentType.tvGenresGroup3
+        : GenresContentType.movieGenresGroup3;
+    List<String> list9 = isMovie
+        ? GenresContentType.tvGenresGroup4
+        : GenresContentType.movieGenresGroup4;
+    List<String> list10 = isMovie
+        ? GenresContentType.tvGenresGroup5
+        : GenresContentType.movieGenresGroup5;
 
     if (isValid(parameters, 'genres')) {
       List<dynamic> selectedGenres = parameters['genres'];
@@ -61,30 +79,42 @@ class ContentFilteringParser {
         }
       });
     } else {
-      _genreTypes
-          .addAll(list1.map((e) => GenresContentType(e, false)).toList());
-      _genreTypes
-          .addAll(list2.map((e) => GenresContentType(e, false)).toList());
-      _genreTypes
-          .addAll(list3.map((e) => GenresContentType(e, false)).toList());
-      _genreTypes
-          .addAll(list4.map((e) => GenresContentType(e, false)).toList());
-      _genreTypes
-          .addAll(list5.map((e) => GenresContentType(e, false)).toList());
+      _addAllGenresWhenNoneSelected(_movieGenreItems, list1, list2, list3, list4, list5);
     }
+    _addAllGenresWhenNoneSelected(_tvGenreItems, list6, list7, list8, list9, list10);
+  }
+
+  void _addAllGenresWhenNoneSelected(
+      List<GenresContentType> result,
+      List<String> list1,
+      List<String> list2,
+      List<String> list3,
+      List<String> list4,
+      List<String> list5) {
+
+     result
+        .addAll(list1.map((e) => GenresContentType(e, false)).toList());
+    result
+        .addAll(list2.map((e) => GenresContentType(e, false)).toList());
+    result
+        .addAll(list3.map((e) => GenresContentType(e, false)).toList());
+    result
+        .addAll(list4.map((e) => GenresContentType(e, false)).toList());
+    result
+        .addAll(list5.map((e) => GenresContentType(e, false)).toList());
   }
 
   void _constructGenreGroups(List<String> list1, String genre) {
-    final _genreValues = _genreTypes.map((item) => item.value).toList();
+    final _genreValues = _movieGenreItems.map((item) => item.value).toList();
     var index = _genreValues.indexOf(genre);
     if (index != -1) {
-      GenresContentType item = _genreTypes[index];
+      GenresContentType item = _movieGenreItems[index];
       if (!item.selected) {
-        _genreTypes.remove(item);
-        _genreTypes.add(GenresContentType(genre, true));
+        _movieGenreItems.remove(item);
+        _movieGenreItems.add(GenresContentType(genre, true));
       }
     } else {
-      _genreTypes.addAll(list1.map((e) => e == genre
+      _movieGenreItems.addAll(list1.map((e) => e == genre
           ? GenresContentType(e, true)
           : GenresContentType(e, false)));
     }
@@ -107,8 +137,11 @@ class ContentFilteringParser {
     return _entertainmentTypes;
   }
 
-  List<GenresContentType> getGenreContentType() {
-    return _genreTypes;
+  List<GenresContentType> getMovieGenreContentType() {
+    return _movieGenreItems;
+  }
+  List<GenresContentType> getTVGenreItems() {
+    return _tvGenreItems;
   }
 }
 

@@ -484,6 +484,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   Future<void> handleFilterContents(eventName, parameters) async {
+    setState(() {
+      _messages.removeAt(0);
+    });
      _getDialogFlowResponseByEvent(eventName, parameters, false);
   }
 
@@ -542,7 +545,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isTextFieldEnabled = true;
       _isLoading = false;
       //_messages.removeWhere((element) => element is UnreadMessageModel);
-      _messages.removeWhere((element) => element is ContentFilteringTabsModel);
+      //_messages.removeWhere((element) => element is ContentFilteringTabsModel);
     });
     if (response != null) {
       var action = response.getAction();

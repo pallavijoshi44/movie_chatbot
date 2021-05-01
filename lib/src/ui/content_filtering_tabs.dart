@@ -32,7 +32,6 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
-  bool _isRefreshNeeded = false;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -69,13 +68,6 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isRefreshNeeded) {
-      _selectedMovieGenreItems =
-          widget.movieGenreItems.map((e) => e.selected).toList();
-      _selectedTVGenreItems =
-          widget.tvGenreItems.map((e) => e.selected).toList();
-    }
-
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
@@ -136,7 +128,6 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                                   .removeWhere((value) => value == null);
                               _selectedTVGenreItems = List.filled(
                                   widget.tvGenreItems.length, false);
-                              _isRefreshNeeded = true;
                             });
                             var parameters =
                                 "'parameters' : { 'genres' :  ${jsonEncode(_movieGenres)}}";
@@ -171,7 +162,6 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                               _tvGenres.removeWhere((value) => value == null);
                               _selectedMovieGenreItems = List.filled(
                                   widget.movieGenreItems.length, false);
-                              _isRefreshNeeded = true;
                             });
                             var parameters =
                                 "'parameters' : { 'genres' :  ${jsonEncode(_tvGenres)}}";

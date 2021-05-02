@@ -194,6 +194,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                           tvGenreItems: (message as ContentFilteringTabsModel).tvGenreTypes,
                           musicArtists: (message as ContentFilteringTabsModel).musicArtists,
                           watchProviders: (message as ContentFilteringTabsModel).watchProviders,
+                          languages: (message as ContentFilteringTabsModel).languages,
                           filterContents: (message as ContentFilteringTabsModel)
                               .handleFilterContents);
                       break;
@@ -743,6 +744,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         tvGenreTypes: contentResponse.getTVGenreItems(),
         musicArtists: contentResponse.getMusicArtists(),
         watchProviders: contentResponse.getWatchProviders(),
+        languages: contentResponse.getLanguages(),
         type: MessageType.CONTENT_FILTERING_TABS,
         handleFilterContents: handleFilterContents);
     _messages.insert(0, contentFilteringTabsModel);

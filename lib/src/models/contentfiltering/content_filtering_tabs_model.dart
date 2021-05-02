@@ -13,6 +13,7 @@ class ContentFilteringTabsModel extends MessageModel {
   final List<GenresContentType> tvGenreTypes;
   final List<String> musicArtists;
   final List<String> watchProviders;
+  final List<String> languages;
 
   ContentFilteringTabsModel(
       {this.title,
@@ -22,7 +23,8 @@ class ContentFilteringTabsModel extends MessageModel {
       this.movieGenreTypes,
       this.tvGenreTypes,
       this.musicArtists,
-      this.watchProviders})
+      this.watchProviders,
+      this.languages})
       : super(type: type, name: title);
 }
 // "parameters": {

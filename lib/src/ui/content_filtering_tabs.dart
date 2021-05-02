@@ -14,6 +14,7 @@ class ContentFilteringTabs extends StatefulWidget {
   final List<GenresContentType> tvGenreItems;
   final List<String> musicArtists;
   final List<String> watchProviders;
+  final List<String> languages;
   final Function filterContents;
 
   ContentFilteringTabs(
@@ -22,7 +23,8 @@ class ContentFilteringTabs extends StatefulWidget {
       this.filterContents,
       this.tvGenreItems,
       this.musicArtists,
-      this.watchProviders});
+      this.watchProviders,
+      this.languages});
 
   @override
   _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
@@ -33,10 +35,12 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
   List<String> _genres;
   List<String> _musicArtists;
   List<String> _watchProviders;
+  List<String> _languages;
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedMusicArtists;
   List<bool> _selectedWatchProviders;
+  List<bool> _selectedLanguages;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
   bool _isFetchContentNotTriggered = true;
@@ -50,6 +54,18 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
     _selectedMovieGenreItems =
         widget.movieGenreItems.map((e) => e.selected).toList();
     _selectedTVGenreItems = widget.tvGenreItems.map((e) => e.selected).toList();
+
+    if (widget.watchProviders != null && widget.watchProviders.isNotEmpty) {
+      _selectedWatchProviders = List.filled(widget.watchProviders.length, true);
+    }
+
+    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
+      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
+    }
+
+    if (widget.languages != null && widget.languages.isNotEmpty) {
+      _selectedLanguages = List.filled(widget.languages.length, true);
+    }
 
     EntertainmentContentType originalEntertainmentType = widget
         .entertainmentItems
@@ -66,17 +82,13 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
         ? _createGenresForDialogflow(widget.movieGenreItems)
         : _createGenresForDialogflow(widget.tvGenreItems);
 
-    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
-      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
-    }
     _musicArtists =
         _createRequestFor(widget.musicArtists, _selectedMusicArtists);
 
-    if (widget.watchProviders != null && widget.watchProviders.isNotEmpty) {
-      _selectedWatchProviders = List.filled(widget.watchProviders.length, true);
-    }
     _watchProviders =
         _createRequestFor(widget.watchProviders, _selectedWatchProviders);
+
+    _languages = _createRequestFor(widget.languages, _selectedLanguages);
 
     super.initState();
   }
@@ -169,6 +181,16 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
                     widget.watchProviders, _selectedWatchProviders);
               });
               await _fetchContent();
+            }),
+          if (_selectedLanguages != null && _selectedLanguages.isNotEmpty)
+            _buildListView(widget.languages, _selectedLanguages,
+                (index, item) async {
+              setState(() {
+                _selectedLanguages[index] = !_selectedLanguages[index];
+                _languages =
+                    _createRequestFor(widget.languages, _selectedLanguages);
+              });
+              await _fetchContent();
             })
         ],
       ),
@@ -206,7 +228,12 @@ class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
 
   Future _fetchContent() async {
     var parameters =
-        "'parameters' : { 'genres' :  ${jsonEncode(_genres)}, 'music-artist' : ${jsonEncode(_musicArtists)}, 'watch-provider-original' : ${jsonEncode(_watchProviders)}}";
+        "'parameters' : { "
+        "${jsonEncode(KEY_GENRES)} :  ${jsonEncode(_genres)}, "
+        "${jsonEncode(KEY_MUSIC_ARTIST)} : ${jsonEncode(_musicArtists)},"
+        "${jsonEncode(KEY_WATCH_PROVIDER_ORIGINAL)} : ${jsonEncode(_watchProviders)},"
+        "${jsonEncode(KEY_LANGUAGE)} : ${jsonEncode(_languages)},"
+        "}";
 
     if (_isFetchContentNotTriggered) {
       _isFetchContentNotTriggered = false;

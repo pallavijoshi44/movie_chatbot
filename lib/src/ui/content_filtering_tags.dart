@@ -8,7 +8,7 @@ import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart'
 
 import 'choice_chip_mobo.dart';
 
-class ContentFilteringTabs extends StatefulWidget {
+class ContentFilteringTags extends StatefulWidget {
   final List<EntertainmentContentType> entertainmentItems;
   final List<GenresContentType> movieGenreItems;
   final List<GenresContentType> tvGenreItems;
@@ -17,7 +17,7 @@ class ContentFilteringTabs extends StatefulWidget {
   final List<String> languages;
   final Function filterContents;
 
-  ContentFilteringTabs(
+  ContentFilteringTags(
       {this.entertainmentItems,
       this.movieGenreItems,
       this.filterContents,
@@ -27,10 +27,10 @@ class ContentFilteringTabs extends StatefulWidget {
       this.languages});
 
   @override
-  _ContentFilteringTabsState createState() => _ContentFilteringTabsState();
+  _ContentFilteringTagsState createState() => _ContentFilteringTagsState();
 }
 
-class _ContentFilteringTabsState extends State<ContentFilteringTabs> {
+class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   String _eventName;
   List<String> _genres;
   List<String> _musicArtists;

@@ -4,7 +4,7 @@ import '../message_model.dart';
 import 'entertainment_type.dart';
 import 'genre_content_type.dart';
 
-class ContentFilteringTabsModel extends MessageModel {
+class ContentFilteringTagsModel extends MessageModel {
   final String title;
   final MessageType type;
   final Function handleFilterContents;
@@ -15,7 +15,7 @@ class ContentFilteringTabsModel extends MessageModel {
   final List<String> watchProviders;
   final List<String> languages;
 
-  ContentFilteringTabsModel(
+  ContentFilteringTagsModel(
       {this.title,
       @required this.type,
       this.handleFilterContents,

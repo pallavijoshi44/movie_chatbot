@@ -19,7 +19,7 @@ import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart'
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
-import 'package:flutter_app/src/ui/content_filtering_tabs.dart';
+import 'package:flutter_app/src/ui/content_filtering_tags.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
@@ -31,7 +31,7 @@ import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
-import 'models/contentfiltering/content_filtering_tabs_model.dart';
+import 'models/contentfiltering/content_filtering_tags_model.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
 import 'ui/movie_details/movie_just_watch.dart';
@@ -187,15 +187,15 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.UNREAD_MESSAGE:
                       return UnreadMessage();
                     case MessageType.CONTENT_FILTERING_TABS:
-                      return ContentFilteringTabs(
+                      return ContentFilteringTags(
                           entertainmentItems:
-                              (message as ContentFilteringTabsModel).entertainmentTypes,
-                          movieGenreItems: (message as ContentFilteringTabsModel).movieGenreTypes,
-                          tvGenreItems: (message as ContentFilteringTabsModel).tvGenreTypes,
-                          musicArtists: (message as ContentFilteringTabsModel).musicArtists,
-                          watchProviders: (message as ContentFilteringTabsModel).watchProviders,
-                          languages: (message as ContentFilteringTabsModel).languages,
-                          filterContents: (message as ContentFilteringTabsModel)
+                              (message as ContentFilteringTagsModel).entertainmentTypes,
+                          movieGenreItems: (message as ContentFilteringTagsModel).movieGenreTypes,
+                          tvGenreItems: (message as ContentFilteringTagsModel).tvGenreTypes,
+                          musicArtists: (message as ContentFilteringTagsModel).musicArtists,
+                          watchProviders: (message as ContentFilteringTagsModel).watchProviders,
+                          languages: (message as ContentFilteringTagsModel).languages,
+                          filterContents: (message as ContentFilteringTagsModel)
                               .handleFilterContents);
                       break;
                   }
@@ -738,7 +738,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _constructContentFilteringParser(AIResponse response) {
     var contentResponse = new ContentFilteringParser(response: response);
-    var contentFilteringTabsModel = new ContentFilteringTabsModel(
+    var contentFilteringTabsModel = new ContentFilteringTagsModel(
         entertainmentTypes: contentResponse.getEntertainmentTypes(),
         movieGenreTypes: contentResponse.getMovieGenreContentType(),
         tvGenreTypes: contentResponse.getTVGenreItems(),

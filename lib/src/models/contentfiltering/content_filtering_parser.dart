@@ -11,6 +11,7 @@ class ContentFilteringParser {
   List<GenresContentType> _tvGenreItems = [];
   List<String> _musicArtists = [];
   List<String> _watchProviders = [];
+  List<String> _watchProvidersOriginal = [];
   List<String> _languages = [];
 
   ContentFilteringParser({this.response}) {
@@ -23,21 +24,21 @@ class ContentFilteringParser {
     _constructLanguages(parameters);
     _constructMusicArtists(parameters);
     _constructWatchProviders(parameters);
-
   }
 
   void _constructLanguages(Map parameters) {
-     if(isValidList(parameters, KEY_LANGUAGE)) {
+    if (isValidList(parameters, KEY_LANGUAGE)) {
       List<dynamic> list = parameters[KEY_LANGUAGE];
       list.forEach((element) {
         _languages.add(element);
       });
     } else {
-       _languages = [];
+      _languages = [];
     }
   }
+
   void _constructMusicArtists(Map parameters) {
-     if(isValidList(parameters, KEY_MUSIC_ARTIST)) {
+    if (isValidList(parameters, KEY_MUSIC_ARTIST)) {
       List<dynamic> list = parameters[KEY_MUSIC_ARTIST];
       list.forEach((element) {
         _musicArtists.add(element);
@@ -48,13 +49,16 @@ class ContentFilteringParser {
   }
 
   void _constructWatchProviders(Map parameters) {
-    if(isValidList(parameters, KEY_WATCH_PROVIDER_ORIGINAL)) {
+    if (isValidList(parameters, KEY_WATCH_PROVIDER_ORIGINAL)) {
       List<dynamic> list = parameters[KEY_WATCH_PROVIDER_ORIGINAL];
+      List<dynamic> listIds = parameters[KEY_WATCH_PROVIDER];
       list.forEach((element) {
-        _watchProviders.add(element);
+        _watchProvidersOriginal.add(element);
+        _watchProviders.add(listIds[list.indexOf(element)]);
       });
     } else {
       _watchProviders = [];
+      _watchProvidersOriginal = [];
     }
   }
 
@@ -225,6 +229,10 @@ class ContentFilteringParser {
 
   List<String> getWatchProviders() {
     return _watchProviders;
+  }
+
+  List<String> getWatchProvidersOriginal() {
+    return _watchProvidersOriginal;
   }
 
   List<String> getLanguages() {

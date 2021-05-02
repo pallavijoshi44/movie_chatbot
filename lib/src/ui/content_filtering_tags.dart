@@ -14,6 +14,7 @@ class ContentFilteringTags extends StatefulWidget {
   final List<GenresContentType> tvGenreItems;
   final List<String> musicArtists;
   final List<String> watchProviders;
+  final List<String> watchProvidersOriginal;
   final List<String> languages;
   final Function filterContents;
 
@@ -24,6 +25,7 @@ class ContentFilteringTags extends StatefulWidget {
       this.tvGenreItems,
       this.musicArtists,
       this.watchProviders,
+      this.watchProvidersOriginal,
       this.languages});
 
   @override
@@ -55,8 +57,8 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         widget.movieGenreItems.map((e) => e.selected).toList();
     _selectedTVGenreItems = widget.tvGenreItems.map((e) => e.selected).toList();
 
-    if (widget.watchProviders != null && widget.watchProviders.isNotEmpty) {
-      _selectedWatchProviders = List.filled(widget.watchProviders.length, true);
+    if (widget.watchProvidersOriginal != null && widget.watchProvidersOriginal.isNotEmpty) {
+      _selectedWatchProviders = List.filled(widget.watchProvidersOriginal.length, true);
     }
 
     if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
@@ -112,7 +114,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
 
     return Container(
       padding: EdgeInsets.all(15),
-      child: Column(
+      child: Wrap(
         children: [
           _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
               (index, item) {
@@ -172,7 +174,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
             }),
           if (_selectedWatchProviders != null &&
               _selectedWatchProviders.isNotEmpty)
-            _buildListView(widget.watchProviders, _selectedWatchProviders,
+            _buildListView(widget.watchProvidersOriginal, _selectedWatchProviders,
                 (index, item) async {
               setState(() {
                 _selectedWatchProviders[index] =
@@ -231,7 +233,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "'parameters' : { "
         "${jsonEncode(KEY_GENRES)} :  ${jsonEncode(_genres)}, "
         "${jsonEncode(KEY_MUSIC_ARTIST)} : ${jsonEncode(_musicArtists)},"
-        "${jsonEncode(KEY_WATCH_PROVIDER_ORIGINAL)} : ${jsonEncode(_watchProviders)},"
+        "${jsonEncode(KEY_WATCH_PROVIDER)} : ${jsonEncode(_watchProviders)},"
         "${jsonEncode(KEY_LANGUAGE)} : ${jsonEncode(_languages)},"
         "}";
 

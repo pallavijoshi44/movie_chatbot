@@ -108,4 +108,5 @@ const TV_RECOMMENDATIONS_EVENT = "TV_SHOW_RECOMMENDATIONS";
 const KEY_LANGUAGE = "language";
 const KEY_MUSIC_ARTIST = "music-artist";
 const KEY_WATCH_PROVIDER_ORIGINAL = "watch-provider-original";
+const KEY_WATCH_PROVIDER = "watch-provider";
 const KEY_GENRES = "genres";

@@ -13,6 +13,9 @@ class ContentFilteringParser {
   List<String> _watchProviders = [];
   List<String> _watchProvidersOriginal = [];
   List<String> _languages = [];
+  Map _datePeriod;
+  String _datePeriodOriginal = "";
+  String _customDatePeriod = "";
 
   ContentFilteringParser({this.response}) {
     var parameters = response.getParameters();
@@ -24,6 +27,25 @@ class ContentFilteringParser {
     _constructLanguages(parameters);
     _constructMusicArtists(parameters);
     _constructWatchProviders(parameters);
+    _constructDatePeriod(parameters);
+  }
+
+  void _constructDatePeriod(Map parameters) {
+    if (_isValidKey(parameters, KEY_DATE_PERIOD)) {
+      _datePeriod = parameters[KEY_DATE_PERIOD];
+      _datePeriodOriginal = parameters[KEY_DATE_PERIOD_ORIGINAL];
+      return;
+    }
+    if (_isValidKey(parameters, KEY_CUSTOM_DATE_PERIOD)) {
+      _customDatePeriod = parameters[KEY_CUSTOM_DATE_PERIOD];
+      return;
+    }
+  }
+
+  bool _isValidKey(Map parameters, String key) {
+    return parameters != null &&
+        parameters[key] != null &&
+        parameters[key].isNotEmpty;
   }
 
   void _constructLanguages(Map parameters) {
@@ -237,6 +259,18 @@ class ContentFilteringParser {
 
   List<String> getLanguages() {
     return _languages;
+  }
+
+  Map getDatePeriod() {
+    return _datePeriod;
+  }
+
+  String getDatePeriodOriginal() {
+    return _datePeriodOriginal;
+  }
+
+  String getCustomDatePeriod() {
+    return _customDatePeriod;
   }
 
   List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {

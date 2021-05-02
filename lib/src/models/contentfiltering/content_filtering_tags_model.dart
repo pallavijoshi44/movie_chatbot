@@ -1,33 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 
 import '../message_model.dart';
-import 'entertainment_type.dart';
-import 'genre_content_type.dart';
 
 class ContentFilteringTagsModel extends MessageModel {
   final String title;
   final MessageType type;
   final Function handleFilterContents;
-  final List<EntertainmentContentType> entertainmentTypes;
-  final List<GenresContentType> movieGenreTypes;
-  final List<GenresContentType> tvGenreTypes;
-  final List<String> musicArtists;
-  final List<String> watchProviders;
-  final List<String> watchProvidersOriginal;
-  final List<String> languages;
+  final ContentFilteringParser response;
 
-  ContentFilteringTagsModel(
-      {this.title,
-      @required this.type,
-      this.handleFilterContents,
-      this.entertainmentTypes,
-      this.movieGenreTypes,
-      this.tvGenreTypes,
-      this.musicArtists,
-      this.watchProviders,
-      this.languages,
-      this.watchProvidersOriginal})
-      : super(type: type, name: title);
+  ContentFilteringTagsModel({
+    this.title,
+    @required this.type,
+    this.handleFilterContents,
+    this.response,
+  }) : super(type: type, name: title);
 }
 // "parameters": {
 // "operator-selector": "",

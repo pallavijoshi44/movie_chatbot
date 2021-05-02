@@ -3,30 +3,17 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/contentfiltering/entertainment_type.dart';
 import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart';
 
 import 'choice_chip_mobo.dart';
 
 class ContentFilteringTags extends StatefulWidget {
-  final List<EntertainmentContentType> entertainmentItems;
-  final List<GenresContentType> movieGenreItems;
-  final List<GenresContentType> tvGenreItems;
-  final List<String> musicArtists;
-  final List<String> watchProviders;
-  final List<String> watchProvidersOriginal;
-  final List<String> languages;
+  final ContentFilteringParser response;
   final Function filterContents;
 
-  ContentFilteringTags(
-      {this.entertainmentItems,
-      this.movieGenreItems,
-      this.filterContents,
-      this.tvGenreItems,
-      this.musicArtists,
-      this.watchProviders,
-      this.watchProvidersOriginal,
-      this.languages});
+  ContentFilteringTags({this.response, this.filterContents});
 
   @override
   _ContentFilteringTagsState createState() => _ContentFilteringTagsState();
@@ -38,11 +25,17 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   List<String> _musicArtists;
   List<String> _watchProviders;
   List<String> _languages;
+  String _datePeriodOriginal;
+  Map _datePeriod;
+  String _customDatePeriod;
+
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedMusicArtists;
   List<bool> _selectedWatchProviders;
   List<bool> _selectedLanguages;
+  List<bool> _selectedDatePeriodOriginal;
+  List<bool> _selectedCustomDate;
   List<bool> _selectedEntertainmentItems;
   bool _isEntertainmentTypeMovie;
   bool _isFetchContentNotTriggered = true;
@@ -51,26 +44,34 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   @override
   void initState() {
     _selectedEntertainmentItems =
-        widget.entertainmentItems.map((e) => e.selected).toList();
+        widget.response.getEntertainmentTypes().map((e) => e.selected).toList();
 
     _selectedMovieGenreItems =
-        widget.movieGenreItems.map((e) => e.selected).toList();
-    _selectedTVGenreItems = widget.tvGenreItems.map((e) => e.selected).toList();
+        widget.response.getMovieGenreContentType().map((e) => e.selected).toList();
+    _selectedTVGenreItems = widget.response.getTVGenreItems().map((e) => e.selected).toList();
 
-    if (widget.watchProvidersOriginal != null && widget.watchProvidersOriginal.isNotEmpty) {
-      _selectedWatchProviders = List.filled(widget.watchProvidersOriginal.length, true);
+    if (widget.response.getWatchProvidersOriginal() != null &&
+        widget.response.getWatchProvidersOriginal().isNotEmpty) {
+      _selectedWatchProviders =
+          List.filled(widget.response.getWatchProvidersOriginal().length, true);
     }
 
-    if (widget.musicArtists != null && widget.musicArtists.isNotEmpty) {
-      _selectedMusicArtists = List.filled(widget.musicArtists.length, true);
+    if (widget.response.getMusicArtists() != null && widget.response.getMusicArtists().isNotEmpty) {
+      _selectedMusicArtists = List.filled(widget.response.getMusicArtists().length, true);
     }
 
-    if (widget.languages != null && widget.languages.isNotEmpty) {
-      _selectedLanguages = List.filled(widget.languages.length, true);
+    if (widget.response.getLanguages() != null && widget.response.getLanguages().isNotEmpty) {
+      _selectedLanguages = List.filled(widget.response.getLanguages().length, true);
     }
 
-    EntertainmentContentType originalEntertainmentType = widget
-        .entertainmentItems
+    if (widget.response.getDatePeriodOriginal() != null && widget.response.getDatePeriodOriginal().isNotEmpty) {
+      _selectedDatePeriodOriginal = [true];
+    }
+    if (widget.response.getCustomDatePeriod() != null && widget.response.getCustomDatePeriod().isNotEmpty) {
+      _selectedCustomDate = [true];
+    }
+
+    EntertainmentContentType originalEntertainmentType = widget.response.getEntertainmentTypes()
         .firstWhere((e) => e.selected == true, orElse: () => null);
 
     _isEntertainmentTypeMovie =
@@ -81,16 +82,20 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         : TV_RECOMMENDATIONS_EVENT;
 
     _genres = _isEntertainmentTypeMovie
-        ? _createGenresForDialogflow(widget.movieGenreItems)
-        : _createGenresForDialogflow(widget.tvGenreItems);
+        ? _createGenresForDialogflow(widget.response.getMovieGenreContentType())
+        : _createGenresForDialogflow(widget.response.getTVGenreItems());
 
     _musicArtists =
-        _createRequestFor(widget.musicArtists, _selectedMusicArtists);
+        _createRequestFor(widget.response.getMusicArtists(), _selectedMusicArtists);
 
     _watchProviders =
-        _createRequestFor(widget.watchProviders, _selectedWatchProviders);
+        _createRequestFor(widget.response.getWatchProviders(), _selectedWatchProviders);
 
-    _languages = _createRequestFor(widget.languages, _selectedLanguages);
+    _languages = _createRequestFor(widget.response.getLanguages(), _selectedLanguages);
+
+    _datePeriodOriginal = widget.response.getDatePeriodOriginal();
+    _datePeriod = widget.response.getDatePeriod();
+    _customDatePeriod = widget.response.getCustomDatePeriod();
 
     super.initState();
   }
@@ -106,21 +111,21 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   @override
   Widget build(BuildContext context) {
     List<String> movieGenreItemValues =
-        widget.movieGenreItems.map((e) => e.value).toList();
+        widget.response.getMovieGenreContentType().map((e) => e.value).toList();
     List<String> entertainmentTypeValues =
-        widget.entertainmentItems.map((e) => e.value).toList();
+        widget.response.getEntertainmentTypes().map((e) => e.value).toList();
     List<String> tvGenreItemValues =
-        widget.tvGenreItems.map((e) => e.value).toList();
+        widget.response.getTVGenreItems().map((e) => e.value).toList();
 
     return Container(
       padding: EdgeInsets.all(15),
-      child: Wrap(
+      child: Column(
         children: [
           _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
               (index, item) {
             setState(() {
               _selectedEntertainmentItems =
-                  List.filled(widget.entertainmentItems.length, false);
+                  List.filled(widget.response.getEntertainmentTypes().length, false);
               _selectedEntertainmentItems[index] = true;
               _isEntertainmentTypeMovie =
                   item == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
@@ -128,11 +133,11 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                   ? MOVIE_RECOMMENDATIONS_EVENT
                   : TV_RECOMMENDATIONS_EVENT;
               _selectedMusicArtists = _isEntertainmentTypeMovie
-                  ? List.filled(widget.musicArtists.length, true)
+                  ? List.filled(widget.response.getMusicArtists().length, true)
                   : [];
               _musicArtists = _isEntertainmentTypeMovie
                   ? _createRequestFor(
-                      widget.musicArtists, _selectedMusicArtists)
+                      widget.response.getMusicArtists(), _selectedMusicArtists)
                   : [];
             });
           }),
@@ -146,7 +151,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                     _genres = _createRequestFor(
                         movieGenreItemValues, _selectedMovieGenreItems);
                     _selectedTVGenreItems =
-                        List.filled(widget.tvGenreItems.length, false);
+                        List.filled(widget.response.getTVGenreItems().length, false);
                   });
                   await _fetchContent();
                 })
@@ -158,42 +163,62 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                     _genres = _createRequestFor(
                         tvGenreItemValues, _selectedTVGenreItems);
                     _selectedMovieGenreItems =
-                        List.filled(widget.movieGenreItems.length, false);
+                        List.filled(widget.response.getMovieGenreContentType().length, false);
                   });
                   await _fetchContent();
                 }),
           if (_selectedMusicArtists != null && _selectedMusicArtists.isNotEmpty)
-            _buildListView(widget.musicArtists, _selectedMusicArtists,
+            _buildListView(widget.response.getMusicArtists(), _selectedMusicArtists,
                 (index, item) async {
               setState(() {
                 _selectedMusicArtists[index] = !_selectedMusicArtists[index];
                 _musicArtists = _createRequestFor(
-                    widget.musicArtists, _selectedMusicArtists);
+                    widget.response.getMusicArtists(), _selectedMusicArtists);
               });
               await _fetchContent();
             }),
           if (_selectedWatchProviders != null &&
               _selectedWatchProviders.isNotEmpty)
-            _buildListView(widget.watchProvidersOriginal, _selectedWatchProviders,
+            _buildListView(
+                widget.response.getWatchProvidersOriginal(), _selectedWatchProviders,
                 (index, item) async {
               setState(() {
                 _selectedWatchProviders[index] =
                     !_selectedWatchProviders[index];
                 _watchProviders = _createRequestFor(
-                    widget.watchProviders, _selectedWatchProviders);
+                    widget.response.getWatchProviders(), _selectedWatchProviders);
               });
               await _fetchContent();
             }),
           if (_selectedLanguages != null && _selectedLanguages.isNotEmpty)
-            _buildListView(widget.languages, _selectedLanguages,
+            _buildListView(widget.response.getLanguages(), _selectedLanguages,
                 (index, item) async {
               setState(() {
                 _selectedLanguages[index] = !_selectedLanguages[index];
                 _languages =
-                    _createRequestFor(widget.languages, _selectedLanguages);
+                    _createRequestFor(widget.response.getLanguages(), _selectedLanguages);
               });
               await _fetchContent();
-            })
+            }),
+          if (_selectedDatePeriodOriginal != null && _selectedDatePeriodOriginal.isNotEmpty)
+            _buildListView([widget.response.getDatePeriodOriginal()], _selectedDatePeriodOriginal,
+                (index, item) async {
+              setState(() {
+                _selectedDatePeriodOriginal[index] = !_selectedDatePeriodOriginal[index];
+                _datePeriodOriginal = _selectedDatePeriodOriginal[index] ?  _datePeriodOriginal : "";
+                _datePeriod = _selectedDatePeriodOriginal[index] ?  _datePeriod : "";
+              });
+              await _fetchContent();
+            }),
+          if (_selectedCustomDate != null && _selectedCustomDate.isNotEmpty)
+            _buildListView([widget.response.getCustomDatePeriod()], _selectedCustomDate,
+                    (index, item) async {
+                  setState(() {
+                    _selectedCustomDate[index] = !_selectedCustomDate[index];
+                    _customDatePeriod = _selectedCustomDate[index] ?  _customDatePeriod : "";
+                  });
+                  await _fetchContent();
+                })
         ],
       ),
     );
@@ -229,12 +254,14 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   }
 
   Future _fetchContent() async {
-    var parameters =
-        "'parameters' : { "
+    var parameters = "'parameters' : { "
         "${jsonEncode(KEY_GENRES)} :  ${jsonEncode(_genres)}, "
         "${jsonEncode(KEY_MUSIC_ARTIST)} : ${jsonEncode(_musicArtists)},"
         "${jsonEncode(KEY_WATCH_PROVIDER)} : ${jsonEncode(_watchProviders)},"
         "${jsonEncode(KEY_LANGUAGE)} : ${jsonEncode(_languages)},"
+        "${jsonEncode(KEY_DATE_PERIOD_ORIGINAL)} : ${jsonEncode(_datePeriodOriginal)},"
+        "${jsonEncode(KEY_DATE_PERIOD)} : ${jsonEncode(_datePeriod)},"
+        "${jsonEncode(KEY_CUSTOM_DATE_PERIOD)} : ${jsonEncode(_customDatePeriod)},"
         "}";
 
     if (_isFetchContentNotTriggered) {

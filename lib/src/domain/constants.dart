@@ -106,6 +106,9 @@ const TV_RECOMMENDATIONS_EVENT = "TV_SHOW_RECOMMENDATIONS";
 
 
 const KEY_LANGUAGE = "language";
+const KEY_CUSTOM_DATE_PERIOD = "custom-date-period";
+const KEY_DATE_PERIOD_ORIGINAL = "date-period-original";
+const KEY_DATE_PERIOD = "date-period";
 const KEY_MUSIC_ARTIST = "music-artist";
 const KEY_WATCH_PROVIDER_ORIGINAL = "watch-provider-original";
 const KEY_WATCH_PROVIDER = "watch-provider";

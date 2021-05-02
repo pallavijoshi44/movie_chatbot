@@ -188,14 +188,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return UnreadMessage();
                     case MessageType.CONTENT_FILTERING_TABS:
                       return ContentFilteringTags(
-                          entertainmentItems:
-                              (message as ContentFilteringTagsModel).entertainmentTypes,
-                          movieGenreItems: (message as ContentFilteringTagsModel).movieGenreTypes,
-                          tvGenreItems: (message as ContentFilteringTagsModel).tvGenreTypes,
-                          musicArtists: (message as ContentFilteringTagsModel).musicArtists,
-                          watchProviders: (message as ContentFilteringTagsModel).watchProviders,
-                          watchProvidersOriginal: (message as ContentFilteringTagsModel).watchProvidersOriginal,
-                          languages: (message as ContentFilteringTagsModel).languages,
+                          response:
+                              (message as ContentFilteringTagsModel).response,
                           filterContents: (message as ContentFilteringTagsModel)
                               .handleFilterContents);
                       break;
@@ -491,7 +485,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _messages.removeAt(0);
     });
-     _getDialogFlowResponseByEvent(eventName, parameters, false);
+    _getDialogFlowResponseByEvent(eventName, parameters, false);
   }
 
   void _getDialogFlowResponse(query) async {
@@ -740,13 +734,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _constructContentFilteringParser(AIResponse response) {
     var contentResponse = new ContentFilteringParser(response: response);
     var contentFilteringTabsModel = new ContentFilteringTagsModel(
-        entertainmentTypes: contentResponse.getEntertainmentTypes(),
-        movieGenreTypes: contentResponse.getMovieGenreContentType(),
-        tvGenreTypes: contentResponse.getTVGenreItems(),
-        musicArtists: contentResponse.getMusicArtists(),
-        watchProviders: contentResponse.getWatchProviders(),
-        watchProvidersOriginal: contentResponse.getWatchProvidersOriginal(),
-        languages: contentResponse.getLanguages(),
+        response: contentResponse,
         type: MessageType.CONTENT_FILTERING_TABS,
         handleFilterContents: handleFilterContents);
     _messages.insert(0, contentFilteringTabsModel);

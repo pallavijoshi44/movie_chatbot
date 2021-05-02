@@ -12,6 +12,8 @@ class ContentFilteringParser {
   List<String> _musicArtists = [];
   List<String> _watchProviders = [];
   List<String> _watchProvidersOriginal = [];
+  List<String> _searchKeywords = [];
+  List<String> _searchKeywordsOriginal = [];
   List<String> _languages = [];
   Map _datePeriod;
   String _datePeriodOriginal = "";
@@ -28,6 +30,7 @@ class ContentFilteringParser {
     _constructMusicArtists(parameters);
     _constructWatchProviders(parameters);
     _constructDatePeriod(parameters);
+    _constructSearchKeywords(parameters);
   }
 
   void _constructDatePeriod(Map parameters) {
@@ -81,6 +84,20 @@ class ContentFilteringParser {
     } else {
       _watchProviders = [];
       _watchProvidersOriginal = [];
+    }
+  }
+
+  void _constructSearchKeywords(Map parameters) {
+    if (isValidList(parameters, KEY_SEARCH_KEYWORD_ORIGINAL)) {
+      List<dynamic> list = parameters[KEY_SEARCH_KEYWORD_ORIGINAL];
+      List<dynamic> listIds = parameters[KEY_SEARCH_KEYWORD];
+      list.forEach((element) {
+        _searchKeywordsOriginal.add(element);
+        _searchKeywords.add(listIds[list.indexOf(element)]);
+      });
+    } else {
+      _searchKeywords = [];
+      _searchKeywordsOriginal = [];
     }
   }
 
@@ -256,6 +273,15 @@ class ContentFilteringParser {
   List<String> getWatchProvidersOriginal() {
     return _watchProvidersOriginal;
   }
+
+  List<String> getSearchKeywords() {
+    return _searchKeywords;
+  }
+
+  List<String> getSearchKeywordsOriginal() {
+    return _searchKeywordsOriginal;
+  }
+
 
   List<String> getLanguages() {
     return _languages;

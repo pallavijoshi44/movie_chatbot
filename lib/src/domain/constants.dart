@@ -113,3 +113,5 @@ const KEY_MUSIC_ARTIST = "music-artist";
 const KEY_WATCH_PROVIDER_ORIGINAL = "watch-provider-original";
 const KEY_WATCH_PROVIDER = "watch-provider";
 const KEY_GENRES = "genres";
+const KEY_SEARCH_KEYWORD = "search-keyword";
+const KEY_SEARCH_KEYWORD_ORIGINAL = "search-keyword-original";

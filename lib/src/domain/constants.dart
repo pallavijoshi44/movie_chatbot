@@ -18,6 +18,7 @@ const String ACTION_START_OVER = "startOver";
 const String ACTION_WELCOME = "input.welcome";
 const String ACTION_TRIGGER_TIPS = "triggerTips";
 const String ACTION_MOVIE_RECOMMENDATIONS = "fetchMovieRecommendations";
+const String ACTION_TV_RECOMMENDATIONS = "fetchTVRecommendations";
 const String ACTION_MORE_MOVIE_RECOMMENDATIONS = "fetchAdditionalMovieRecommendations";
 const String ACTION_MOVIE_WATCH_PROVIDERS_TRAILER_VIDEOS = "fetchMovieWatchProvidersAndVideos";
 const String ACTION_LOCATION_DETERMINED = "userCountryDetermined";

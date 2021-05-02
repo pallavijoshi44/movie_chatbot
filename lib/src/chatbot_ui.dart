@@ -592,6 +592,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         return;
       }
       _constructChatMessage(response.getDefaultOrChatMessage());
+      _constructContentFilteringParser(response);
       return;
     }
   }
@@ -732,12 +733,16 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _constructContentFilteringParser(AIResponse response) {
-    var contentResponse = new ContentFilteringParser(response: response);
-    var contentFilteringTabsModel = new ContentFilteringTagsModel(
-        response: contentResponse,
-        type: MessageType.CONTENT_FILTERING_TABS,
-        handleFilterContents: handleFilterContents);
-    _messages.insert(0, contentFilteringTabsModel);
+    if (response.getAction() == ACTION_MOVIE_RECOMMENDATIONS ||
+        response.getAction() == ACTION_TV_RECOMMENDATIONS) {
+
+      var contentResponse = new ContentFilteringParser(response: response);
+      var contentFilteringTabsModel = new ContentFilteringTagsModel(
+          response: contentResponse,
+          type: MessageType.CONTENT_FILTERING_TABS,
+          handleFilterContents: handleFilterContents);
+      _messages.insert(0, contentFilteringTabsModel);
+    }
   }
 
   void _constructQuickReplies(payload) {

@@ -24,6 +24,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   List<String> _genres;
   List<String> _musicArtists;
   List<String> _watchProviders;
+  List<String> _watchProvidersOriginal;
   List<String> _languages;
   String _datePeriodOriginal;
   Map _datePeriod;
@@ -33,6 +34,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   List<bool> _selectedTVGenreItems;
   List<bool> _selectedMusicArtists;
   List<bool> _selectedWatchProviders;
+  List<bool> _selectedWatchProvidersOriginal;
   List<bool> _selectedLanguages;
   List<bool> _selectedDatePeriodOriginal;
   List<bool> _selectedCustomDate;
@@ -46,9 +48,12 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
     _selectedEntertainmentItems =
         widget.response.getEntertainmentTypes().map((e) => e.selected).toList();
 
-    _selectedMovieGenreItems =
-        widget.response.getMovieGenreContentType().map((e) => e.selected).toList();
-    _selectedTVGenreItems = widget.response.getTVGenreItems().map((e) => e.selected).toList();
+    _selectedMovieGenreItems = widget.response
+        .getMovieGenreContentType()
+        .map((e) => e.selected)
+        .toList();
+    _selectedTVGenreItems =
+        widget.response.getTVGenreItems().map((e) => e.selected).toList();
 
     if (widget.response.getWatchProvidersOriginal() != null &&
         widget.response.getWatchProvidersOriginal().isNotEmpty) {
@@ -56,22 +61,35 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
           List.filled(widget.response.getWatchProvidersOriginal().length, true);
     }
 
-    if (widget.response.getMusicArtists() != null && widget.response.getMusicArtists().isNotEmpty) {
-      _selectedMusicArtists = List.filled(widget.response.getMusicArtists().length, true);
+    if (widget.response.getMusicArtists() != null &&
+        widget.response.getMusicArtists().isNotEmpty) {
+      _selectedMusicArtists =
+          List.filled(widget.response.getMusicArtists().length, true);
     }
 
-    if (widget.response.getLanguages() != null && widget.response.getLanguages().isNotEmpty) {
-      _selectedLanguages = List.filled(widget.response.getLanguages().length, true);
+    if (widget.response.getLanguages() != null &&
+        widget.response.getLanguages().isNotEmpty) {
+      _selectedLanguages =
+          List.filled(widget.response.getLanguages().length, true);
     }
 
-    if (widget.response.getDatePeriodOriginal() != null && widget.response.getDatePeriodOriginal().isNotEmpty) {
+    if (widget.response.getDatePeriodOriginal() != null &&
+        widget.response.getDatePeriodOriginal().isNotEmpty) {
       _selectedDatePeriodOriginal = [true];
     }
-    if (widget.response.getCustomDatePeriod() != null && widget.response.getCustomDatePeriod().isNotEmpty) {
+    if (widget.response.getWatchProvidersOriginal() != null &&
+        widget.response.getWatchProvidersOriginal().isNotEmpty) {
+      _selectedWatchProvidersOriginal =
+          List.filled(widget.response.getWatchProvidersOriginal().length, true);
+    }
+
+    if (widget.response.getCustomDatePeriod() != null &&
+        widget.response.getCustomDatePeriod().isNotEmpty) {
       _selectedCustomDate = [true];
     }
 
-    EntertainmentContentType originalEntertainmentType = widget.response.getEntertainmentTypes()
+    EntertainmentContentType originalEntertainmentType = widget.response
+        .getEntertainmentTypes()
         .firstWhere((e) => e.selected == true, orElse: () => null);
 
     _isEntertainmentTypeMovie =
@@ -85,13 +103,18 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         ? _createGenresForDialogflow(widget.response.getMovieGenreContentType())
         : _createGenresForDialogflow(widget.response.getTVGenreItems());
 
-    _musicArtists =
-        _createRequestFor(widget.response.getMusicArtists(), _selectedMusicArtists);
+    _musicArtists = _createRequestFor(
+        widget.response.getMusicArtists(), _selectedMusicArtists);
 
-    _watchProviders =
-        _createRequestFor(widget.response.getWatchProviders(), _selectedWatchProviders);
+    _watchProviders = _createRequestFor(
+        widget.response.getWatchProviders(), _selectedWatchProviders);
 
-    _languages = _createRequestFor(widget.response.getLanguages(), _selectedLanguages);
+    _watchProvidersOriginal = _createRequestFor(
+        widget.response.getWatchProvidersOriginal(),
+        _selectedWatchProvidersOriginal);
+
+    _languages =
+        _createRequestFor(widget.response.getLanguages(), _selectedLanguages);
 
     _datePeriodOriginal = widget.response.getDatePeriodOriginal();
     _datePeriod = widget.response.getDatePeriod();
@@ -124,8 +147,8 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
           _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
               (index, item) {
             setState(() {
-              _selectedEntertainmentItems =
-                  List.filled(widget.response.getEntertainmentTypes().length, false);
+              _selectedEntertainmentItems = List.filled(
+                  widget.response.getEntertainmentTypes().length, false);
               _selectedEntertainmentItems[index] = true;
               _isEntertainmentTypeMovie =
                   item == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
@@ -150,8 +173,8 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
 
                     _genres = _createRequestFor(
                         movieGenreItemValues, _selectedMovieGenreItems);
-                    _selectedTVGenreItems =
-                        List.filled(widget.response.getTVGenreItems().length, false);
+                    _selectedTVGenreItems = List.filled(
+                        widget.response.getTVGenreItems().length, false);
                   });
                   await _fetchContent();
                 })
@@ -162,13 +185,15 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                         !_selectedTVGenreItems[index];
                     _genres = _createRequestFor(
                         tvGenreItemValues, _selectedTVGenreItems);
-                    _selectedMovieGenreItems =
-                        List.filled(widget.response.getMovieGenreContentType().length, false);
+                    _selectedMovieGenreItems = List.filled(
+                        widget.response.getMovieGenreContentType().length,
+                        false);
                   });
                   await _fetchContent();
                 }),
           if (_selectedMusicArtists != null && _selectedMusicArtists.isNotEmpty)
-            _buildListView(widget.response.getMusicArtists(), _selectedMusicArtists,
+            _buildListView(
+                widget.response.getMusicArtists(), _selectedMusicArtists,
                 (index, item) async {
               setState(() {
                 _selectedMusicArtists[index] = !_selectedMusicArtists[index];
@@ -179,14 +204,22 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
             }),
           if (_selectedWatchProviders != null &&
               _selectedWatchProviders.isNotEmpty)
-            _buildListView(
-                widget.response.getWatchProvidersOriginal(), _selectedWatchProviders,
-                (index, item) async {
+            _buildListView(widget.response.getWatchProvidersOriginal(),
+                _selectedWatchProviders, (index, item) async {
               setState(() {
                 _selectedWatchProviders[index] =
                     !_selectedWatchProviders[index];
+
+                _selectedWatchProvidersOriginal[index] =
+                    !_selectedWatchProvidersOriginal[index];
+
                 _watchProviders = _createRequestFor(
-                    widget.response.getWatchProviders(), _selectedWatchProviders);
+                    widget.response.getWatchProviders(),
+                    _selectedWatchProviders);
+
+                _watchProvidersOriginal = _createRequestFor(
+                    widget.response.getWatchProvidersOriginal(),
+                    _selectedWatchProvidersOriginal);
               });
               await _fetchContent();
             }),
@@ -195,30 +228,37 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                 (index, item) async {
               setState(() {
                 _selectedLanguages[index] = !_selectedLanguages[index];
-                _languages =
-                    _createRequestFor(widget.response.getLanguages(), _selectedLanguages);
+                _languages = _createRequestFor(
+                    widget.response.getLanguages(), _selectedLanguages);
               });
               await _fetchContent();
             }),
-          if (_selectedDatePeriodOriginal != null && _selectedDatePeriodOriginal.isNotEmpty)
-            _buildListView([widget.response.getDatePeriodOriginal()], _selectedDatePeriodOriginal,
-                (index, item) async {
+          if (_selectedDatePeriodOriginal != null &&
+              _selectedDatePeriodOriginal.isNotEmpty)
+            _buildListView([widget.response.getDatePeriodOriginal()],
+                _selectedDatePeriodOriginal, (index, item) async {
               setState(() {
-                _selectedDatePeriodOriginal[index] = !_selectedDatePeriodOriginal[index];
-                _datePeriodOriginal = _selectedDatePeriodOriginal[index] ?  _datePeriodOriginal : "";
-                _datePeriod = _selectedDatePeriodOriginal[index] ?  _datePeriod : "";
+                _selectedDatePeriodOriginal[index] =
+                    !_selectedDatePeriodOriginal[index];
+                _datePeriodOriginal = _selectedDatePeriodOriginal[index]
+                    ? _datePeriodOriginal
+                    : "";
+                _datePeriod =
+                    _selectedDatePeriodOriginal[index] ? _datePeriod : "";
               });
               await _fetchContent();
             }),
           if (_selectedCustomDate != null && _selectedCustomDate.isNotEmpty)
-            _buildListView([widget.response.getCustomDatePeriod()], _selectedCustomDate,
-                    (index, item) async {
-                  setState(() {
-                    _selectedCustomDate[index] = !_selectedCustomDate[index];
-                    _customDatePeriod = _selectedCustomDate[index] ?  _customDatePeriod : "";
-                  });
-                  await _fetchContent();
-                })
+            _buildListView(
+                [widget.response.getCustomDatePeriod()], _selectedCustomDate,
+                (index, item) async {
+              setState(() {
+                _selectedCustomDate[index] = !_selectedCustomDate[index];
+                _customDatePeriod =
+                    _selectedCustomDate[index] ? _customDatePeriod : "";
+              });
+              await _fetchContent();
+            })
         ],
       ),
     );
@@ -258,9 +298,10 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_GENRES)} :  ${jsonEncode(_genres)}, "
         "${jsonEncode(KEY_MUSIC_ARTIST)} : ${jsonEncode(_musicArtists)},"
         "${jsonEncode(KEY_WATCH_PROVIDER)} : ${jsonEncode(_watchProviders)},"
+        "${jsonEncode(KEY_WATCH_PROVIDER_ORIGINAL)} : ${jsonEncode(_watchProvidersOriginal)},"
         "${jsonEncode(KEY_LANGUAGE)} : ${jsonEncode(_languages)},"
         "${jsonEncode(KEY_DATE_PERIOD_ORIGINAL)} : ${jsonEncode(_datePeriodOriginal)},"
-        "${jsonEncode(KEY_DATE_PERIOD)} : ${jsonEncode(_datePeriod)},"
+        "${jsonEncode(KEY_DATE_PERIOD)} : ${jsonEncode(_datePeriod ?? "")},"
         "${jsonEncode(KEY_CUSTOM_DATE_PERIOD)} : ${jsonEncode(_customDatePeriod)},"
         "}";
 

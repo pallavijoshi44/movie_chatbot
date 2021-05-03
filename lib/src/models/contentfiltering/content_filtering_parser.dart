@@ -18,6 +18,7 @@ class ContentFilteringParser {
   Map _datePeriod;
   String _datePeriodOriginal = "";
   String _customDatePeriod = "";
+  String _short = "";
 
   ContentFilteringParser({this.response}) {
     var parameters = response.getParameters();
@@ -31,6 +32,7 @@ class ContentFilteringParser {
     _constructWatchProviders(parameters);
     _constructDatePeriod(parameters);
     _constructSearchKeywords(parameters);
+    _constructShort(parameters);
   }
 
   void _constructDatePeriod(Map parameters) {
@@ -41,6 +43,13 @@ class ContentFilteringParser {
     }
     if (_isValidKey(parameters, KEY_CUSTOM_DATE_PERIOD)) {
       _customDatePeriod = parameters[KEY_CUSTOM_DATE_PERIOD];
+      return;
+    }
+  }
+
+  void _constructShort(Map parameters) {
+    if (_isValidKey(parameters, KEY_SHORT_MOVIE)) {
+      _short = parameters[KEY_SHORT_MOVIE];
       return;
     }
   }
@@ -297,6 +306,9 @@ class ContentFilteringParser {
 
   String getCustomDatePeriod() {
     return _customDatePeriod;
+  }
+  String getShortMovie() {
+    return _short;
   }
 
   List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {

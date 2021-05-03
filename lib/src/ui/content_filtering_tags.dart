@@ -29,6 +29,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   String _datePeriodOriginal;
   Map _datePeriod;
   String _customDatePeriod;
+  String _shortMovie;
 
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
@@ -37,10 +38,11 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   List<bool> _selectedWatchProvidersOriginal;
   List<bool> _selectedSearchKeywords;
   List<bool> _selectedSearchKeywordsOriginal;
-  List<bool> _selectedLanguages;
-  List<bool> _selectedDatePeriodOriginal;
-  List<bool> _selectedCustomDate;
   List<bool> _selectedEntertainmentItems;
+  List<bool> _selectedLanguages;
+  bool _selectedDatePeriodOriginal;
+  bool _selectedCustomDate;
+  bool _selectedShortMovie;
   bool _isEntertainmentTypeMovie;
   bool _isFetchContentNotTriggered = true;
   final ScrollController _scrollController = ScrollController();
@@ -54,6 +56,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
     _initializeLanguages();
     _initializeDatePeriod();
     _initializeSearchKeywords();
+    _initializeShortMovie();
 
     super.initState();
   }
@@ -61,16 +64,24 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   void _initializeDatePeriod() {
     if (widget.response.getDatePeriodOriginal() != null &&
         widget.response.getDatePeriodOriginal().isNotEmpty) {
-      _selectedDatePeriodOriginal = [true];
+      _selectedDatePeriodOriginal = true;
     }
 
     if (widget.response.getCustomDatePeriod() != null &&
         widget.response.getCustomDatePeriod().isNotEmpty) {
-      _selectedCustomDate = [true];
+      _selectedCustomDate = true;
     }
     _datePeriodOriginal = widget.response.getDatePeriodOriginal();
     _datePeriod = widget.response.getDatePeriod();
     _customDatePeriod = widget.response.getCustomDatePeriod();
+  }
+
+  void _initializeShortMovie() {
+    if (widget.response.getShortMovie() != null &&
+        widget.response.getShortMovie().isNotEmpty) {
+      _selectedShortMovie = true;
+    }
+    _shortMovie = widget.response.getShortMovie();
   }
 
   void _initializeLanguages() {
@@ -319,31 +330,39 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                     await _fetchContent();
                   });
                 }).toList(),
-              if (_selectedDatePeriodOriginal != null &&
-                  _selectedDatePeriodOriginal.isNotEmpty)
+              if (_selectedDatePeriodOriginal != null)
                 _buildChip(widget.response.getDatePeriodOriginal(),
-                    _selectedDatePeriodOriginal[0], (item) async {
+                    _selectedDatePeriodOriginal, (item) async {
                   setState(() {
-                    _selectedDatePeriodOriginal[0] =
-                        !_selectedDatePeriodOriginal[0];
-                    _datePeriodOriginal = _selectedDatePeriodOriginal[0]
+                    _selectedDatePeriodOriginal =
+                        !_selectedDatePeriodOriginal;
+                    _datePeriodOriginal = _selectedDatePeriodOriginal
                         ? _datePeriodOriginal
                         : "";
                     _datePeriod =
-                        _selectedDatePeriodOriginal[0] ? _datePeriod : "";
+                        _selectedDatePeriodOriginal ? _datePeriod : "";
                   });
                   await _fetchContent();
                 }),
-              if (_selectedCustomDate != null && _selectedCustomDate.isNotEmpty)
+              if (_selectedCustomDate != null)
                 _buildChip(widget.response.getCustomDatePeriod(),
-                    _selectedCustomDate[0], (item) async {
+                    _selectedCustomDate, (item) async {
                   setState(() {
-                    _selectedCustomDate[0] = !_selectedCustomDate[0];
+                    _selectedCustomDate = !_selectedCustomDate;
                     _customDatePeriod =
-                        _selectedCustomDate[0] ? _customDatePeriod : "";
+                        _selectedCustomDate ? _customDatePeriod : "";
                   });
                   await _fetchContent();
-                })
+                }),
+              if (_selectedShortMovie != null)
+                _buildChip(widget.response.getShortMovie(),
+                    _selectedShortMovie, (item) async {
+                      setState(() {
+                        _selectedShortMovie = !_selectedShortMovie;
+                        _shortMovie = _selectedShortMovie ? _shortMovie : "";
+                      });
+                      await _fetchContent();
+                    })
             ],
           ),
         ],
@@ -409,6 +428,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_CUSTOM_DATE_PERIOD)} : ${jsonEncode(_customDatePeriod)},"
         "${jsonEncode(KEY_SEARCH_KEYWORD)} : ${jsonEncode(_searchKeywords)},"
         "${jsonEncode(KEY_SEARCH_KEYWORD_ORIGINAL)} : ${jsonEncode(_searchKeywordsOriginal)},"
+        "${jsonEncode(KEY_SHORT_MOVIE)} : ${jsonEncode(_shortMovie)},"
         "}";
 
     if (_isFetchContentNotTriggered) {

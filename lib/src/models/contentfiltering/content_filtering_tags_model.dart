@@ -17,21 +17,29 @@ class ContentFilteringTagsModel extends MessageModel {
   }) : super(type: type, name: title);
 }
 // "parameters": {
-// "operator-selector": "",
-// "watch-provider": [],
-// "music-artist": [],
-// "custom-date-period": "old",
-// "language": [
-// "Hindi",
-// "French",
-// "Mandarin"
-// ],
-// "date-period": "",
-// "watch-provider-original": [],
+// "id": "",
+// "like-phrases": "",
+// "date-period": {
+// "endDate": "1999-12-31T23:59:59+01:00",
+// "startDate": "1990-01-01T00:00:00+01:00"
+// },
 // "country-name": "",
-// "genres": [
-// "Action",
-// "Adventure"
+// "language": [
+// "Hindi"
 // ],
-// "country-code": ""
-// }
+// "search-keyword-original": [
+// "cricket"
+// ],
+// "search-keyword": [
+// "5719"
+// ],
+// "custom-date-period": "",
+// "operator-selector": "",
+// "watch-provider-original": [],
+// "genres": [],
+// "country-code": "",
+// "music-artist": [],
+// "date-period-original": "1990s",
+// "watch-provider": [],
+// "short-movie": ""
+// },

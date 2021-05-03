@@ -7,8 +7,6 @@ import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser
 import 'package:flutter_app/src/models/contentfiltering/entertainment_type.dart';
 import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart';
 
-import 'choice_chip_mobo.dart';
-
 class ContentFilteringTags extends StatefulWidget {
   final ContentFilteringParser response;
   final Function filterContents;
@@ -186,13 +184,14 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
-              (index, item) {
+              (item) {
             setState(() {
               _selectedEntertainmentItems = List.filled(
                   widget.response.getEntertainmentTypes().length, false);
-              _selectedEntertainmentItems[index] = true;
+              _selectedEntertainmentItems[entertainmentTypeValues.indexOf(item)] = true;
               _isEntertainmentTypeMovie =
                   item == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
               _eventName = _isEntertainmentTypeMovie
@@ -207,122 +206,146 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                   : [];
             });
           }),
-          _isEntertainmentTypeMovie
-              ? _buildListView(movieGenreItemValues, _selectedMovieGenreItems,
-                  (index, item) async {
-                  setState(() {
-                    _selectedMovieGenreItems[index] =
-                        !_selectedMovieGenreItems[index];
+          if (_isEntertainmentTypeMovie)
+            _buildListView(movieGenreItemValues, _selectedMovieGenreItems,
+                (item) async {
+              setState(() {
+                _selectedMovieGenreItems[movieGenreItemValues.indexOf(item)] =
+                    !_selectedMovieGenreItems[
+                        movieGenreItemValues.indexOf(item)];
 
-                    _genres = _createRequestFor(
-                        movieGenreItemValues, _selectedMovieGenreItems);
-                    _selectedTVGenreItems = List.filled(
-                        widget.response.getTVGenreItems().length, false);
+                _genres = _createRequestFor(
+                    movieGenreItemValues, _selectedMovieGenreItems);
+                _selectedTVGenreItems = List.filled(
+                    widget.response.getTVGenreItems().length, false);
+              });
+              await _fetchContent();
+            }),
+          if (!_isEntertainmentTypeMovie)
+            _buildListView(tvGenreItemValues, _selectedTVGenreItems,
+                (item) async {
+              setState(() {
+                _selectedTVGenreItems[tvGenreItemValues.indexOf(item)] =
+                    !_selectedTVGenreItems[tvGenreItemValues.indexOf(item)];
+                _genres =
+                    _createRequestFor(tvGenreItemValues, _selectedTVGenreItems);
+                _selectedMovieGenreItems = List.filled(
+                    widget.response.getMovieGenreContentType().length, false);
+              });
+              await _fetchContent();
+            }),
+          Wrap(
+            alignment: WrapAlignment.start,
+            spacing: 5,
+            runSpacing: 5,
+            direction: Axis.horizontal,
+            children: <Widget>[
+              if (_selectedMusicArtists != null &&
+                  _selectedMusicArtists.isNotEmpty)
+                ...widget.response.getMusicArtists().map((item) {
+                  var index = widget.response.getMusicArtists().indexOf(item);
+                  return _buildChip(item, _selectedMusicArtists[index],
+                      (item) async {
+                    setState(() {
+                      _selectedMusicArtists[index] =
+                          !_selectedMusicArtists[index];
+                      _musicArtists = _createRequestFor(
+                          widget.response.getMusicArtists(),
+                          _selectedMusicArtists);
+                    });
+                    await _fetchContent();
+                  });
+                }).toList(),
+              if (_selectedWatchProviders != null &&
+                  _selectedWatchProviders.isNotEmpty)
+                ...widget.response.getWatchProvidersOriginal().map((item) {
+                  var index =
+                      widget.response.getWatchProvidersOriginal().indexOf(item);
+                  return _buildChip(item, _selectedWatchProviders[index],
+                      (item) async {
+                    setState(() {
+                      _selectedWatchProviders[index] =
+                          !_selectedWatchProviders[index];
+
+                      _selectedWatchProvidersOriginal[index] =
+                          !_selectedWatchProvidersOriginal[index];
+
+                      _watchProviders = _createRequestFor(
+                          widget.response.getWatchProviders(),
+                          _selectedWatchProviders);
+
+                      _watchProvidersOriginal = _createRequestFor(
+                          widget.response.getWatchProvidersOriginal(),
+                          _selectedWatchProvidersOriginal);
+                    });
+                    await _fetchContent();
+                  });
+                }).toList(),
+              if (_selectedSearchKeywords != null &&
+                  _selectedSearchKeywords.isNotEmpty)
+                ...widget.response.getSearchKeywordsOriginal().map((item) {
+                  var index =
+                      widget.response.getSearchKeywordsOriginal().indexOf(item);
+                  return _buildChip(item, _selectedSearchKeywords[index],
+                      (item) async {
+                    setState(() {
+                      _selectedSearchKeywords[index] =
+                          !_selectedSearchKeywords[index];
+
+                      _selectedSearchKeywordsOriginal[index] =
+                          !_selectedSearchKeywordsOriginal[index];
+
+                      _searchKeywords = _createRequestFor(
+                          widget.response.getSearchKeywords(),
+                          _selectedSearchKeywords);
+
+                      _searchKeywordsOriginal = _createRequestFor(
+                          widget.response.getSearchKeywordsOriginal(),
+                          _selectedSearchKeywordsOriginal);
+                    });
+                    await _fetchContent();
+                  });
+                }).toList(),
+              if (_selectedLanguages != null && _selectedLanguages.isNotEmpty)
+                ...widget.response.getLanguages().map((item) {
+                  var index = widget.response.getLanguages().indexOf(item);
+                  return _buildChip(item, _selectedLanguages[index],
+                      (item) async {
+                    setState(() {
+                      _selectedLanguages[index] = !_selectedLanguages[index];
+                      _languages = _createRequestFor(
+                          widget.response.getLanguages(), _selectedLanguages);
+                    });
+                    await _fetchContent();
+                  });
+                }).toList(),
+              if (_selectedDatePeriodOriginal != null &&
+                  _selectedDatePeriodOriginal.isNotEmpty)
+                _buildChip(widget.response.getDatePeriodOriginal(),
+                    _selectedDatePeriodOriginal[0], (item) async {
+                  setState(() {
+                    _selectedDatePeriodOriginal[0] =
+                        !_selectedDatePeriodOriginal[0];
+                    _datePeriodOriginal = _selectedDatePeriodOriginal[0]
+                        ? _datePeriodOriginal
+                        : "";
+                    _datePeriod =
+                        _selectedDatePeriodOriginal[0] ? _datePeriod : "";
+                  });
+                  await _fetchContent();
+                }),
+              if (_selectedCustomDate != null && _selectedCustomDate.isNotEmpty)
+                _buildChip(widget.response.getCustomDatePeriod(),
+                    _selectedCustomDate[0], (item) async {
+                  setState(() {
+                    _selectedCustomDate[0] = !_selectedCustomDate[0];
+                    _customDatePeriod =
+                        _selectedCustomDate[0] ? _customDatePeriod : "";
                   });
                   await _fetchContent();
                 })
-              : _buildListView(tvGenreItemValues, _selectedTVGenreItems,
-                  (index, item) async {
-                  setState(() {
-                    _selectedTVGenreItems[index] =
-                        !_selectedTVGenreItems[index];
-                    _genres = _createRequestFor(
-                        tvGenreItemValues, _selectedTVGenreItems);
-                    _selectedMovieGenreItems = List.filled(
-                        widget.response.getMovieGenreContentType().length,
-                        false);
-                  });
-                  await _fetchContent();
-                }),
-          if (_selectedMusicArtists != null && _selectedMusicArtists.isNotEmpty)
-            _buildListView(
-                widget.response.getMusicArtists(), _selectedMusicArtists,
-                (index, item) async {
-              setState(() {
-                _selectedMusicArtists[index] = !_selectedMusicArtists[index];
-                _musicArtists = _createRequestFor(
-                    widget.response.getMusicArtists(), _selectedMusicArtists);
-              });
-              await _fetchContent();
-            }),
-          if (_selectedWatchProviders != null &&
-              _selectedWatchProviders.isNotEmpty)
-            _buildListView(widget.response.getWatchProvidersOriginal(),
-                _selectedWatchProviders, (index, item) async {
-              setState(() {
-                _selectedWatchProviders[index] =
-                    !_selectedWatchProviders[index];
-
-                _selectedWatchProvidersOriginal[index] =
-                    !_selectedWatchProvidersOriginal[index];
-
-                _watchProviders = _createRequestFor(
-                    widget.response.getWatchProviders(),
-                    _selectedWatchProviders);
-
-                _watchProvidersOriginal = _createRequestFor(
-                    widget.response.getWatchProvidersOriginal(),
-                    _selectedWatchProvidersOriginal);
-              });
-              await _fetchContent();
-            }),
-          if (_selectedSearchKeywords != null &&
-              _selectedSearchKeywords.isNotEmpty)
-            _buildListView(widget.response.getSearchKeywordsOriginal(),
-                _selectedSearchKeywords, (index, item) async {
-                  setState(() {
-                    _selectedSearchKeywords[index] =
-                    !_selectedSearchKeywords[index];
-
-                    _selectedSearchKeywordsOriginal[index] =
-                    !_selectedSearchKeywordsOriginal[index];
-
-                    _searchKeywords = _createRequestFor(
-                        widget.response.getSearchKeywords(),
-                        _selectedSearchKeywords);
-
-                    _searchKeywordsOriginal = _createRequestFor(
-                        widget.response.getSearchKeywordsOriginal(),
-                        _selectedSearchKeywordsOriginal);
-                  });
-                  await _fetchContent();
-                }),
-          if (_selectedLanguages != null && _selectedLanguages.isNotEmpty)
-            _buildListView(widget.response.getLanguages(), _selectedLanguages,
-                (index, item) async {
-              setState(() {
-                _selectedLanguages[index] = !_selectedLanguages[index];
-                _languages = _createRequestFor(
-                    widget.response.getLanguages(), _selectedLanguages);
-              });
-              await _fetchContent();
-            }),
-          if (_selectedDatePeriodOriginal != null &&
-              _selectedDatePeriodOriginal.isNotEmpty)
-            _buildListView([widget.response.getDatePeriodOriginal()],
-                _selectedDatePeriodOriginal, (index, item) async {
-              setState(() {
-                _selectedDatePeriodOriginal[index] =
-                    !_selectedDatePeriodOriginal[index];
-                _datePeriodOriginal = _selectedDatePeriodOriginal[index]
-                    ? _datePeriodOriginal
-                    : "";
-                _datePeriod =
-                    _selectedDatePeriodOriginal[index] ? _datePeriod : "";
-              });
-              await _fetchContent();
-            }),
-          if (_selectedCustomDate != null && _selectedCustomDate.isNotEmpty)
-            _buildListView(
-                [widget.response.getCustomDatePeriod()], _selectedCustomDate,
-                (index, item) async {
-              setState(() {
-                _selectedCustomDate[index] = !_selectedCustomDate[index];
-                _customDatePeriod =
-                    _selectedCustomDate[index] ? _customDatePeriod : "";
-              });
-              await _fetchContent();
-            })
+            ],
+          ),
         ],
       ),
     );
@@ -346,15 +369,32 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
           itemCount: source.length,
           itemBuilder: (ctx, index) {
             var item = source[index];
-            return ChoiceChipMobo(
-                isNoPreferenceSelected: false,
-                label: item,
-                selected: selectedItems[index],
-                onSelected: (value) {
-                  onTap.call(index, item);
-                });
+            return Container(
+              margin: EdgeInsets.only(right: 5),
+                child: _buildChip(item, selectedItems[index], onTap));
           },
         ));
+  }
+
+  Widget _buildChip(String item, bool selectedItem, Function onTap) {
+    return Container(
+      height: 40,
+      child: FilterChip(
+          backgroundColor: Color.fromRGBO(249, 248, 235, 1),
+          disabledColor: Colors.lightGreen[100],
+          label: Text(item,
+              style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
+          labelStyle: TextStyle(color: Colors.lightGreen[900]),
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: Colors.lightGreen[900]),
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          selected: selectedItem,
+          checkmarkColor: Colors.green,
+          selectedColor: Colors.lightGreen[100],
+          onSelected: (value) {
+            onTap.call(item);
+          }),
+    );
   }
 
   Future _fetchContent() async {

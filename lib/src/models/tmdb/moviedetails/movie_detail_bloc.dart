@@ -1,5 +1,6 @@
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'movie_tv_details.dart';
@@ -16,7 +17,7 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
       case EventStatus.fetchMovieDetails:
         yield MovieDetailsLoading();
         try {
-          MovieTvDetailsModel response = await _repository.fetchMovieDetails(event.id, event.countryCode);
+          MovieTvDetailsModel response = await _repository.fetchMovieDetails(event.id, event.countryCode, event.entertainmentType);
           yield MovieDetailsLoaded(response);
         } catch (error) {
           yield MovieDetailsError();
@@ -29,10 +30,11 @@ class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
 class MovieDetailsEvent {
   final String countryCode;
   final String id;
+  final EntertainmentType entertainmentType;
   final EventStatus eventStatus;
 
   MovieDetailsEvent(
-      {this.countryCode, this.id, this.eventStatus});
+      {this.countryCode, this.id, this.eventStatus, this.entertainmentType});
 }
 enum EventStatus { fetchMovieDetails }
 

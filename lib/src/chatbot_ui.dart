@@ -63,8 +63,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   int _pageNumber = 2;
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
-  String _multiSelectType = "";
-  String _entertainmentType = "";
   bool _shouldShowOverlay = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
@@ -165,7 +163,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                         _disableKeyboardForAndroid(context);
                         return CarouselDialogSlider(
                             (message as CarouselModel).carouselSelect,
-                            _movieItemClicked);
+                            _movieItemClicked,
+                            (message as CarouselModel).entertainmentType);
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -360,14 +359,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _textController.text = value;
       } else {
         _textController.text = selectedText;
-        // if (isSelected) {
-        //   _textController.text = value;
-        // } else {
-        //   if (_textController.text.contains(value)) {
-        //     _textController.text =
-        //         _textController.text.replaceAll(value, "").trim();
-        //   }
-        // }
       }
 
       if (_textController.text.isEmpty) {
@@ -384,31 +375,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _messages.removeAt(0);
       _showChatMessage(text, true, true);
     });
-    var parameters = DEFAULT_PARAMETERS_FOR_EVENT;
-    // if (_multiSelectType.isNotEmpty &&
-    //     _multiSelectType == MULTI_SELECT_TYPE_GENRES) {
-    //   var genres = jsonEncode(text.split(" "));
-    //
-    //   if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
-    //     parameters = "'parameters' : { 'movie-genres': $genres  }";
-    //   } else {
-    //     parameters = "'parameters' : { 'tv-genres': $genres  }";
-    //   }
-    // } else if (_multiSelectType.isNotEmpty &&
-    //     _multiSelectType == MULTI_SELECT_TYPE_WATCH_PROVIDERS) {
-    //   var providers = jsonEncode(text.split(" "));
-    //
-    //   if (_entertainmentType == ENTERTAINMENT_CONTENT_TYPE_MOVIES) {
-    //     parameters = "'parameters' : { 'movie-watch-provider': $providers  }";
-    //   } else {
-    //     parameters = "'parameters' : { 'tv-watch-provider': $providers  }";
-    //   }
-    // }
     _getDialogFlowResponse(text);
-    // _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, false);
   }
 
-  Future<void> _movieItemClicked(String movieId) async {
+  Future<void> _movieItemClicked(
+      String movieId, EntertainmentType entertainmentType) async {
     _stopAllTimers();
     setState(() {
       _isLoading = true;
@@ -417,6 +388,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: movieId,
         countryCode: _countryCode,
+        entertainmentType: entertainmentType,
         eventStatus: EventStatus.fetchMovieDetails));
     //  await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
@@ -566,13 +538,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _handleTimers(action);
 
       if (response.containsMultiSelect()) {
-        _entertainmentType = response.getEntertainmentType();
         _constructMultiSelect(response.getMultiSelectResponse());
         return;
       }
 
       if (response.containsCard()) {
-        _entertainmentType = response.getEntertainmentType();
         _constructMultiSelect(response.getCard());
         return;
       }
@@ -705,6 +675,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             _isTextFieldEnabled = true;
             var carouselModel = CarouselModel(
               carouselSelect: carouselSelect,
+              entertainmentType: response.getEntertainmentContentType(),
               type: MessageType.CAROUSEL,
             );
             _messages.insert(0, carouselModel);
@@ -724,6 +695,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _isTextFieldEnabled = true;
         var carouselModel = CarouselModel(
           carouselSelect: carouselSelect,
+          entertainmentType: response.getEntertainmentContentType(),
           type: MessageType.CAROUSEL,
         );
         _messages.insert(0, carouselModel);
@@ -735,7 +707,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _constructContentFilteringParser(AIResponse response) {
     if (response.getAction() == ACTION_MOVIE_RECOMMENDATIONS ||
         response.getAction() == ACTION_TV_RECOMMENDATIONS) {
-
       var contentResponse = new ContentFilteringParser(response: response);
       var contentFilteringTabsModel = new ContentFilteringTagsModel(
           response: contentResponse,
@@ -852,10 +823,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _onCountryChanged(String id, String countryCode) async {
+  Future<void> _onCountryChanged(String id, String countryCode,
+      EntertainmentType entertainmentType) async {
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: id,
         countryCode: countryCode,
+        entertainmentType: entertainmentType,
         eventStatus: EventStatus.fetchMovieDetails));
     // await _getWatchProvidersAndVideos(id, countryCode);
     _isCountryChanged = true;

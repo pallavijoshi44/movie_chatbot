@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/ui/country/country_list_pick.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +12,9 @@ class CountryPickerWidget extends StatelessWidget {
   final SharedPreferences prefs;
   final Function onCountryChanged;
   final String id;
+  final bool isMovie;
 
-  const CountryPickerWidget({this.text, this.prefs, this.onCountryChanged, this.id});
+  const CountryPickerWidget({this.text, this.prefs, this.onCountryChanged, this.id, this.isMovie});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class CountryPickerWidget extends StatelessWidget {
                 initialSelection: prefs.getString(KEY_COUNTRY_CODE),
                 onChanged: (CountryCode code) async {
                   await prefs.setString(KEY_COUNTRY_CODE, code.code);
-                  onCountryChanged.call(id, code.code);
+                  onCountryChanged.call(id, code.code, isMovie ? EntertainmentType.MOVIE : EntertainmentType.TV);
                 },
               ),
             )

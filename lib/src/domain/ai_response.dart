@@ -45,12 +45,6 @@ class AIResponse {
     return _queryResult.fulfillmentText;
   }
 
-  String getEntertainmentType() {
-    if (_queryResult.parameters != null)
-      return _queryResult.parameters['entertainment-content-type'];
-    return null;
-  }
-
   List<String> getChatMessage() {
     return getDefaultOrChatMessage();
   }

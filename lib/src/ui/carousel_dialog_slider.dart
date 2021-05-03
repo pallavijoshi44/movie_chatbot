@@ -1,15 +1,18 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked);
+  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked, this.entertainmentType);
 
   final CarouselSelect carouselSelect;
+  final EntertainmentType entertainmentType;
   final Function carouselItemClicked;
 
   @override
@@ -101,7 +104,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
       _enabled = false;
     });
     _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
-    return widget.carouselItemClicked(item.info['key']);
+    return widget.carouselItemClicked(item.info['key'], widget.entertainmentType);
   }
 
   @override

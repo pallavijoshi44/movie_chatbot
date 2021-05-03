@@ -98,6 +98,7 @@ class MovieDetailWidget extends StatelessWidget {
             ),
           if (model.providers != null && model.providers.length > 0)
             CountryPickerWidget(
+              isMovie: model.isMovie,
               id: model.id,
               prefs: prefs,
               text: model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT,
@@ -105,6 +106,7 @@ class MovieDetailWidget extends StatelessWidget {
             )
           else
             CountryPickerWidget(
+              isMovie: model.isMovie,
               id: model.id,
               prefs: prefs,
               text:  model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,

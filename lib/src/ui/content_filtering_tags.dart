@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ class ContentFilteringTags extends StatefulWidget {
 }
 
 class _ContentFilteringTagsState extends State<ContentFilteringTags> {
+  Timer _clickTimer;
   String _eventName;
   List<String> _genres;
   List<String> _musicArtists;
@@ -44,7 +46,6 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   bool _selectedCustomDate;
   bool _selectedShortMovie;
   bool _isEntertainmentTypeMovie;
-  bool _isFetchContentNotTriggered = true;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -198,11 +199,12 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildListView(entertainmentTypeValues, _selectedEntertainmentItems,
-              (item) {
+              (item) async {
             setState(() {
               _selectedEntertainmentItems = List.filled(
                   widget.response.getEntertainmentTypes().length, false);
-              _selectedEntertainmentItems[entertainmentTypeValues.indexOf(item)] = true;
+              _selectedEntertainmentItems[
+                  entertainmentTypeValues.indexOf(item)] = true;
               _isEntertainmentTypeMovie =
                   item == ENTERTAINMENT_CONTENT_TYPE_MOVIES;
               _eventName = _isEntertainmentTypeMovie
@@ -216,6 +218,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                       widget.response.getMusicArtists(), _selectedMusicArtists)
                   : [];
             });
+            await _fetchContent();
           }),
           if (_isEntertainmentTypeMovie)
             _buildListView(movieGenreItemValues, _selectedMovieGenreItems,
@@ -334,19 +337,18 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                 _buildChip(widget.response.getDatePeriodOriginal(),
                     _selectedDatePeriodOriginal, (item) async {
                   setState(() {
-                    _selectedDatePeriodOriginal =
-                        !_selectedDatePeriodOriginal;
-                    _datePeriodOriginal = _selectedDatePeriodOriginal
-                        ? _datePeriodOriginal
-                        : "";
+                    _selectedDatePeriodOriginal = !_selectedDatePeriodOriginal;
+                    _datePeriodOriginal =
+                        _selectedDatePeriodOriginal ? _datePeriodOriginal : "";
                     _datePeriod =
                         _selectedDatePeriodOriginal ? _datePeriod : "";
                   });
                   await _fetchContent();
                 }),
               if (_selectedCustomDate != null)
-                _buildChip(widget.response.getCustomDatePeriod(),
-                    _selectedCustomDate, (item) async {
+                _buildChip(
+                    widget.response.getCustomDatePeriod(), _selectedCustomDate,
+                    (item) async {
                   setState(() {
                     _selectedCustomDate = !_selectedCustomDate;
                     _customDatePeriod =
@@ -355,14 +357,14 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                   await _fetchContent();
                 }),
               if (_selectedShortMovie != null)
-                _buildChip(widget.response.getShortMovie(),
-                    _selectedShortMovie, (item) async {
-                      setState(() {
-                        _selectedShortMovie = !_selectedShortMovie;
-                        _shortMovie = _selectedShortMovie ? _shortMovie : "";
-                      });
-                      await _fetchContent();
-                    })
+                _buildChip(widget.response.getShortMovie(), _selectedShortMovie,
+                    (item) async {
+                  setState(() {
+                    _selectedShortMovie = !_selectedShortMovie;
+                    _shortMovie = _selectedShortMovie ? _shortMovie : "";
+                  });
+                  await _fetchContent();
+                })
             ],
           ),
         ],
@@ -389,7 +391,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
           itemBuilder: (ctx, index) {
             var item = source[index];
             return Container(
-              margin: EdgeInsets.only(right: 5),
+                margin: EdgeInsets.only(right: 5),
                 child: _buildChip(item, selectedItems[index], onTap));
           },
         ));
@@ -431,10 +433,27 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_SHORT_MOVIE)} : ${jsonEncode(_shortMovie)},"
         "}";
 
-    if (_isFetchContentNotTriggered) {
-      _isFetchContentNotTriggered = false;
-      await Future<void>.delayed(const Duration(milliseconds: 3000))
-          .then((value) => widget.filterContents(_eventName, parameters));
+    _stopClickTimer();
+    _startClickTimer(parameters);
+  }
+
+  void _stopClickTimer() {
+    if (_clickTimer != null) {
+      _clickTimer.cancel();
+      _clickTimer = null;
     }
+  }
+
+  void _startClickTimer(String parameters) {
+    _clickTimer =
+        new Timer(Duration(seconds: CONTENT_FILTERING_DURATION_SECONDS), () {
+      widget.filterContents(_eventName, parameters);
+    });
+  }
+
+  @override
+  void dispose() {
+    _stopClickTimer();
+    super.dispose();
   }
 }

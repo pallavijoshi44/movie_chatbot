@@ -117,3 +117,5 @@ const KEY_GENRES = "genres";
 const KEY_SEARCH_KEYWORD = "search-keyword";
 const KEY_SEARCH_KEYWORD_ORIGINAL = "search-keyword-original";
 const KEY_SHORT_MOVIE = "short-movie";
+
+const CONTENT_FILTERING_DURATION_SECONDS = 3;

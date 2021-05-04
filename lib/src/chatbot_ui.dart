@@ -162,9 +162,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       {
                         _disableKeyboardForAndroid(context);
                         return CarouselDialogSlider(
-                            (message as CarouselModel).carouselSelect,
-                            _movieItemClicked,
-                            (message as CarouselModel).entertainmentType);
+                          (message as CarouselModel).getCarouselSelect(),
+                          _movieItemClicked,
+                          (message as CarouselModel).getEntertainmentType(),
+                          (message as CarouselModel).fetchMoreData,
+                        );
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -645,9 +647,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _constructCarousel(AIResponse response) {
-    var element = response.getCarousel();
-    CarouselSelect carouselSelect = new CarouselSelect(element);
-
     if (_movieSliderShownCount == 0) {
       _stopAllTimers();
       _movieSliderShownCount++;
@@ -674,10 +673,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             _doNotShowTyping = true;
             _isTextFieldEnabled = true;
             var carouselModel = CarouselModel(
-              carouselSelect: carouselSelect,
-              entertainmentType: response.getEntertainmentContentType(),
-              type: MessageType.CAROUSEL,
-            );
+                response: response,
+                type: MessageType.CAROUSEL,
+                fetchMoreData: _fetchMoreMoviesOrTVShows);
             _messages.insert(0, carouselModel);
 
             _constructContentFilteringParser(response);
@@ -694,10 +692,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _doNotShowTyping = true;
         _isTextFieldEnabled = true;
         var carouselModel = CarouselModel(
-          carouselSelect: carouselSelect,
-          entertainmentType: response.getEntertainmentContentType(),
-          type: MessageType.CAROUSEL,
-        );
+            response: response,
+            type: MessageType.CAROUSEL,
+            fetchMoreData: _fetchMoreMoviesOrTVShows);
         _messages.insert(0, carouselModel);
         _constructContentFilteringParser(response);
       });
@@ -762,6 +759,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       });
       _getDialogFlowResponse(text);
     }
+  }
+
+  void _fetchMoreMoviesOrTVShows() async {
+    var param = "'parameters' : { 'page-number':  $_pageNumber }";
+    await _getDialogFlowResponseByEvent("", param, false);
   }
 
   void stopAbsoluteTimer() {

@@ -9,11 +9,12 @@ import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked, this.entertainmentType);
+  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked, this.entertainmentType, this.fetchMoreData);
 
   final CarouselSelect carouselSelect;
   final EntertainmentType entertainmentType;
   final Function carouselItemClicked;
+  final Function fetchMoreData;
 
   @override
   _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
@@ -22,6 +23,19 @@ class CarouselDialogSlider extends StatefulWidget {
 class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
   bool _enabled = true;
   Timer _timer;
+  ScrollController _controller;
+
+  @override
+  void initState() {
+    _controller = new ScrollController()..addListener(_scrollListener);
+    super.initState();
+  }
+
+  void _scrollListener() {
+    if (_controller.position.extentAfter <= 0) {
+         widget.fetchMoreData.call();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +43,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
         height: 415.0,
         margin: EdgeInsets.only(top: 20),
         child: ListView(
+          controller: _controller,
           scrollDirection: Axis.horizontal,
           children: widget.carouselSelect.items
               .map((item) => Material(
@@ -112,6 +127,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
     if (_timer != null) {
       _timer.cancel();
     }
+    _controller.removeListener(_scrollListener);
     super.dispose();
   }
 }

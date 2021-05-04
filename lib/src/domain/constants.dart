@@ -114,8 +114,14 @@ const KEY_MUSIC_ARTIST = "music-artist";
 const KEY_WATCH_PROVIDER_ORIGINAL = "watch-provider-original";
 const KEY_WATCH_PROVIDER = "watch-provider";
 const KEY_GENRES = "genres";
+const KEY_PAGE_NUMBER = "page-number";
+const KEY_LIKE_PHRASES = "like-phrases";
 const KEY_SEARCH_KEYWORD = "search-keyword";
 const KEY_SEARCH_KEYWORD_ORIGINAL = "search-keyword-original";
 const KEY_SHORT_MOVIE = "short-movie";
+const KEY_SORT_BY = "sort-by";
+const KEY_COUNTRY_NAME = "country-name";
+const KEY_MOVIE_OR_TV_ID = "id";
+
 
 const CONTENT_FILTERING_DURATION_SECONDS = 3;

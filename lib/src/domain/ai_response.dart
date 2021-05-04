@@ -1,4 +1,5 @@
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/domain/parameters.dart';
 import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
 class AIResponse {
@@ -28,6 +29,11 @@ class AIResponse {
 
   Map getParameters() {
     return _queryResult.parameters;
+  }
+
+  Parameters getParametersJson() {
+    Parameters parameters = Parameters.fromJson(_queryResult.parameters);
+    return parameters;
   }
 
   EntertainmentType getEntertainmentContentType() {

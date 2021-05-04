@@ -31,6 +31,7 @@ import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
+import 'domain/parameters.dart';
 import 'models/contentfiltering/content_filtering_tags_model.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
@@ -166,6 +167,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                           _movieItemClicked,
                           (message as CarouselModel).getEntertainmentType(),
                           (message as CarouselModel).fetchMoreData,
+                            (message as CarouselModel).getParameters()
                         );
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
@@ -761,9 +763,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  void _fetchMoreMoviesOrTVShows() async {
-    var param = "'parameters' : { 'page-number':  $_pageNumber }";
-    await _getDialogFlowResponseByEvent("", param, false);
+  void _fetchMoreMoviesOrTVShows(Parameters parameters, EntertainmentType type) async {
+    String eventName = type == EntertainmentType.MOVIE ? MOVIE_RECOMMENDATIONS_EVENT : TV_RECOMMENDATIONS_EVENT;
+    parameters.pageNumber = _pageNumber;
+    setState(() {
+      _pageNumber += 1;
+    });
+    //var param = "'parameters' : { 'page-number':  $_pageNumber }";
+    _getDialogFlowResponseByEvent(eventName, parameters.toString(), false);
   }
 
   void stopAbsoluteTimer() {

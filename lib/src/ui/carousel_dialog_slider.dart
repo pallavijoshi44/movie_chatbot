@@ -5,16 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
+import 'package:flutter_app/src/domain/parameters.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/dialogflow_v2.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked, this.entertainmentType, this.fetchMoreData);
+  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked, this.entertainmentType, this.fetchMoreData, this.parameters);
 
   final CarouselSelect carouselSelect;
   final EntertainmentType entertainmentType;
   final Function carouselItemClicked;
   final Function fetchMoreData;
+  final Parameters parameters;
 
   @override
   _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
@@ -33,7 +35,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
 
   void _scrollListener() {
     if (_controller.position.extentAfter <= 0) {
-         widget.fetchMoreData.call();
+         widget.fetchMoreData.call(widget.parameters, widget.entertainmentType);
     }
   }
 

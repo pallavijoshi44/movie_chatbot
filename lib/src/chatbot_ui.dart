@@ -31,7 +31,6 @@ import 'package:flutter_dialogflow/v2/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
-import 'domain/parameters.dart';
 import 'models/contentfiltering/content_filtering_tags_model.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
@@ -163,12 +162,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       {
                         _disableKeyboardForAndroid(context);
                         return CarouselDialogSlider(
-                          (message as CarouselModel).getCarouselSelect(),
-                          _movieItemClicked,
-                          (message as CarouselModel).getEntertainmentType(),
-                          (message as CarouselModel).fetchMoreData,
-                            (message as CarouselModel).getParameters()
-                        );
+                            (message as CarouselModel).getCarouselSelect(),
+                            _movieItemClicked,
+                            (message as CarouselModel).getEntertainmentType(),
+                            (message as CarouselModel).getParameters());
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -460,6 +457,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> handleFilterContents(eventName, parameters) async {
     setState(() {
       _messages.removeAt(0);
+      _messages.removeWhere((element) => element is CarouselModel);
     });
     _getDialogFlowResponseByEvent(eventName, parameters, false);
   }
@@ -518,7 +516,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _isTextFieldEnabled = true;
       _isLoading = false;
-      //_messages.removeWhere((element) => element is UnreadMessageModel);
+       _messages.removeWhere((element) => element is CarouselModel);
       //_messages.removeWhere((element) => element is ContentFilteringTabsModel);
     });
     if (response != null) {
@@ -674,10 +672,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           setState(() {
             _doNotShowTyping = true;
             _isTextFieldEnabled = true;
-            var carouselModel = CarouselModel(
-                response: response,
-                type: MessageType.CAROUSEL,
-                fetchMoreData: _fetchMoreMoviesOrTVShows);
+            var carouselModel =
+                CarouselModel(response: response, type: MessageType.CAROUSEL);
             _messages.insert(0, carouselModel);
 
             _constructContentFilteringParser(response);
@@ -693,10 +689,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       setState(() {
         _doNotShowTyping = true;
         _isTextFieldEnabled = true;
-        var carouselModel = CarouselModel(
-            response: response,
-            type: MessageType.CAROUSEL,
-            fetchMoreData: _fetchMoreMoviesOrTVShows);
+        var carouselModel =
+            CarouselModel(response: response, type: MessageType.CAROUSEL);
         _messages.insert(0, carouselModel);
         _constructContentFilteringParser(response);
       });
@@ -761,16 +755,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       });
       _getDialogFlowResponse(text);
     }
-  }
-
-  void _fetchMoreMoviesOrTVShows(Parameters parameters, EntertainmentType type) async {
-    String eventName = type == EntertainmentType.MOVIE ? MOVIE_RECOMMENDATIONS_EVENT : TV_RECOMMENDATIONS_EVENT;
-    parameters.pageNumber = _pageNumber;
-    setState(() {
-      _pageNumber += 1;
-    });
-    //var param = "'parameters' : { 'page-number':  $_pageNumber }";
-    _getDialogFlowResponseByEvent(eventName, parameters.toString(), false);
   }
 
   void stopAbsoluteTimer() {

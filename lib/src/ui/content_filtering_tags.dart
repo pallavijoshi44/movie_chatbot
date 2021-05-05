@@ -431,6 +431,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_SEARCH_KEYWORD)} : ${jsonEncode(_searchKeywords)},"
         "${jsonEncode(KEY_SEARCH_KEYWORD_ORIGINAL)} : ${jsonEncode(_searchKeywordsOriginal)},"
         "${jsonEncode(KEY_SHORT_MOVIE)} : ${jsonEncode(_shortMovie)},"
+        "${jsonEncode(KEY_PAGE_NUMBER)} : ${jsonEncode(1)},"
         "}";
 
     _stopClickTimer();

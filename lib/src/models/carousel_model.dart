@@ -9,13 +9,11 @@ class CarouselModel extends MessageModel {
   EntertainmentType _entertainmentType;
   Parameters _parameters;
   final AIResponse response;
-  final Function fetchMoreData;
 
   CarouselModel(
       {String name,
       @required MessageType type,
-      this.response,
-      this.fetchMoreData})
+      this.response})
       : super(name: name, type: type) {
     _carouselSelect = new CarouselSelect(response.getCarousel());
     _entertainmentType = response.getEntertainmentContentType();

@@ -771,6 +771,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _handleSubmitted(String text) {
+    _messages.removeWhere((element) => element is CarouselModel);
+    _messages.removeWhere((element) => element is ContentFilteringTagsModel);
+
     _stopAllTimers();
 
     if (text.trim() != "") {

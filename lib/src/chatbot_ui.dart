@@ -647,44 +647,44 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _constructCarousel(AIResponse response) {
-    if (_movieSliderShownCount == 0) {
-      _stopAllTimers();
-      _movieSliderShownCount++;
-      setState(() {
-        _isTextFieldEnabled = false;
-        var chatModel = new ChatModel(
-            type: MessageType.CHAT_MESSAGE,
-            text: MOVIE_RESPONSE,
-            chatType: false);
-        _messages.insert(0, chatModel);
-      });
-
-      Future.delayed(const Duration(milliseconds: 2000), () {
-        setState(() {
-          _isTextFieldEnabled = false;
-          var chatModel = new ChatModel(
-              type: MessageType.CHAT_MESSAGE,
-              text: ASK_FOR_MORE,
-              chatType: false);
-          _messages.insert(0, chatModel);
-        });
-        Future.delayed(const Duration(milliseconds: 2000), () {
-          setState(() {
-            _doNotShowTyping = true;
-            _isTextFieldEnabled = true;
-            var carouselModel =
-                CarouselModel(response: response, type: MessageType.CAROUSEL);
-            _messages.insert(0, carouselModel);
-
-            _constructContentFilteringParser(response);
-          });
-        });
-      });
-    } else {
-      if (_movieSliderShownCount < 5)
-        _movieSliderShownCount++;
-      else
-        _movieSliderShownCount = 0;
+    // if (_movieSliderShownCount == 0) {
+    //   _stopAllTimers();
+    //   _movieSliderShownCount++;
+    //   setState(() {
+    //     _isTextFieldEnabled = false;
+    //     var chatModel = new ChatModel(
+    //         type: MessageType.CHAT_MESSAGE,
+    //         text: MOVIE_RESPONSE,
+    //         chatType: false);
+    //     _messages.insert(0, chatModel);
+    //   });
+    //
+    //   Future.delayed(const Duration(milliseconds: 2000), () {
+    //     setState(() {
+    //       _isTextFieldEnabled = false;
+    //       var chatModel = new ChatModel(
+    //           type: MessageType.CHAT_MESSAGE,
+    //           text: ASK_FOR_MORE,
+    //           chatType: false);
+    //       _messages.insert(0, chatModel);
+    //     });
+    //     Future.delayed(const Duration(milliseconds: 2000), () {
+    //       setState(() {
+    //         _doNotShowTyping = true;
+    //         _isTextFieldEnabled = true;
+    //         var carouselModel =
+    //             CarouselModel(response: response, type: MessageType.CAROUSEL);
+    //         _messages.insert(0, carouselModel);
+    //
+    //         _constructContentFilteringParser(response);
+    //       });
+    //     });
+    //   });
+    // } else {
+    //   if (_movieSliderShownCount < 5)
+    //     _movieSliderShownCount++;
+    //   else
+    //     _movieSliderShownCount = 0;
 
       setState(() {
         _doNotShowTyping = true;
@@ -694,7 +694,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _messages.insert(0, carouselModel);
         _constructContentFilteringParser(response);
       });
-    }
+    //}
   }
 
   void _constructContentFilteringParser(AIResponse response) {

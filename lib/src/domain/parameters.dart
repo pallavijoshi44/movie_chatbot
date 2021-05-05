@@ -7,7 +7,7 @@ class Parameters {
   int pageNumber;
   String likePhrases;
   String datePeriodOriginal;
-  Map<String, dynamic> datePeriod;
+  Object datePeriod;
   String customDatePeriod;
   List<dynamic> watchProviders;
   List<dynamic> watchProviderOriginal;
@@ -46,7 +46,7 @@ class Parameters {
       pageNumber: json[KEY_PAGE_NUMBER] as int,
       likePhrases: json[KEY_LIKE_PHRASES] as String,
       datePeriodOriginal: json[KEY_DATE_PERIOD_ORIGINAL] as String,
-      datePeriod: json[KEY_DATE_PERIOD] as Map<String, dynamic>,
+      datePeriod: json[KEY_DATE_PERIOD] as Object,
       customDatePeriod: json[KEY_CUSTOM_DATE_PERIOD] as String,
       watchProviders: json[KEY_WATCH_PROVIDER] as List<dynamic>,
       watchProviderOriginal: json[KEY_WATCH_PROVIDER_ORIGINAL] as List<dynamic>,

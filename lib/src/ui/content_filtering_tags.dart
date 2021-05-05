@@ -340,8 +340,8 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
                     _selectedDatePeriodOriginal = !_selectedDatePeriodOriginal;
                     _datePeriodOriginal =
                         _selectedDatePeriodOriginal ? _datePeriodOriginal : "";
-                    _datePeriod =
-                        _selectedDatePeriodOriginal ? _datePeriod : "";
+                    // _datePeriod =
+                    //     _selectedDatePeriodOriginal ? _datePeriod : "";
                   });
                   await _fetchContent();
                 }),
@@ -419,6 +419,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
   }
 
   Future _fetchContent() async {
+    var datePeriod = _selectedDatePeriodOriginal != null && _selectedDatePeriodOriginal ? jsonEncode(_datePeriod) : jsonEncode("");
     var parameters = "'parameters' : { "
         "${jsonEncode(KEY_GENRES)} :  ${jsonEncode(_genres)}, "
         "${jsonEncode(KEY_MUSIC_ARTIST)} : ${jsonEncode(_musicArtists)},"
@@ -426,7 +427,7 @@ class _ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_WATCH_PROVIDER_ORIGINAL)} : ${jsonEncode(_watchProvidersOriginal)},"
         "${jsonEncode(KEY_LANGUAGE)} : ${jsonEncode(_languages)},"
         "${jsonEncode(KEY_DATE_PERIOD_ORIGINAL)} : ${jsonEncode(_datePeriodOriginal)},"
-        "${jsonEncode(KEY_DATE_PERIOD)} : ${jsonEncode(_datePeriod ?? "")},"
+        "${jsonEncode(KEY_DATE_PERIOD)} : $datePeriod,"
         "${jsonEncode(KEY_CUSTOM_DATE_PERIOD)} : ${jsonEncode(_customDatePeriod)},"
         "${jsonEncode(KEY_SEARCH_KEYWORD)} : ${jsonEncode(_searchKeywords)},"
         "${jsonEncode(KEY_SEARCH_KEYWORD_ORIGINAL)} : ${jsonEncode(_searchKeywordsOriginal)},"

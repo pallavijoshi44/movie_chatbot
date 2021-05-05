@@ -66,6 +66,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _shouldShowOverlay = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
+  final GlobalKey<CarouselDialogSliderState> _carouselItemKey = GlobalKey();
+  final GlobalKey<ContentFilteringTagsState> _contentFilteringKey = GlobalKey();
 
   @override
   void initState() {
@@ -115,6 +117,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     stopUITimer();
   }
 
+  void _showPlaceHolderInCarousel() {
+    setState(() {
+      if (_carouselItemKey != null && _carouselItemKey.currentState != null)
+        _carouselItemKey.currentState.showPlaceHolders();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -162,10 +171,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       {
                         _disableKeyboardForAndroid(context);
                         return CarouselDialogSlider(
-                            (message as CarouselModel).getCarouselSelect(),
-                            _movieItemClicked,
-                            (message as CarouselModel).getEntertainmentType(),
-                            (message as CarouselModel).getParameters());
+                            key: _carouselItemKey,
+                            carouselSelect:
+                                (message as CarouselModel).getCarouselSelect(),
+                            carouselItemClicked: _movieItemClicked,
+                            entertainmentType: (message as CarouselModel)
+                                .getEntertainmentType(),
+                            parameters:
+                                (message as CarouselModel).getParameters());
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -188,10 +201,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return UnreadMessage();
                     case MessageType.CONTENT_FILTERING_TABS:
                       return ContentFilteringTags(
-                          response:
-                              (message as ContentFilteringTagsModel).response,
-                          filterContents: (message as ContentFilteringTagsModel)
-                              .handleFilterContents);
+                        key: _contentFilteringKey,
+                        response:
+                            (message as ContentFilteringTagsModel).response,
+                        filterContents: (message as ContentFilteringTagsModel)
+                            .handleFilterContents,
+                        showPlaceHolderInCarousel: _showPlaceHolderInCarousel,
+                      );
                       break;
                   }
                 }
@@ -456,10 +472,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> handleFilterContents(eventName, parameters) async {
     setState(() {
-      _messages.removeAt(0);
-      _messages.removeWhere((element) => element is CarouselModel);
+      _doNotShowTyping = true;
+      // _messages.removeAt(0);
+      //_messages.removeWhere((element) => element is CarouselModel);
     });
-    _getDialogFlowResponseByEvent(eventName, parameters, false);
+    _getDialogFlowResponseByEvent(eventName, parameters, true);
   }
 
   void _getDialogFlowResponse(query) async {
@@ -516,7 +533,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _isTextFieldEnabled = true;
       _isLoading = false;
-       _messages.removeWhere((element) => element is CarouselModel);
+      _doNotShowTyping = true;
+      //_messages.removeWhere((element) => element is CarouselModel);
       //_messages.removeWhere((element) => element is ContentFilteringTabsModel);
     });
     if (response != null) {
@@ -686,6 +704,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     //   else
     //     _movieSliderShownCount = 0;
 
+    if (_carouselItemKey != null && _carouselItemKey.currentState != null) {
+      CarouselModel model =
+          CarouselModel(response: response, type: MessageType.CAROUSEL);
+      _carouselItemKey.currentState.showCarouselItems(model.getCarouselSelect(),
+          model.getParameters(), model.getEntertainmentType());
+    } else {
       setState(() {
         _doNotShowTyping = true;
         _isTextFieldEnabled = true;
@@ -694,6 +718,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _messages.insert(0, carouselModel);
         _constructContentFilteringParser(response);
       });
+    }
     //}
   }
 
@@ -705,7 +730,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           response: contentResponse,
           type: MessageType.CONTENT_FILTERING_TABS,
           handleFilterContents: handleFilterContents);
-      _messages.insert(0, contentFilteringTabsModel);
+
+      if (_contentFilteringKey != null &&
+          _contentFilteringKey.currentState != null) {
+        _contentFilteringKey.currentState
+            .updateFilteringTags(contentFilteringTabsModel.response);
+      } else {
+        _messages.insert(0, contentFilteringTabsModel);
+      }
     }
   }
 

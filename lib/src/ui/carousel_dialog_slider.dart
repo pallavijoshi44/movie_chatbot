@@ -14,8 +14,13 @@ import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(this.carouselSelect, this.carouselItemClicked,
-      this.entertainmentType, this.parameters);
+  CarouselDialogSlider(
+      {Key key,
+      this.carouselSelect,
+      this.carouselItemClicked,
+      this.entertainmentType,
+      this.parameters})
+      : super(key: key);
 
   final CarouselSelect carouselSelect;
   final EntertainmentType entertainmentType;
@@ -23,31 +28,35 @@ class CarouselDialogSlider extends StatefulWidget {
   final Parameters parameters;
 
   @override
-  _CarouselDialogSliderState createState() => _CarouselDialogSliderState();
+  CarouselDialogSliderState createState() => CarouselDialogSliderState();
 }
 
-class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
+class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   bool _enabled = true;
+  bool _showPlaceHolder = false;
   Timer _timer;
   ScrollController _controller;
   List<ItemCarousel> _items;
   int _pageNumber = 1;
+  EntertainmentType _entertainmentType;
+  Parameters _parameters;
 
   @override
   void initState() {
     _items = widget.carouselSelect.items;
-    _controller = new ScrollController()
-      ..addListener(_scrollListener);
+    _entertainmentType = widget.entertainmentType;
+    _parameters = widget.parameters;
+    _controller = new ScrollController()..addListener(_scrollListener);
     super.initState();
   }
 
   void _scrollListener() {
     if (_controller.position.extentAfter <= 0) {
-      _pageNumber ++;
-      String eventName = widget.entertainmentType == EntertainmentType.MOVIE
+      _pageNumber++;
+      String eventName = _entertainmentType == EntertainmentType.MOVIE
           ? MOVIE_RECOMMENDATIONS_EVENT
           : TV_RECOMMENDATIONS_EVENT;
-      Parameters parameters = widget.parameters;
+      Parameters parameters = _parameters;
       parameters.pageNumber = _pageNumber;
       setState(() {
         _pageNumber += 1;
@@ -67,9 +76,8 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
 
   void _updateItems(AIResponse response) {
     if (response.containsCarousel()) {
-      var carouselModel = CarouselModel(
-          response: response,
-          type: MessageType.CAROUSEL);
+      var carouselModel =
+          CarouselModel(response: response, type: MessageType.CAROUSEL);
       setState(() {
         _items.addAll(carouselModel.getCarouselSelect().items);
       });
@@ -85,77 +93,100 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
           controller: _controller,
           scrollDirection: Axis.horizontal,
           children: _items
-              .map((item) =>
-              Material(
-                color: Color.fromRGBO(249, 248, 235, 1),
-                child: InkWell(
-                  splashColor: Platform.isIOS
-                      ? CupertinoTheme
-                      .of(context)
-                      .primaryContrastingColor
-                      : Theme
-                      .of(context)
-                      .primaryColorLight,
-                  highlightColor: Colors.green,
-                  onTap: _enabled
-                      ? () {
-                    return _handleTap(item);
-                  }
-                      : null,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    elevation: 5,
-                    child: Container(
-                      width: 250,
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(15),
-                            padding: EdgeInsets.only(top: 10),
-                            height: 300,
-                            width: 200,
-                            child: item.image.imageUri == null
-                                ? Image.asset(
-                              'assets/images/placeholder.jpg',
-                              fit: BoxFit.fitHeight,
-                            )
-                                : Image.network(item.image.imageUri,
-                                fit: BoxFit.fitHeight),
+              .map((item) => _showPlaceHolder
+                  ? _buildPlaceHolderItem(context)
+                  : _buildCarouselItem(context, item))
+              .toList(),
+        ));
+  }
+
+  Widget _buildPlaceHolderItem(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 5,
+      child: Container(
+        width: 250,
+        child: Column(
+          children: [
+            Container(
+                margin: EdgeInsets.all(15),
+                padding: EdgeInsets.only(top: 10),
+                height: 300,
+                width: 200,
+                child: Image.asset(
+                  'assets/images/placeholder.jpg',
+                  fit: BoxFit.fitHeight,
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Material _buildCarouselItem(BuildContext context, ItemCarousel item) {
+    return Material(
+      color: Color.fromRGBO(249, 248, 235, 1),
+      child: InkWell(
+        splashColor: Platform.isIOS
+            ? CupertinoTheme.of(context).primaryContrastingColor
+            : Theme.of(context).primaryColorLight,
+        highlightColor: Colors.green,
+        onTap: _enabled
+            ? () {
+                return _handleTap(item);
+              }
+            : null,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          elevation: 5,
+          child: Container(
+            width: 250,
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(15),
+                  padding: EdgeInsets.only(top: 10),
+                  height: 300,
+                  width: 200,
+                  child: item.image.imageUri == null
+                      ? Image.asset(
+                          'assets/images/placeholder.jpg',
+                          fit: BoxFit.fitHeight,
+                        )
+                      : Image.network(item.image.imageUri,
+                          fit: BoxFit.fitHeight),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 5),
+                    child: Column(
+                      children: [
+                        Text(
+                          '${item.title}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontFamily: 'QuickSand',
+                            fontWeight: FontWeight.bold,
                           ),
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 5, right: 5),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '${item.title}',
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14.0,
-                                      fontFamily: 'QuickSand',
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  RatingWidget(
-                                      rating: item.description,
-                                      centerAlignment: true),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        RatingWidget(
+                            rating: item.description, centerAlignment: true),
+                      ],
                     ),
                   ),
                 ),
-              ))
-              .toList(),
-        ));
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   _handleTap(ItemCarousel item) {
@@ -163,8 +194,7 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
       _enabled = false;
     });
     _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
-    return widget.carouselItemClicked(
-        item.info['key'], widget.entertainmentType);
+    return widget.carouselItemClicked(item.info['key'], _entertainmentType);
   }
 
   @override
@@ -174,5 +204,21 @@ class _CarouselDialogSliderState extends State<CarouselDialogSlider> {
     }
     _controller.removeListener(_scrollListener);
     super.dispose();
+  }
+
+  void showPlaceHolders() {
+    setState(() {
+      _showPlaceHolder = true;
+    });
+  }
+
+  void showCarouselItems(CarouselSelect carouselSelect, Parameters parameters,
+      EntertainmentType entertainmentType) {
+    setState(() {
+      _showPlaceHolder = false;
+      _items = carouselSelect.items;
+      _parameters = parameters;
+      _entertainmentType = entertainmentType;
+    });
   }
 }

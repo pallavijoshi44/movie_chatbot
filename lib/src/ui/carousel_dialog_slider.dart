@@ -12,6 +12,7 @@ import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
+import 'package:loading_gifs/loading_gifs.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
   CarouselDialogSlider(
@@ -113,10 +114,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
                 padding: EdgeInsets.only(top: 10),
                 height: 300,
                 width: 200,
-                child: Image.asset(
-                  'assets/images/placeholder.jpg',
-                  fit: BoxFit.fitHeight,
-                )),
+                child: _getPlaceHolderImage()),
           ],
         ),
       ),
@@ -187,6 +185,16 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
         ),
       ),
     );
+  }
+
+  Widget _getPlaceHolderImage() {
+    var placeHolderImage = Platform.isIOS
+        ? FadeInImage.assetNetwork(
+            placeholder: cupertinoActivityIndicator,
+            image: "image.png",
+            placeholderScale: 5)
+        : Image.asset(circularProgressIndicator, scale: 10);
+    return placeHolderImage;
   }
 
   _handleTap(ItemCarousel item) {

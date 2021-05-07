@@ -76,7 +76,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _messages.clear();
       _callWelcomeIntent();
     });
-    //  _shouldShowOverlay = true;
     super.initState();
   }
 

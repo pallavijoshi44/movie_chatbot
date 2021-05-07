@@ -56,7 +56,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _doNotShowTyping = false;
   int _unknownAction = 0;
   bool _isTextFieldEnabled = false;
-  bool _isLoading = false;
   bool _removeNoPreferenceQuickReply = false;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
@@ -313,9 +312,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> _movieItemClicked(
       String movieId, EntertainmentType entertainmentType) async {
     _stopAllTimers();
-    setState(() {
-      _isLoading = true;
-    });
     String _countryCode = _getCountryCode();
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: movieId,
@@ -442,11 +438,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _executeResponse(AIResponse response) {
     setState(() {
       _isTextFieldEnabled = true;
-      _isLoading = false;
       _doNotShowTyping = true;
-      //_messages.removeWhere((element) => element is CarouselModel);
-      //_messages.removeWhere((element) => element is ContentFilteringTabsModel);
-    });
+      });
     if (response != null) {
       var action = response.getAction();
       if (ACTION_START_OVER == action) {

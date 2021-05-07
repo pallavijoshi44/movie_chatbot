@@ -31,7 +31,6 @@ dependencies:
   rxdart: ^0.26.0
   cupertino_icons: ^1.0.2
   share: ^2.0.0
-  shared_preferences: ^2.0.3
   flutter_platform_widgets: ^0.80.0
   get_version: ^0.2.2
   intl: ^0.17.0
@@ -40,6 +39,7 @@ dependencies:
   flutter_bloc: ^7.0.0
   overlay_screen: ^1.2.0+1
   loading_gifs: ^0.3.0
+  streaming_shared_preferences: ^2.0.0
 
 dev_dependencies:
   flutter_test:

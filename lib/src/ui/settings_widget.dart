@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/ui/ios/cupertino_switch_list_tile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'country/country_list_pick.dart';
 
 class SettingsWidget extends StatefulWidget {
@@ -21,7 +22,7 @@ class SettingsWidget extends StatefulWidget {
 
 class _SettingsWidgetState extends State<SettingsWidget> {
   bool _tipsOn = false;
-  SharedPreferences prefs;
+  SettingsModel prefs;
 
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   void didChangeDependencies() {
     final routeArgs = ModalRoute.of(context).settings.arguments
-        as Map<String, SharedPreferences>;
+        as Map<String, SettingsModel>;
     prefs = routeArgs['prefs'];
     super.didChangeDependencies();
   }
@@ -101,10 +102,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           isDownIcon: false,
           showEnglishName: true,
         ),
-        initialSelection: prefs.getString(KEY_COUNTRY_CODE) ?? 'IN',
-        onChanged: (CountryCode code) async {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString(KEY_COUNTRY_CODE, code.code);
+        initialSelection: prefs.countryCode.getValue(),
+        onChanged: (CountryCode code)  {
+          prefs.countryCode.setValue(code.code);
         },
       ),
     );

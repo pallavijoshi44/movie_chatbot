@@ -1,21 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/constants.dart';
 
 class LocationCheck extends StatefulWidget {
   final Widget child;
+  final SettingsModel settings;
 
-  LocationCheck({@required this.child});
+  LocationCheck({@required this.child, this.settings});
 
   @override
   _LocationCheckState createState() => _LocationCheckState();
@@ -53,20 +52,19 @@ class _LocationCheckState extends State<LocationCheck>
   }
 
   Future<void> _checkLocationPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _countryCode = prefs.getString(KEY_COUNTRY_CODE);
+    _countryCode = widget.settings.countryCode.getValue();
 
     if (_countryCode == null || _countryCode.isEmpty) {
       var isGpsEnabled = await Geolocator.isLocationServiceEnabled();
       if (!isGpsEnabled) {
-        _checkLocationServices(isGpsEnabled, prefs);
+        _checkLocationServices(isGpsEnabled);
       } else {
         await _handleCountryCode();
       }
     }
   }
 
-  _checkLocationServices(bool isGpsEnabled, SharedPreferences prefs) async {
+  _checkLocationServices(bool isGpsEnabled) async {
     if (!_isDialogShown) {
       _isDialogShown = true;
       showDialog(
@@ -87,7 +85,7 @@ class _LocationCheckState extends State<LocationCheck>
                     CupertinoButton(
                       child: Text(CHANGE_LOCATION_FROM_APP),
                       onPressed: () async {
-                        _showSettingsScreen(ctx, context, prefs);
+                        _showSettingsScreen(ctx, context);
                       },
                     ),
                   ],
@@ -105,7 +103,7 @@ class _LocationCheckState extends State<LocationCheck>
                     FlatButton(
                       child: Text(CHANGE_LOCATION_FROM_APP),
                       onPressed: () async {
-                        _showSettingsScreen(ctx, context, prefs);
+                        _showSettingsScreen(ctx, context);
                       },
                     ),
                   ],
@@ -130,8 +128,7 @@ class _LocationCheckState extends State<LocationCheck>
         _countryCode = "IN";
       });
     } finally {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(KEY_COUNTRY_CODE, _countryCode);
+      widget.settings.countryCode.setValue(_countryCode);
       setState(() {
         _isLocationSet = true;
       });
@@ -139,8 +136,8 @@ class _LocationCheckState extends State<LocationCheck>
   }
 
   Future _showSettingsScreen(
-      BuildContext ctx, BuildContext context, SharedPreferences prefs) async {
-    var arguments = {'prefs': prefs};
+      BuildContext ctx, BuildContext context) async {
+    var arguments = {'prefs': widget.settings};
     Navigator.of(ctx).pop();
     Navigator.pushNamed(context, SettingsWidget.routeName,
         arguments: arguments);

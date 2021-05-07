@@ -14,6 +14,7 @@ import 'package:flutter_app/src/models/movie_provider_url_model.dart';
 import 'package:flutter_app/src/models/movie_trailer_model.dart';
 import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
@@ -28,7 +29,6 @@ import 'package:flutter_app/src/ui/unread_message.dart';
 import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'domain/constants.dart';
 import 'models/contentfiltering/content_filtering_tags_model.dart';
@@ -42,8 +42,9 @@ import 'ui/tips.dart';
 
 class ChatBotUI extends StatefulWidget {
   final bool selectedTips;
+  final SettingsModel settings;
 
-  ChatBotUI(this.selectedTips);
+  ChatBotUI(this.selectedTips, this.settings);
 
   @override
   _ChatBotUIState createState() => _ChatBotUIState();
@@ -57,13 +58,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _isTextFieldEnabled = false;
   bool _isLoading = false;
   bool _removeNoPreferenceQuickReply = false;
-  int _movieSliderShownCount = 0;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
   int _pageNumber = 2;
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
-  bool _shouldShowOverlay = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
   final GlobalKey<CarouselDialogSliderState> _carouselItemKey = GlobalKey();
@@ -73,13 +72,16 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     _deleteDialogFlowContexts();
-    _callWelcomeIntent();
-    _shouldShowOverlay = true;
+    widget.settings.countryCode.listen((value) {
+      _messages.clear();
+      _callWelcomeIntent();
+    });
+    //  _shouldShowOverlay = true;
     super.initState();
   }
 
   Future<void> _callWelcomeIntent() async {
-    var countryCode = await _getCountryCode();
+    var countryCode = _getCountryCode();
     var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
   }
@@ -134,87 +136,100 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           Column(children: <Widget>[
             Flexible(
                 child: ListView.builder(
-              padding: EdgeInsets.all(8.0),
-              reverse: true,
-              controller: _scrollController,
-              itemBuilder: (_, int index) {
-                var message = _messages[index];
-                if (message != null) {
-                  switch (message.type) {
-                    case MessageType.CHAT_MESSAGE:
-                      return ChatMessage(
-                        text: (message as ChatModel).text,
-                        type: (message as ChatModel).chatType,
-                      );
-                    case MessageType.QUICK_REPLY:
-                      {
-                        _disableKeyboardForAndroid(context);
-                        return QuickReply(
-                          quickReplies: (message as ReplyModel).quickReplies,
-                          insertQuickReply:
-                              (message as ReplyModel).updateQuickReply,
-                        );
-                      }
-                    case MessageType.MULTI_SELECT:
-                      {
-                        _disableKeyboardForAndroid(context);
-                        return MultiSelect(
-                            title: (message as MultiSelectModel).text,
-                            buttons: (message as MultiSelectModel).buttons,
-                            insertMultiSelect:
-                                (message as MultiSelectModel).updateMultiSelect,
-                            previouslySelected: _selectedGenres,
-                            containsNoPreference: (message as MultiSelectModel)
-                                .containsNoPreference);
-                      }
-                    case MessageType.CAROUSEL:
-                      {
-                        _disableKeyboardForAndroid(context);
-                        return CarouselDialogSlider(
-                            key: _carouselItemKey,
-                            carouselSelect:
-                                (message as CarouselModel).getCarouselSelect(),
-                            carouselItemClicked: _movieItemClicked,
-                            entertainmentType: (message as CarouselModel)
-                                .getEntertainmentType(),
-                            parameters:
-                                (message as CarouselModel).getParameters());
-                      }
-                    case MessageType.MOVIE_PROVIDER_URL:
-                      return Url(
-                          title: (message as MovieProviderUrlModel).name,
-                          url: (message as MovieProviderUrlModel).text);
-                    case MessageType.MOVIE_PROVIDER:
-                      return MovieProvider(
-                          title: (message as MovieProviderModel).text,
-                          logos: (message as MovieProviderModel).logos);
-                    case MessageType.MOVIE_TRAILER:
-                      return MovieThumbnail(
-                          url: (message as MovieTrailerModel).url,
-                          thumbNail: (message as MovieTrailerModel).thumbNail);
-                    case MessageType.MOVIE_JUST_WATCH:
-                      return MovieJustWatch(
-                          title: (message as MovieJustWatchModel).name);
-                    case MessageType.TIPS_MESSAGE:
-                      return Tips(text: (message as TipsModel).text);
-                    case MessageType.UNREAD_MESSAGE:
-                      return UnreadMessage();
-                    case MessageType.CONTENT_FILTERING_TABS:
-                      return ContentFilteringTags(
-                        key: _contentFilteringKey,
-                        response:
-                            (message as ContentFilteringTagsModel).response,
-                        filterContents: (message as ContentFilteringTagsModel)
-                            .handleFilterContents,
-                        showPlaceHolderInCarousel: _showPlaceHolderInCarousel,
-                      );
-                      break;
-                  }
-                }
-                return Container();
-              },
-              itemCount: _messages.length,
-            )),
+                        padding: EdgeInsets.all(8.0),
+                        reverse: true,
+                        controller: _scrollController,
+                        itemBuilder: (_, int index) {
+                          var message = _messages[index];
+                          if (message != null) {
+                            switch (message.type) {
+                              case MessageType.CHAT_MESSAGE:
+                                return ChatMessage(
+                                  text: (message as ChatModel).text,
+                                  type: (message as ChatModel).chatType,
+                                );
+                              case MessageType.QUICK_REPLY:
+                                {
+                                  _disableKeyboardForAndroid(context);
+                                  return QuickReply(
+                                    quickReplies:
+                                        (message as ReplyModel).quickReplies,
+                                    insertQuickReply: (message as ReplyModel)
+                                        .updateQuickReply,
+                                  );
+                                }
+                              case MessageType.MULTI_SELECT:
+                                {
+                                  _disableKeyboardForAndroid(context);
+                                  return MultiSelect(
+                                      title: (message as MultiSelectModel).text,
+                                      buttons:
+                                          (message as MultiSelectModel).buttons,
+                                      insertMultiSelect:
+                                          (message as MultiSelectModel)
+                                              .updateMultiSelect,
+                                      previouslySelected: _selectedGenres,
+                                      containsNoPreference:
+                                          (message as MultiSelectModel)
+                                              .containsNoPreference);
+                                }
+                              case MessageType.CAROUSEL:
+                                {
+                                  _disableKeyboardForAndroid(context);
+                                  return CarouselDialogSlider(
+                                      key: _carouselItemKey,
+                                      carouselSelect: (message as CarouselModel)
+                                          .getCarouselSelect(),
+                                      carouselItemClicked: _movieItemClicked,
+                                      entertainmentType:
+                                          (message as CarouselModel)
+                                              .getEntertainmentType(),
+                                      parameters: (message as CarouselModel)
+                                          .getParameters());
+                                }
+                              case MessageType.MOVIE_PROVIDER_URL:
+                                return Url(
+                                    title:
+                                        (message as MovieProviderUrlModel).name,
+                                    url: (message as MovieProviderUrlModel)
+                                        .text);
+                              case MessageType.MOVIE_PROVIDER:
+                                return MovieProvider(
+                                    title: (message as MovieProviderModel).text,
+                                    logos:
+                                        (message as MovieProviderModel).logos);
+                              case MessageType.MOVIE_TRAILER:
+                                return MovieThumbnail(
+                                    url: (message as MovieTrailerModel).url,
+                                    thumbNail: (message as MovieTrailerModel)
+                                        .thumbNail);
+                              case MessageType.MOVIE_JUST_WATCH:
+                                return MovieJustWatch(
+                                    title:
+                                        (message as MovieJustWatchModel).name);
+                              case MessageType.TIPS_MESSAGE:
+                                return Tips(text: (message as TipsModel).text);
+                              case MessageType.UNREAD_MESSAGE:
+                                return UnreadMessage();
+                              case MessageType.CONTENT_FILTERING_TABS:
+                                return ContentFilteringTags(
+                                  key: _contentFilteringKey,
+                                  response:
+                                      (message as ContentFilteringTagsModel)
+                                          .response,
+                                  filterContents:
+                                      (message as ContentFilteringTagsModel)
+                                          .handleFilterContents,
+                                  showPlaceHolderInCarousel:
+                                      _showPlaceHolderInCarousel,
+                                );
+                                break;
+                            }
+                          }
+                          return Container();
+                        },
+                        itemCount: _messages.length,
+                      )),
             Visibility(
               visible: !_doNotShowTyping,
               child: Align(
@@ -264,105 +279,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     );
   }
 
-  Visibility _firstTimeOverlayWidget(BuildContext context) {
-    return Visibility(
-        visible: _shouldShowOverlay,
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[Colors.lightGreen[100], Colors.white]),
-                  border: Border.all(color: Colors.redAccent, width: 3),
-                  borderRadius: BorderRadius.circular(30)),
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: Column(
-                children: [
-                  _buildOverlayScreen(),
-                  Expanded(
-                    child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: _buildNextButton()),
-                  )
-                ],
-              )),
-        ));
-  }
-
-  Widget _buildOverlayScreen() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Image.asset(
-              'assets/icon/app_icon.png',
-              width: 150,
-              height: 200,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                  color: Colors.orange[300],
-                  borderRadius: BorderRadius.circular(15.0)),
-              child: Text(
-                WELCOME_TEXT_OVERLAY,
-                style: TextStyle(
-                    fontFamily: 'QuickSand', fontSize: 16, color: Colors.black),
-              ),
-            ),
-            // CustomPaint(
-            //   painter: TrianglePainter(
-            //     strokeColor: Colors.orange[400],
-            //     strokeWidth: 10,
-            //     paintingStyle: PaintingStyle.fill,
-            //   ),
-            //   child: Container(
-            //     height: 100,
-            //     width: constraints.maxWidth,
-            //   ),
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNextButton() {
-    return TextButton(
-      onPressed: null,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Next",
-              style: TextStyle(
-                  fontFamily: 'QuickSand',
-                  fontSize: 16,
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold),
-            ),
-            Icon(
-              Icons.navigate_next_outlined,
-              color: Colors.red,
-              size: 15,
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   void _disableKeyboardForAndroid(BuildContext context) {
     if (Platform.isAndroid)
@@ -401,7 +317,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _isLoading = true;
     });
-    String _countryCode = await _getCountryCode();
+    String _countryCode = _getCountryCode();
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: movieId,
         countryCode: _countryCode,
@@ -410,13 +326,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     //  await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
 
-  Future<String> _getCountryCode() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String _countryCode = prefs.getString(KEY_COUNTRY_CODE);
-
-    if (_countryCode == null || _countryCode.isEmpty) {
-      _countryCode = "IN";
-    }
+  String _getCountryCode() {
+    String _countryCode = widget.settings.countryCode.getValue();
     return _countryCode;
   }
 
@@ -440,7 +351,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _insertQuickReply(String reply, bool isTapped) async {
+  void _insertQuickReply(String reply, bool isTapped) {
     if (isTapped) {
       setState(() {
         _messages.removeAt(0);
@@ -454,7 +365,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       }
       if (reply.toLowerCase() == IGNORE_GENRES) {
         _pageNumber = 2;
-        String countryCode = await _getCountryCode();
+        String countryCode = _getCountryCode();
         var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
         _getDialogFlowResponseByEvent(
             GENRES_SELECTED_OR_IGNORED, parameters, false);
@@ -745,7 +656,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     QuickReplies replies = new QuickReplies(payload);
     var quickReplies = replies.quickReplies;
     setState(() {
-      _scrollToBottom();
       if (quickReplies != null && quickReplies.length == 1) {
         _removeNoPreferenceQuickReply = true;
         _isTextFieldEnabled = true;
@@ -819,13 +729,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> _handleNewUIForMovieDetails(
       MovieTvDetailsModel movieProviders) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     var cupertinoPageRoute = CupertinoPageRoute(
-        builder: (context) =>
-            MovieDetailWidget(movieProviders, prefs, _onCountryChanged));
+        builder: (context) => MovieDetailWidget(
+            movieProviders, widget.settings, _onCountryChanged));
     var materialPageRoute = MaterialPageRoute(
-        builder: (context) =>
-            MovieDetailWidget(movieProviders, prefs, _onCountryChanged));
+        builder: (context) => MovieDetailWidget(
+            movieProviders, widget.settings, _onCountryChanged));
 
     if (_isCountryChanged) {
       _isCountryChanged = false;

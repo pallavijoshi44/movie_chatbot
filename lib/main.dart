@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_app/src/ui/location_check.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
@@ -50,11 +51,21 @@ final cupertinoTheme = CupertinoThemeData(
         actionTextStyle: TextStyle(
             color: Colors.white, fontSize: 14, fontFamily: 'QuickSand')));
 
-void main() => runApp(ChatBot());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final preferences = await StreamingSharedPreferences.instance;
+  final settings = SettingsModel(preferences);
+
+  runApp(ChatBot(settings));
+}
 
 bool _selectedTips = false;
 
 class ChatBot extends StatefulWidget {
+  final SettingsModel settings;
+
+  ChatBot(this.settings);
+
   @override
   _ChatBotState createState() => _ChatBotState();
 }
@@ -111,24 +122,31 @@ class _ChatBotState extends State<ChatBot> {
         } else
           return MaterialPageRoute(builder: builder, settings: settings);
       },
-      home: ChatBotFlow(),
+      home: ChatBotFlow(widget.settings),
     );
   }
 }
 
 class ChatBotFlow extends StatelessWidget {
+  final SettingsModel settings;
+
+  ChatBotFlow(this.settings);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => _onBackPressed(context),
-      child: PlatformScaffold(
+        onWillPop: () => _onBackPressed(context),
+        child: PlatformScaffold(
           backgroundColor: Color.fromRGBO(249, 248, 235, 1),
           cupertino: (_, target) => _buildCupertinoPageScaffoldData(context),
           material: (_, target) => _buildMaterialScaffoldData(context),
-          body:  BlocProvider(
+          body: BlocProvider(
               create: (BuildContext context) => MovieDetailsBloc(),
-              child: ConnectivityCheck(child: LocationCheck(child: ChatBotUI(_selectedTips)))),
-    ));
+              child: ConnectivityCheck(
+                  child: LocationCheck(
+                      settings: this.settings,
+                      child: ChatBotUI(_selectedTips, settings)))),
+        ));
   }
 
   Future<bool> _onBackPressed(BuildContext context) {
@@ -136,7 +154,8 @@ class ChatBotFlow extends StatelessWidget {
           context: context,
           builder: (context) => new AlertDialog(
             actionsPadding: EdgeInsets.all(10),
-            title: new Text('Are you sure?',  style: Theme.of(context).appBarTheme.textTheme.headline),
+            title: new Text('Are you sure?',
+                style: Theme.of(context).appBarTheme.textTheme.headline),
             content: new Text(
               'You don\'t want to chat with me anymore?',
               style: Theme.of(context).textTheme.headline,
@@ -144,12 +163,12 @@ class ChatBotFlow extends StatelessWidget {
             actions: <Widget>[
               new GestureDetector(
                 onTap: () => Navigator.of(context).pop(false),
-                child: Text("NO",  style: Theme.of(context).textTheme.headline),
+                child: Text("NO", style: Theme.of(context).textTheme.headline),
               ),
               SizedBox(height: 16),
               new GestureDetector(
                 onTap: () => Navigator.of(context).pop(true),
-                child: Text("YES",  style: Theme.of(context).textTheme.headline),
+                child: Text("YES", style: Theme.of(context).textTheme.headline),
               ),
             ],
           ),
@@ -255,8 +274,7 @@ class ChatBotFlow extends StatelessWidget {
   }
 
   Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var arguments = {'prefs': prefs};
+    var arguments = {'prefs': settings};
     _popActionSheetForiOS(ctx);
     Navigator.pushNamed(context, SettingsWidget.routeName,
         arguments: arguments);

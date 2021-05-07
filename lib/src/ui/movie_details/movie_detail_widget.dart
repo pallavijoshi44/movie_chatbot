@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/ui/movie_details/cast_details.dart';
 import 'package:flutter_app/src/ui/movie_details/country_picker_widget.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_information.dart';
 import 'package:flutter_app/src/ui/movie_details/tv_details.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'movie_description.dart';
 import 'movie_just_watch.dart';
@@ -18,10 +18,10 @@ import 'movie_thumbnail.dart';
 class MovieDetailWidget extends StatelessWidget {
   static const routeName = '/movie-detail';
   final MovieTvDetailsModel model;
-  final SharedPreferences prefs;
+  final SettingsModel settings;
   final Function onCountryChanged;
 
-  MovieDetailWidget(this.model, this.prefs, this.onCountryChanged);
+  MovieDetailWidget(this.model, this.settings, this.onCountryChanged);
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +59,10 @@ class MovieDetailWidget extends StatelessWidget {
                 isAlwaysShown: true,
                 radiusWhileDragging: Radius.circular(15),
                 thicknessWhileDragging: 2,
-                child: _buildSingleChildScrollView(context, model, prefs),
+                child: _buildSingleChildScrollView(context, model),
               )
             : Scrollbar(
-                child: _buildSingleChildScrollView(context, model, prefs),
+                child: _buildSingleChildScrollView(context, model),
                 isAlwaysShown: true,
                 showTrackOnHover: true,
                 radius: Radius.circular(15),
@@ -73,7 +73,7 @@ class MovieDetailWidget extends StatelessWidget {
   }
 
   SingleChildScrollView _buildSingleChildScrollView(BuildContext context,
-      MovieTvDetailsModel model, SharedPreferences prefs) {
+      MovieTvDetailsModel model) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class MovieDetailWidget extends StatelessWidget {
             CountryPickerWidget(
               isMovie: model.isMovie,
               id: model.id,
-              prefs: prefs,
+              settings: settings,
               text: model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT,
               onCountryChanged: onCountryChanged,
             )
@@ -108,7 +108,7 @@ class MovieDetailWidget extends StatelessWidget {
             CountryPickerWidget(
               isMovie: model.isMovie,
               id: model.id,
-              prefs: prefs,
+              settings: settings,
               text:  model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,
               onCountryChanged: onCountryChanged,
             ),

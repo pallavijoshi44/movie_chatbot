@@ -18,18 +18,10 @@ import 'chat_message.dart';
 import 'content_filtering_tags.dart';
 
 class CarouselDialogSlider extends StatefulWidget {
-  CarouselDialogSlider(
-      {this.carouselSelect,
-      this.carouselItemClicked,
-      this.entertainmentType,
-      this.parameters,
-      this.contentFilteringResponse});
-
-  final CarouselSelect carouselSelect;
-  final EntertainmentType entertainmentType;
+  final CarouselModel carouselModel;
   final Function carouselItemClicked;
-  final Parameters parameters;
-  final ContentFilteringParser contentFilteringResponse;
+
+  CarouselDialogSlider(this.carouselModel, this.carouselItemClicked);
 
   @override
   CarouselDialogSliderState createState() => CarouselDialogSliderState();
@@ -38,7 +30,7 @@ class CarouselDialogSlider extends StatefulWidget {
 class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   bool _enabled = true;
   bool _showPlaceHolder = false;
-  bool _showDefault;
+  bool _showDefault = false;
   Timer _timer;
   ScrollController _controller;
   List<ItemCarousel> _items;
@@ -49,27 +41,33 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
 
   @override
   void initState() {
-    _initializeItems();
+    _initializeItems(widget.carouselModel);
     _controller = new ScrollController()..addListener(_scrollListener);
     super.initState();
   }
 
-  void _initializeItems() {
+  void _initializeItems(CarouselModel carouselModel) {
     _showPlaceHolder = false;
-    _items = widget.carouselSelect.items;
-    _entertainmentType = widget.entertainmentType;
-    _parameters = widget.parameters;
-    _contentFilteringResponse = widget.contentFilteringResponse;
+    _items = carouselModel.getCarouselItems();
+    _entertainmentType = carouselModel.getEntertainmentType();
+    _parameters = carouselModel.getParameters();
+    _contentFilteringResponse = carouselModel.getContentFilteringResponse();
     _showDefault = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    String entertainmentContent = _entertainmentType == EntertainmentType.MOVIE
+        ? ENTERTAINMENT_CONTENT_TYPE_MOVIES
+        : ENTERTAINMENT_CONTENT_TYPE_TV_SHOWS;
+
     return Column(
       children: [
-        _showDefault
+        _items.isEmpty
             ? ChatMessage(
-                text: "Sorry, there is no movie or TV show available",
+                text: _showDefault
+                    ? DEFAULT_RESPONSE
+                    : "Oops, looks like there is no $entertainmentContent matching your criteria.",
                 type: false,
               )
             : Container(
@@ -217,10 +215,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
       setState(() {
         _pageNumber += 1;
       });
-      //var param = "'parameters' : { 'page-number':  $_pageNumber }";
-      _callDialogFlowByEvent(
-          eventName, parameters.toString(), _updateItems, _showDefaultMessage);
-      //   widget.fetchMoreData.call(widget.parameters, widget.entertainmentType);
+      _callDialogFlowByEvent(eventName, parameters.toString(),
+          _updateItemsInHorizontalScrollview, _showDefaultMessage);
     }
   }
 
@@ -236,38 +232,21 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     detectDialogResponses.callDialogFlow();
   }
 
-  void _updateItems(AIResponse response) {
-    if (response.containsCarousel()) {
-      var carouselModel =
-          CarouselModel(response: response, type: MessageType.CAROUSEL);
-      setState(() {
-        _items.addAll(carouselModel.getCarouselSelect().items);
-      });
-    }
+  void _updateItemsInHorizontalScrollview(AIResponse response) {
+    var carouselModel =
+        CarouselModel(response: response, type: MessageType.CAROUSEL);
+    setState(() {
+      _items.addAll(carouselModel.getCarouselItems());
+    });
   }
 
   void _updateItemsForCarouselAndFilters(AIResponse response) {
-    if (response.containsCarousel()) {
-      var carouselModel =
-          CarouselModel(response: response, type: MessageType.CAROUSEL);
+    CarouselModel carouselModel =
+        CarouselModel(response: response, type: MessageType.CAROUSEL);
 
-      setState(() {
-        _items = carouselModel.getCarouselSelect().items;
-        _showPlaceHolder = false;
-        _showDefault = false;
-        _parameters = carouselModel.getParameters();
-        _entertainmentType = carouselModel.getEntertainmentType();
-        _contentFilteringResponse = carouselModel.getContentFilteringResponse();
-      });
-    } else {
-      setState(() {
-        _showPlaceHolder = false;
-        _showDefault = true;
-        _entertainmentType = response.getEntertainmentContentType();
-        _parameters = response.getParametersJson();
-        _contentFilteringResponse = ContentFilteringParser(response: response);
-      });
-    }
+    setState(() {
+      _initializeItems(carouselModel);
+    });
   }
 
   void showPlaceHolders() {

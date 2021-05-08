@@ -102,6 +102,9 @@ class AIResponse {
           orElse: () => null) !=
       null;
 
+  bool containsMovieOrTvRecommendationsActions() =>
+     getAction() == ACTION_MOVIE_RECOMMENDATIONS || getAction() == ACTION_TV_RECOMMENDATIONS;
+
   bool containsMovieDetails() => getMovieDetails() != null;
 
   List<String> getDefaultOrChatMessage() {

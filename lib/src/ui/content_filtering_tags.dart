@@ -42,7 +42,6 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
   String _customDatePeriod;
   String _shortMovie;
   String _likePhrases;
-  String _countryCode;
   String _sortBy;
   String _movieOrTvId;
 
@@ -115,7 +114,6 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
 
   void _initializeOthers() {
     _likePhrases = _response.getLikePhrases();
-    _countryCode = _response.getCountryCode();
     _sortBy = _response.getSortBy();
     _movieOrTvId = _response.getMovieOrTvId();
   }

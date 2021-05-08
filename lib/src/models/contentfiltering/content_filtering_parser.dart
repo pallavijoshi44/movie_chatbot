@@ -24,7 +24,6 @@ class ContentFilteringParser {
   String _likePhrases = "";
   String _sortyBy = "";
   String _movieOrTvId = "";
-  String _countryCode = "";
 
   ContentFilteringParser({this.response, this.settings}) {
     var parameters = response.getParameters();
@@ -40,12 +39,9 @@ class ContentFilteringParser {
     _constructSearchKeywords(parameters);
     _constructShort(parameters);
     _constructOthers(parameters);
-    _constructCountryCode();
   }
 
-  void _constructCountryCode() {
-    _countryCode = settings.countryCode.getValue();
-  }
+
   void _constructDatePeriod(Map parameters) {
     if (_isValidKey(parameters, KEY_DATE_PERIOD)) {
       _datePeriod = parameters[KEY_DATE_PERIOD];
@@ -356,9 +352,6 @@ class ContentFilteringParser {
     return _likePhrases;
   }
 
-  String getCountryCode() {
-    return _countryCode;
-  }
   String getMovieOrTvId() {
     return _movieOrTvId;
   }

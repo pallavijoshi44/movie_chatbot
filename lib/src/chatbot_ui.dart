@@ -65,7 +65,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _callWelcomeIntent();
+    _callWelcomeIntent(true);
 
     widget.settings.countryCode.listen((value) {
       _changeCountryCode();
@@ -73,8 +73,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     super.initState();
   }
 
-  Future<void> _callWelcomeIntent() async {
-    _messages.clear();
+  Future<void> _callWelcomeIntent(bool clearMessages) async {
+    if (clearMessages) {
+      _messages.clear();
+    }
     _deleteDialogFlowContexts();
     var countryCode = _getCountryCode();
     var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
@@ -267,7 +269,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                                 child: Text(YES),
                                 onPressed: () async {
                                   Navigator.of(ctx).pop();
-                                  _callWelcomeIntent();
+                                  _callWelcomeIntent(true);
                                 },
                               ),
                               CupertinoButton(
@@ -285,7 +287,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                                 child: Text(YES),
                                 onPressed: () async {
                                   Navigator.of(ctx).pop();
-                                  _callWelcomeIntent();
+                                  _callWelcomeIntent(true);
                                 },
                               ),
                               TextButton(
@@ -464,7 +466,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (response != null) {
       var action = response.getAction();
       if (ACTION_START_OVER == action) {
-        _callWelcomeIntent();
+        _callWelcomeIntent(false);
       }
       if (ACTION_CHANGE_COUNTRY == action) {
         return;

@@ -1,6 +1,7 @@
 const String ADDITIONAL_FILTERS = "ask-additional-filters";
 const String MOVIE_TAPPED_EVENT = "MOVIE_CARD_TAPPED";
 const String WELCOME_EVENT = "Welcome";
+const String CHANGE_COUNTRY_EVENT = "CHANGE_COUNTRY";
 const String APP_TITLE = "Mobo - The Movie Chatbot";
 const String HINT_TEXT = "Send a message";
 const String GENRES_SELECTED_OR_IGNORED = "GENRES_SELECTED_OR_IGNORED";
@@ -15,6 +16,7 @@ const String SHOW_GENRES = "yes, show genres";
 const String IGNORE_GENRES = "no, all genres";
 const String SAME_CRITERIA = "same criteria";
 const String ACTION_START_OVER = "startOver";
+const String ACTION_CHANGE_COUNTRY = "changeCountry";
 const String ACTION_WELCOME = "input.welcome";
 const String ACTION_TRIGGER_TIPS = "triggerTips";
 const String ACTION_MOVIE_RECOMMENDATIONS = "fetchMovieRecommendations";
@@ -41,7 +43,7 @@ const String MOVIE_RESPONSE =
     "I am looking for the best recommendations for you. You can tap on any of the movie cards to look for the legal means to watch that movie in your location. I will also try to show you the trailer.";
 const String ASK_FOR_MORE =
     "If you want more recommendations, just ask me to 'show more'";
-const String KEY_COUNTRY_CODE = 'key_country_code';
+const String KEY_COUNTRY_CODE_SETTINGS = 'key_country_code';
 const String TIP_TEXT = 'Tip';
 const String EXPAND_TEXT = 'more';
 const String COLLAPSE_TEXT = 'less';
@@ -122,6 +124,7 @@ const KEY_SHORT_MOVIE = "short-movie";
 const KEY_SORT_BY = "sort-by";
 const KEY_COUNTRY_NAME = "country-name";
 const KEY_MOVIE_OR_TV_ID = "id";
+const KEY_COUNTRY_CODE = "country-code";
 
 const CONTENT_FILTERING_DURATION_SECONDS = 1;
 

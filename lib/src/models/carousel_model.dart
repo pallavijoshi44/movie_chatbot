@@ -3,6 +3,7 @@ import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/parameters.dart';
 import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 
 class CarouselModel extends MessageModel {
@@ -10,16 +11,17 @@ class CarouselModel extends MessageModel {
   EntertainmentType _entertainmentType;
   Parameters _parameters;
   final AIResponse response;
+  final SettingsModel settings;
   ContentFilteringParser _contentFilteringResponse;
 
-  CarouselModel({String name, @required MessageType type, this.response})
+  CarouselModel({String name, @required MessageType type, this.response, this.settings})
       : super(name: name, type: type) {
     _items = response.containsCarousel()
         ? _getItems(CarouselSelect(response.getCarousel()))
         : [];
     _entertainmentType = response.getEntertainmentContentType();
     _parameters = response.getParametersJson();
-    _contentFilteringResponse = ContentFilteringParser(response: response);
+    _contentFilteringResponse = ContentFilteringParser(response: response, settings: settings);
   }
 
   EntertainmentType getEntertainmentType() {

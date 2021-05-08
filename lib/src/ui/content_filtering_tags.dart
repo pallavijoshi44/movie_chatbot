@@ -7,16 +7,19 @@ import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/contentfiltering/entertainment_type.dart';
 import 'package:flutter_app/src/models/contentfiltering/genre_content_type.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 
 class ContentFilteringTags extends StatefulWidget {
   final ContentFilteringParser response;
   final Function filterContents;
   final Function showPlaceHolderInCarousel;
+  final SettingsModel settingsModel;
 
   ContentFilteringTags({
     this.response,
     this.filterContents,
     this.showPlaceHolderInCarousel,
+    this.settingsModel
   });
 
   @override
@@ -38,6 +41,10 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
   Map _datePeriod;
   String _customDatePeriod;
   String _shortMovie;
+  String _likePhrases;
+  String _countryCode;
+  String _sortBy;
+  String _movieOrTvId;
 
   List<bool> _selectedMovieGenreItems;
   List<bool> _selectedTVGenreItems;
@@ -70,6 +77,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
     _initializeDatePeriod();
     _initializeSearchKeywords();
     _initializeShortMovie();
+    _initializeOthers();
   }
 
   void _initializeDatePeriod() {
@@ -103,6 +111,13 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
 
     _languages =
         _createRequestFor(_response.getLanguages(), _selectedLanguages);
+  }
+
+  void _initializeOthers() {
+    _likePhrases = _response.getLikePhrases();
+    _countryCode = _response.getCountryCode();
+    _sortBy = _response.getSortBy();
+    _movieOrTvId = _response.getMovieOrTvId();
   }
 
   void _initializeWatchProviders() {
@@ -441,8 +456,11 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
         "${jsonEncode(KEY_SEARCH_KEYWORD_ORIGINAL)} : ${jsonEncode(_searchKeywordsOriginal)},"
         "${jsonEncode(KEY_SHORT_MOVIE)} : ${jsonEncode(_shortMovie)},"
         "${jsonEncode(KEY_PAGE_NUMBER)} : ${jsonEncode(1)},"
+        "${jsonEncode(KEY_LIKE_PHRASES)} : ${jsonEncode(_likePhrases)},"
+        "${jsonEncode(KEY_SORT_BY)} : ${jsonEncode(_sortBy)},"
+        "${jsonEncode(KEY_COUNTRY_CODE)} : ${jsonEncode(widget.settingsModel.countryCode.getValue())},"
+        "${jsonEncode(KEY_MOVIE_OR_TV_ID)} : ${jsonEncode(_movieOrTvId)},"
         "}";
-
     _stopClickTimer();
     _startClickTimer(parameters);
     widget.showPlaceHolderInCarousel();

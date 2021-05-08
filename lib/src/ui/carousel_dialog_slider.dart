@@ -10,6 +10,7 @@ import 'package:flutter_app/src/domain/parameters.dart';
 import 'package:flutter_app/src/models/carousel_model.dart';
 import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
@@ -20,8 +21,10 @@ import 'content_filtering_tags.dart';
 class CarouselDialogSlider extends StatefulWidget {
   final CarouselModel carouselModel;
   final Function carouselItemClicked;
+  final SettingsModel settings;
 
-  CarouselDialogSlider(this.carouselModel, this.carouselItemClicked);
+  CarouselDialogSlider(
+      this.carouselModel, this.carouselItemClicked, this.settings);
 
   @override
   CarouselDialogSliderState createState() => CarouselDialogSliderState();
@@ -64,12 +67,21 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     return Column(
       children: [
         _items.isEmpty
-            ? ChatMessage(
-                text: _showDefault
-                    ? DEFAULT_RESPONSE
-                    : "Oops, looks like there is no $entertainmentContent matching your criteria.",
-                type: false,
-              )
+            ? Stack(children: [
+                ChatMessage(
+                  text: _showDefault
+                      ? DEFAULT_RESPONSE
+                      : "Oops, looks like there is no $entertainmentContent matching your criteria.",
+                  type: false,
+                ),
+                if (_showPlaceHolder)
+                  Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: _getPlaceHolderImage())
+              ])
             : Container(
                 height: 415.0,
                 margin: EdgeInsets.only(top: 20),
@@ -84,6 +96,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
                 )),
         ContentFilteringTags(
             response: _contentFilteringResponse,
+            settingsModel: widget.settings,
             filterContents: _handleFilterContents,
             showPlaceHolderInCarousel: showPlaceHolders)
       ],
@@ -233,16 +246,20 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   }
 
   void _updateItemsInHorizontalScrollview(AIResponse response) {
-    var carouselModel =
-        CarouselModel(response: response, type: MessageType.CAROUSEL);
+    var carouselModel = CarouselModel(
+        response: response,
+        type: MessageType.CAROUSEL,
+        settings: widget.settings);
     setState(() {
       _items.addAll(carouselModel.getCarouselItems());
     });
   }
 
   void _updateItemsForCarouselAndFilters(AIResponse response) {
-    CarouselModel carouselModel =
-        CarouselModel(response: response, type: MessageType.CAROUSEL);
+    CarouselModel carouselModel = CarouselModel(
+        response: response,
+        type: MessageType.CAROUSEL,
+        settings: widget.settings);
 
     setState(() {
       _initializeItems(carouselModel);

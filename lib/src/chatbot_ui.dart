@@ -50,7 +50,7 @@ class ChatBotUI extends StatefulWidget {
 class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Timer _uiInactivityTimer;
   Timer _absoluteInactivityTimer;
-  bool _doNotShowTyping = false;
+  bool _doNotShowTyping = true;
   int _unknownAction = 0;
   bool _isTextFieldEnabled = false;
   bool _removeNoPreferenceQuickReply = false;
@@ -65,8 +65,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
+    _callWelcomeIntent();
+
     widget.settings.countryCode.listen((value) {
-      _callWelcomeIntent();
+      _changeCountryCode();
     });
     super.initState();
   }
@@ -77,6 +79,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     var countryCode = _getCountryCode();
     var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
+  }
+
+  Future<void> _changeCountryCode() async {
+    var countryCode = _getCountryCode();
+    var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
+    _getDialogFlowResponseByEvent(CHANGE_COUNTRY_EVENT, parameters, false);
   }
 
   @override
@@ -158,8 +166,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.CAROUSEL:
                       {
                         _disableKeyboardForAndroid(context);
-                        return CarouselDialogSlider(
-                            message as CarouselModel, _movieItemClicked);
+                        return CarouselDialogSlider(message as CarouselModel,
+                            _movieItemClicked, widget.settings);
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -218,12 +226,15 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
               if (state is MovieDetailsLoading) {
                 return Center(
                   child: Container(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                    ),
-                  ),
+                      width: 40,
+                      height: 40,
+                      child: Platform.isIOS
+                          ? Image.asset(
+                              "packages/loading_gifs/assets/images/cupertino_activity_indicator.gif",
+                              scale: 5)
+                          : Image.asset(
+                              "packages/loading_gifs/assets/images/circular_progress_indicator.gif",
+                              scale: 10)),
                 );
               }
               return Container();
@@ -242,48 +253,49 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             child: FloatingActionButton(
               foregroundColor: Colors.deepOrangeAccent,
               backgroundColor: Colors.orange[200],
-              child: new Icon(Platform.isIOS ? CupertinoIcons.refresh :Icons.refresh),
+              child: new Icon(
+                  Platform.isIOS ? CupertinoIcons.refresh : Icons.refresh),
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext ctx) {
                     return Platform.isIOS
                         ? CupertinoAlertDialog(
-                      title: Text(SHOULD_REFRESH_TEXT),
-                      actions: <Widget>[
-                        CupertinoButton(
-                          child: Text(YES),
-                          onPressed: () async {
-                            Navigator.of(ctx).pop();
-                            _callWelcomeIntent();
-                          },
-                        ),
-                        CupertinoButton(
-                          child: Text(NO),
-                          onPressed: () async {
-                            Navigator.of(ctx).pop();
-                          },
-                        ),
-                      ],
-                    )
+                            title: Text(SHOULD_REFRESH_TEXT),
+                            actions: <Widget>[
+                              CupertinoButton(
+                                child: Text(YES),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                  _callWelcomeIntent();
+                                },
+                              ),
+                              CupertinoButton(
+                                child: Text(NO),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                },
+                              ),
+                            ],
+                          )
                         : AlertDialog(
-                      title: Text(SHOULD_REFRESH_TEXT),
-                      actions: <Widget>[
-                        TextButton(
-                          child: Text(YES),
-                          onPressed: () async {
-                            Navigator.of(ctx).pop();
-                            _callWelcomeIntent();
-                          },
-                        ),
-                        TextButton(
-                          child: Text(NO),
-                          onPressed: () async {
-                            Navigator.of(ctx).pop();
-                          },
-                        ),
-                      ],
-                    );
+                            title: Text(SHOULD_REFRESH_TEXT),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(YES),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                  _callWelcomeIntent();
+                                },
+                              ),
+                              TextButton(
+                                child: Text(NO),
+                                onPressed: () async {
+                                  Navigator.of(ctx).pop();
+                                },
+                              ),
+                            ],
+                          );
                   },
                 );
               },
@@ -452,8 +464,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (response != null) {
       var action = response.getAction();
       if (ACTION_START_OVER == action) {
-        _getDialogFlowResponseByEvent(
-            START_OVER_EVENT, DEFAULT_PARAMETERS_FOR_EVENT, false);
+        _callWelcomeIntent();
+      }
+      if (ACTION_CHANGE_COUNTRY == action) {
+        return;
       }
       if (ACTION_TRIGGER_TIPS == action) {
         _scrollToBottom();
@@ -569,8 +583,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _doNotShowTyping = true;
       _isTextFieldEnabled = true;
 
-      var carouselModel =
-          CarouselModel(response: response, type: MessageType.CAROUSEL);
+      var carouselModel = CarouselModel(
+          response: response,
+          type: MessageType.CAROUSEL,
+          settings: widget.settings);
 
       _messages.insert(0, carouselModel);
     });
@@ -590,7 +606,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         text: replies.title,
         quickReplies: quickReplies,
         updateQuickReply: _insertQuickReply,
-        type: MessageType.QUICK_REPLY, name: '',
+        type: MessageType.QUICK_REPLY,
+        name: '',
       );
       _doNotShowTyping = true;
       _messages.insert(

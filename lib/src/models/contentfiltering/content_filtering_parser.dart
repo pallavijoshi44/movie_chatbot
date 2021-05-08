@@ -1,11 +1,13 @@
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/constants.dart';
+import 'package:flutter_app/src/models/settings_model.dart';
 
 import 'entertainment_type.dart';
 import 'genre_content_type.dart';
 
 class ContentFilteringParser {
   final AIResponse response;
+  final SettingsModel settings;
   List<EntertainmentContentType> _entertainmentTypes;
   List<GenresContentType> _movieGenreItems = [];
   List<GenresContentType> _tvGenreItems = [];
@@ -19,8 +21,12 @@ class ContentFilteringParser {
   String _datePeriodOriginal = "";
   String _customDatePeriod = "";
   String _short = "";
+  String _likePhrases = "";
+  String _sortyBy = "";
+  String _movieOrTvId = "";
+  String _countryCode = "";
 
-  ContentFilteringParser({this.response}) {
+  ContentFilteringParser({this.response, this.settings}) {
     var parameters = response.getParameters();
     bool isMovie =
         response.getEntertainmentContentType() == EntertainmentType.MOVIE;
@@ -33,8 +39,13 @@ class ContentFilteringParser {
     _constructDatePeriod(parameters);
     _constructSearchKeywords(parameters);
     _constructShort(parameters);
+    _constructOthers(parameters);
+    _constructCountryCode();
   }
 
+  void _constructCountryCode() {
+    _countryCode = settings.countryCode.getValue();
+  }
   void _constructDatePeriod(Map parameters) {
     if (_isValidKey(parameters, KEY_DATE_PERIOD)) {
       _datePeriod = parameters[KEY_DATE_PERIOD];
@@ -48,9 +59,21 @@ class ContentFilteringParser {
   }
 
   void _constructShort(Map parameters) {
-    if (_isValidKey(parameters, KEY_SHORT_MOVIE)) {
-      _short = parameters[KEY_SHORT_MOVIE];
+    _initializeKey(_short, KEY_SHORT_MOVIE, parameters);
+  }
+
+  void _constructOthers(Map parameters) {
+    _initializeKey(_likePhrases, KEY_LIKE_PHRASES, parameters);
+    _initializeKey(_sortyBy, KEY_LIKE_PHRASES, parameters);
+    _initializeKey(_movieOrTvId, KEY_MOVIE_OR_TV_ID, parameters);
+  }
+
+  void _initializeKey(String key, String value, Map parameters) {
+    if (_isValidKey(parameters, key)) {
+      value = parameters[key];
       return;
+    } else {
+      value = "";
     }
   }
 
@@ -327,5 +350,20 @@ class ContentFilteringParser {
       return -1;
     });
     return result;
+  }
+
+  String getLikePhrases() {
+    return _likePhrases;
+  }
+
+  String getCountryCode() {
+    return _countryCode;
+  }
+  String getMovieOrTvId() {
+    return _movieOrTvId;
+  }
+
+  String getSortBy() {
+    return _sortyBy;
   }
 }

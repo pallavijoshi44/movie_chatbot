@@ -14,11 +14,10 @@ class ContentFilteringTags extends StatefulWidget {
   final Function showPlaceHolderInCarousel;
 
   ContentFilteringTags({
-    Key key,
     this.response,
     this.filterContents,
     this.showPlaceHolderInCarousel,
-  }) : super(key: key);
+  });
 
   @override
   ContentFilteringTagsState createState() => ContentFilteringTagsState();
@@ -57,6 +56,11 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
 
   @override
   void initState() {
+    _initialize();
+    super.initState();
+  }
+
+  void _initialize() {
     _response = widget.response;
     _initializeEntertainmentType();
     _initializeGenreItems();
@@ -66,8 +70,6 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
     _initializeDatePeriod();
     _initializeSearchKeywords();
     _initializeShortMovie();
-
-    super.initState();
   }
 
   void _initializeDatePeriod() {
@@ -401,21 +403,23 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
   Widget _buildChip(String item, bool selectedItem, Function onTap) {
     return Container(
       height: 40,
-      child: FilterChip(
-          backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-          disabledColor: Colors.lightGreen[100],
-          label: Text(item,
-              style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
-          labelStyle: TextStyle(color: Colors.lightGreen[900]),
-          shape: RoundedRectangleBorder(
-              side: BorderSide(color: Colors.lightGreen[900]),
-              borderRadius: BorderRadius.all(Radius.circular(15))),
-          selected: selectedItem,
-          checkmarkColor: Colors.green,
-          selectedColor: Colors.lightGreen[100],
-          onSelected: (value) {
-            onTap.call(item);
-          }),
+      child: Material(
+        child: FilterChip(
+            backgroundColor: Color.fromRGBO(249, 248, 235, 1),
+            disabledColor: Colors.lightGreen[100],
+            label: Text(item,
+                style: TextStyle(fontFamily: 'QuickSand', fontSize: 14)),
+            labelStyle: TextStyle(color: Colors.lightGreen[900]),
+            shape: RoundedRectangleBorder(
+                side: BorderSide(color: Colors.lightGreen[900]),
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            selected: selectedItem,
+            checkmarkColor: Colors.green,
+            selectedColor: Colors.lightGreen[100],
+            onSelected: (value) {
+              onTap.call(item);
+            }),
+      ),
     );
   }
 
@@ -466,8 +470,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
 
   void updateFilteringTags(ContentFilteringParser response) {
     setState(() {
-      _response = response;
-      initState();
+      _initialize();
     });
   }
 }

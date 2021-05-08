@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/parameters.dart';
+import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 
@@ -9,6 +10,7 @@ class CarouselModel extends MessageModel {
   EntertainmentType _entertainmentType;
   Parameters _parameters;
   final AIResponse response;
+  ContentFilteringParser _contentFilteringResponse;
 
   CarouselModel(
       {String name,
@@ -18,6 +20,7 @@ class CarouselModel extends MessageModel {
     _carouselSelect = new CarouselSelect(response.getCarousel());
     _entertainmentType = response.getEntertainmentContentType();
     _parameters = response.getParametersJson();
+    _contentFilteringResponse = ContentFilteringParser(response: response);
   }
 
   EntertainmentType getEntertainmentType() {
@@ -30,5 +33,9 @@ class CarouselModel extends MessageModel {
 
   Parameters getParameters() {
     return _parameters;
+  }
+
+  ContentFilteringParser getContentFilteringResponse() {
+    return _contentFilteringResponse;
   }
 }

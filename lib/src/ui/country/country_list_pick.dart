@@ -6,10 +6,12 @@ import 'package:flutter_app/src/ui/country/selection_list.dart';
 import 'package:flutter_app/src/ui/country/support/code_countries_en.dart';
 import 'package:flutter_app/src/ui/country/support/code_countrys.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 import 'country_selection_theme.dart';
 import 'support/code_country.dart';
-export 'support/code_country.dart';
+
 export 'country_selection_theme.dart';
+export 'support/code_country.dart';
 
 class CountryListPick extends StatefulWidget {
   CountryListPick(
@@ -63,9 +65,9 @@ class _CountryListPickState extends State<CountryListPick> {
           (e) =>
               (e.code.toUpperCase() == widget.initialSelection.toUpperCase()) ||
               (e.dialCode == widget.initialSelection),
-          orElse: () => elements[0] as CountryCode);
+          orElse: () => CountryCode(name: "India", dialCode: "+91", code: "IN"));
     } else {
-      selectedItem = elements[0];
+      selectedItem = CountryCode(name: "India", dialCode: "+91", code: "IN");
     }
 
     super.initState();

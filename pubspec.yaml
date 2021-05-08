@@ -38,7 +38,6 @@ dependencies:
   equatable: ^2.0.0
   flutter_bloc: ^7.0.0
   overlay_screen: ^1.2.0+1
-  loading_gifs: ^0.3.0
   streaming_shared_preferences: ^2.0.0
 
 dev_dependencies:

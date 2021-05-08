@@ -62,21 +62,18 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
-  //final GlobalKey<CarouselDialogSliderState> _carouselItemKey = GlobalKey();
-  // final GlobalKey<ContentFilteringTagsState> _contentFilteringKey = GlobalKey();
-
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-    _deleteDialogFlowContexts();
     widget.settings.countryCode.listen((value) {
-      _messages.clear();
       _callWelcomeIntent();
     });
     super.initState();
   }
 
   Future<void> _callWelcomeIntent() async {
+    _messages.clear();
+    _deleteDialogFlowContexts();
     var countryCode = _getCountryCode();
     var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
@@ -239,6 +236,58 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 _defaultResponse();
               }
             },
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: FloatingActionButton(
+              foregroundColor: Colors.deepOrangeAccent,
+              backgroundColor: Colors.orange[200],
+              child: new Icon(Platform.isIOS ? CupertinoIcons.refresh :Icons.refresh),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext ctx) {
+                    return Platform.isIOS
+                        ? CupertinoAlertDialog(
+                      title: Text(SHOULD_REFRESH_TEXT),
+                      actions: <Widget>[
+                        CupertinoButton(
+                          child: Text(YES),
+                          onPressed: () async {
+                            Navigator.of(ctx).pop();
+                            _callWelcomeIntent();
+                          },
+                        ),
+                        CupertinoButton(
+                          child: Text(NO),
+                          onPressed: () async {
+                            Navigator.of(ctx).pop();
+                          },
+                        ),
+                      ],
+                    )
+                        : AlertDialog(
+                      title: Text(SHOULD_REFRESH_TEXT),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text(YES),
+                          onPressed: () async {
+                            Navigator.of(ctx).pop();
+                            _callWelcomeIntent();
+                          },
+                        ),
+                        TextButton(
+                          child: Text(NO),
+                          onPressed: () async {
+                            Navigator.of(ctx).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),

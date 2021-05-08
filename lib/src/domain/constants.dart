@@ -123,5 +123,8 @@ const KEY_SORT_BY = "sort-by";
 const KEY_COUNTRY_NAME = "country-name";
 const KEY_MOVIE_OR_TV_ID = "id";
 
-
 const CONTENT_FILTERING_DURATION_SECONDS = 1;
+
+const SHOULD_REFRESH_TEXT = 'Are you sure you want to refresh and start again?';
+const YES = 'Yes';
+const NO = 'No';

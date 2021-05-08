@@ -15,12 +15,11 @@ class ContentFilteringTags extends StatefulWidget {
   final Function showPlaceHolderInCarousel;
   final SettingsModel settingsModel;
 
-  ContentFilteringTags({
-    this.response,
-    this.filterContents,
-    this.showPlaceHolderInCarousel,
-    this.settingsModel
-  });
+  ContentFilteringTags(
+      {this.response,
+      this.filterContents,
+      this.showPlaceHolderInCarousel,
+      this.settingsModel});
 
   @override
   ContentFilteringTagsState createState() => ContentFilteringTagsState();
@@ -235,6 +234,10 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                   ? _createRequestFor(
                       _response.getMusicArtists(), _selectedMusicArtists)
                   : [];
+
+              _isEntertainmentTypeMovie
+                  ? _setGenresForMovies(movieGenreItemValues)
+                  : _setGenresForTvShows(tvGenreItemValues);
             });
             await _fetchContent();
           }),
@@ -246,10 +249,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                     !_selectedMovieGenreItems[
                         movieGenreItemValues.indexOf(item)];
 
-                _genres = _createRequestFor(
-                    movieGenreItemValues, _selectedMovieGenreItems);
-                _selectedTVGenreItems =
-                    List.filled(_response.getTVGenreItems().length, false);
+                _setGenresForMovies(movieGenreItemValues);
               });
               await _fetchContent();
             }),
@@ -259,10 +259,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
               setState(() {
                 _selectedTVGenreItems[tvGenreItemValues.indexOf(item)] =
                     !_selectedTVGenreItems[tvGenreItemValues.indexOf(item)];
-                _genres =
-                    _createRequestFor(tvGenreItemValues, _selectedTVGenreItems);
-                _selectedMovieGenreItems = List.filled(
-                    _response.getMovieGenreContentType().length, false);
+                _setGenresForTvShows(tvGenreItemValues);
               });
               await _fetchContent();
             }),
@@ -386,6 +383,18 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
         ],
       ),
     );
+  }
+
+  void _setGenresForTvShows(List<String> tvGenreItemValues) {
+    _genres = _createRequestFor(tvGenreItemValues, _selectedTVGenreItems);
+    _selectedMovieGenreItems =
+        List.filled(_response.getMovieGenreContentType().length, false);
+  }
+
+  void _setGenresForMovies(List<String> movieGenreItemValues) {
+    _genres = _createRequestFor(movieGenreItemValues, _selectedMovieGenreItems);
+    _selectedTVGenreItems =
+        List.filled(_response.getTVGenreItems().length, false);
   }
 
   List<String> _createRequestFor(List<String> source, selectedItems) {

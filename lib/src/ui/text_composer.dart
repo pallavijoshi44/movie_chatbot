@@ -6,7 +6,7 @@ import 'package:twinkle_button/twinkle_button.dart';
 
 import '../domain/constants.dart';
 
-class TextComposer extends StatelessWidget {
+class TextComposer extends StatefulWidget {
   final TextEditingController textController;
   final Function textEditorChanged;
   final Function handleSubmitted;
@@ -27,7 +27,27 @@ class TextComposer extends StatelessWidget {
       this.helpContentClickable});
 
   @override
+  _TextComposerState createState() => _TextComposerState();
+}
+
+class _TextComposerState extends State<TextComposer> {
+  FocusNode focusNode;
+
+  @override
+  void initState() {
+    focusNode = FocusNode();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    //if (widget.isTextFieldEnabled) focusNode.requestFocus();
     return Platform.isIOS ? _buildForIOS(context) : _buildForAndroid(context);
   }
 
@@ -37,12 +57,12 @@ class TextComposer extends StatelessWidget {
       child: new Container(
         height: 50,
         decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-        padding: helpContent.length > 0
+        padding: widget.helpContent.length > 0
             ? EdgeInsets.zero
             : const EdgeInsets.symmetric(horizontal: 8.0),
         child: new Row(
           children: <Widget>[
-            if (helpContent.length > 0)
+            if (widget.helpContent.length > 0)
               new Container(
                   child: new IconButton(
                       icon: new Icon(
@@ -53,17 +73,17 @@ class TextComposer extends StatelessWidget {
                       onPressed: _handleFreeTextAndroid(context))),
             new Flexible(
                 child: new TextField(
-              autofocus: isTextFieldEnabled ? true : false,
-              enabled: isTextFieldEnabled,
-              controller: textController,
-              onChanged: textEditorChanged,
-              onSubmitted: handleSubmitted,
+              focusNode: focusNode,
+              enabled: widget.isTextFieldEnabled,
+              controller: widget.textController,
+              onChanged: widget.textEditorChanged,
+              onSubmitted: widget.handleSubmitted,
               style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
               maxLines: null,
               decoration: new InputDecoration.collapsed(hintText: HINT_TEXT),
             )),
             new Container(
-                child: shouldShowTwinkleButton
+                child: widget.shouldShowTwinkleButton
                     ? _buildTwinkleButton()
                     : new IconButton(
                         icon: new Icon(
@@ -91,7 +111,7 @@ class TextComposer extends StatelessWidget {
         ),
         buttonColor: Colors.green[100],
         onclickButtonFunction: () {
-          handleTwinkleButton(textController.text);
+          widget.handleTwinkleButton(widget.textController.text);
         });
   }
 
@@ -105,9 +125,11 @@ class TextComposer extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(30))),
           child: CupertinoTextField.borderless(
-              padding:
-                  helpContent.length > 0 ? EdgeInsets.zero : EdgeInsets.all(15),
-              prefix: helpContent.length > 0
+              focusNode: focusNode,
+              padding: widget.helpContent.length > 0
+                  ? EdgeInsets.zero
+                  : EdgeInsets.all(15),
+              prefix: widget.helpContent.length > 0
                   ? CupertinoButton(
                       padding: EdgeInsets.zero,
                       child:
@@ -115,7 +137,7 @@ class TextComposer extends StatelessWidget {
                       onPressed: _handleFreeTextiOS(context),
                     )
                   : null,
-              suffix: shouldShowTwinkleButton
+              suffix: widget.shouldShowTwinkleButton
                   ? _buildTwinkleButton()
                   : CupertinoButton(
                       child:
@@ -123,10 +145,10 @@ class TextComposer extends StatelessWidget {
                       onPressed: _handleTextEntered()),
               style: TextStyle(
                   color: Colors.black, fontFamily: 'QuickSand', fontSize: 16),
-              enabled: isTextFieldEnabled,
-              controller: textController,
-              onChanged: textEditorChanged,
-              onSubmitted: handleSubmitted,
+              enabled: widget.isTextFieldEnabled,
+              controller: widget.textController,
+              onChanged: widget.textEditorChanged,
+              onSubmitted: widget.handleSubmitted,
               placeholder: HINT_TEXT),
         ),
       ),
@@ -134,13 +156,13 @@ class TextComposer extends StatelessWidget {
   }
 
   Function _handleTextEntered() {
-    return isTextFieldEnabled
-        ? () => handleSubmitted(textController.text)
+    return widget.isTextFieldEnabled
+        ? () => widget.handleSubmitted(widget.textController.text)
         : null;
   }
 
   Function _handleFreeTextAndroid(BuildContext context) {
-    return isTextFieldEnabled
+    return widget.isTextFieldEnabled
         ? () => showModalBottomSheet(
             elevation: 5,
             context: context,
@@ -148,9 +170,9 @@ class TextComposer extends StatelessWidget {
               return SingleChildScrollView(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: helpContent
+                children: widget.helpContent
                     .map((content) => TextButton(
-                          onPressed: helpContentClickable
+                          onPressed: widget.helpContentClickable
                               ? () {
                                   _enterFreeText(content, context);
                                 }
@@ -177,7 +199,7 @@ class TextComposer extends StatelessWidget {
   }
 
   Function _handleFreeTextiOS(BuildContext context) {
-    return isTextFieldEnabled
+    return widget.isTextFieldEnabled
         ? () => showCupertinoModalPopup(
             useRootNavigator: false,
             context: context,
@@ -189,9 +211,9 @@ class TextComposer extends StatelessWidget {
                       },
                       child:
                           const Text(CANCEL, style: TextStyle(fontSize: 16))),
-                  actions: helpContent
+                  actions: widget.helpContent
                       .map((content) => CupertinoActionSheetAction(
-                          onPressed: helpContentClickable
+                          onPressed: widget.helpContentClickable
                               ? () {
                                   _enterFreeText(content, context);
                                 }
@@ -210,7 +232,8 @@ class TextComposer extends StatelessWidget {
   }
 
   void _enterFreeText(String content, BuildContext context) {
-    textController.text = content;
+    widget.textController.text = content;
     Navigator.of(context).pop();
+    focusNode.requestFocus();
   }
 }

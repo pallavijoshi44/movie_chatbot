@@ -148,7 +148,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       );
                     case MessageType.QUICK_REPLY:
                       {
-                        _disableKeyboardForAndroid(context);
                         return QuickReply(
                           quickReplies: (message as ReplyModel).quickReplies,
                           insertQuickReply:
@@ -168,7 +167,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       }
                     case MessageType.CAROUSEL:
                       {
-                        _disableKeyboardForAndroid(context);
                         return CarouselDialogSlider(message as CarouselModel,
                             _movieItemClicked, widget.settings);
                       }
@@ -191,13 +189,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       return Tips(text: (message as TipsModel).text);
                     case MessageType.UNREAD_MESSAGE:
                       return UnreadMessage();
-                    // case MessageType.CONTENT_FILTERING_TABS:
-                    //   return ContentFilteringTags(
-                    //       response:
-                    //           (message as ContentFilteringTagsModel).response,
-                    //       filterContents: (message as ContentFilteringTagsModel)
-                    //           .handleFilterContents);
-                    //   break;
                   }
                 }
                 return Container();
@@ -619,8 +610,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       if (quickReplies != null && quickReplies.length == 1) {
         _removeNoPreferenceQuickReply = true;
+        _isTextFieldEnabled = true;
+      } else {
+        _isTextFieldEnabled = false;
       }
-      _isTextFieldEnabled = true;
       var replyModel = ReplyModel(
         text: replies.title,
         quickReplies: quickReplies,

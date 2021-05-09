@@ -14,6 +14,7 @@ class TextComposer extends StatelessWidget {
   final bool shouldShowTwinkleButton;
   final Function handleTwinkleButton;
   final List<String> helpContent;
+  final bool helpContentClickable;
 
   TextComposer(
       {this.textController,
@@ -22,45 +23,58 @@ class TextComposer extends StatelessWidget {
       this.isTextFieldEnabled,
       this.shouldShowTwinkleButton,
       this.handleTwinkleButton,
-      this.helpContent});
+      this.helpContent,
+      this.helpContentClickable});
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? _buildForIOS(context)
-        : new IconTheme(
-            data: new IconThemeData(color: Theme.of(context).accentColor),
-            child: new Container(
-              height: 50,
-              decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-              child: new Row(
-                children: <Widget>[
-                  new Container(
-                      child: new IconButton(
-                          icon: new Icon(Icons.help),
-                          onPressed: _handleFreeTextAndroid(context))),
-                  new Flexible(
-                      child: new TextField(
-                    enabled: isTextFieldEnabled,
-                    controller: textController,
-                    onChanged: textEditorChanged,
-                    onSubmitted: handleSubmitted,
-                    style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
-                    maxLines: null,
-                    decoration:
-                        new InputDecoration.collapsed(hintText: HINT_TEXT),
-                  )),
-                  new Container(
-                      child: shouldShowTwinkleButton
-                          ? _buildTwinkleButton()
-                          : new IconButton(
-                              icon: new Icon(Icons.send),
-                              onPressed: _handleTextEntered())),
-                ],
-              ),
-            ),
-          );
+    return Platform.isIOS ? _buildForIOS(context) : _buildForAndroid(context);
+  }
+
+  IconTheme _buildForAndroid(BuildContext context) {
+    return new IconTheme(
+      data: new IconThemeData(color: Theme.of(context).accentColor),
+      child: new Container(
+        height: 50,
+        decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+        padding: helpContent.length > 0
+            ? EdgeInsets.zero
+            : const EdgeInsets.symmetric(horizontal: 8.0),
+        child: new Row(
+          children: <Widget>[
+            if (helpContent.length > 0)
+              new Container(
+                  child: new IconButton(
+                      icon: new Icon(
+                        Icons.help,
+                        color: Colors.lightGreen[600],
+                      ),
+                      padding: EdgeInsets.zero,
+                      onPressed: _handleFreeTextAndroid(context))),
+            new Flexible(
+                child: new TextField(
+              autofocus: isTextFieldEnabled ? true : false,
+              enabled: isTextFieldEnabled,
+              controller: textController,
+              onChanged: textEditorChanged,
+              onSubmitted: handleSubmitted,
+              style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
+              maxLines: null,
+              decoration: new InputDecoration.collapsed(hintText: HINT_TEXT),
+            )),
+            new Container(
+                child: shouldShowTwinkleButton
+                    ? _buildTwinkleButton()
+                    : new IconButton(
+                        icon: new Icon(
+                          Icons.send,
+                          color: Colors.lightGreen[600],
+                        ),
+                        onPressed: _handleTextEntered())),
+          ],
+        ),
+      ),
+    );
   }
 
   TwinkleButton _buildTwinkleButton() {
@@ -84,20 +98,23 @@ class TextComposer extends StatelessWidget {
   Widget _buildForIOS(BuildContext context) {
     return new SafeArea(
       child: new Container(
+        height: 50,
         margin: const EdgeInsets.all(10),
         child: Container(
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(30))),
           child: CupertinoTextField.borderless(
-              prefix: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Icon(
-                  CupertinoIcons.question_circle_fill,
-                  size: 28,
-                ),
-                onPressed: _handleFreeTextiOS(context),
-              ),
+              padding:
+                  helpContent.length > 0 ? EdgeInsets.zero : EdgeInsets.all(15),
+              prefix: helpContent.length > 0
+                  ? CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child:
+                          Icon(CupertinoIcons.question_circle_fill, size: 28),
+                      onPressed: _handleFreeTextiOS(context),
+                    )
+                  : null,
               suffix: shouldShowTwinkleButton
                   ? _buildTwinkleButton()
                   : CupertinoButton(
@@ -133,17 +150,26 @@ class TextComposer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: helpContent
                     .map((content) => TextButton(
-                        onPressed: () {
-                          _enterFreeText(content, context);
-                        },
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            content,
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontSize: 16),
+                          onPressed: helpContentClickable
+                              ? () {
+                                  _enterFreeText(content, context);
+                                }
+                              : null,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                content,
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontFamily: 'QuickSand'),
+                              ),
+                            ),
                           ),
-                        )))
+                        ))
                     .toList(),
               ));
             })
@@ -165,9 +191,11 @@ class TextComposer extends StatelessWidget {
                           const Text(CANCEL, style: TextStyle(fontSize: 16))),
                   actions: helpContent
                       .map((content) => CupertinoActionSheetAction(
-                          onPressed: () {
-                            _enterFreeText(content, context);
-                          },
+                          onPressed: helpContentClickable
+                              ? () {
+                                  _enterFreeText(content, context);
+                                }
+                              : null,
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -182,7 +210,7 @@ class TextComposer extends StatelessWidget {
   }
 
   void _enterFreeText(String content, BuildContext context) {
-     textController.text = content;
+    textController.text = content;
     Navigator.of(context).pop();
   }
 }

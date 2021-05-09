@@ -60,6 +60,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
   List<String> _helpContent = [];
+  bool _helpContentClickable = false;
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -156,7 +157,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       }
                     case MessageType.MULTI_SELECT:
                       {
-                        _disableKeyboardForAndroid(context);
                         return MultiSelect(
                             title: (message as MultiSelectModel).text,
                             buttons: (message as MultiSelectModel).buttons,
@@ -221,7 +221,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                 isTextFieldEnabled: _isTextFieldEnabled,
                 shouldShowTwinkleButton: _shouldShowTwinkleButton,
                 handleTwinkleButton: _handleTwinkleButton,
-                helpContent: _helpContent),
+                helpContent: _helpContent,
+                helpContentClickable: _helpContentClickable),
           ]),
           // _firstTimeOverlayWidget(context),
           BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
@@ -452,7 +453,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
     setState(() {
-      _isTextFieldEnabled = true;
+     // _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);
@@ -487,6 +488,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       }
       _handleTimers(action);
 
+      if (response.containsHelpContent()) {
+        _constructHelpContent(response.helpContent(), response.isHelpContentClickable());
+      }
+
       if (response.containsMultiSelect()) {
         _constructMultiSelect(response.getMultiSelectResponse());
         return;
@@ -510,10 +515,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       if (response.containsMovieOrTvRecommendationsActions()) {
         _constructCarousel(response);
         return;
-      }
-
-      if (response.containsHelpContent()) {
-        _constructHelpContent(response.helpContent());
       }
 
       _constructChatMessage(response.getDefaultOrChatMessage());
@@ -560,10 +561,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     });
   }
 
-  void _constructHelpContent(List<dynamic> helpContent) {
+  void _constructHelpContent(List<dynamic> helpContent, bool isClickable) {
     setState(() {
       _isTextFieldEnabled = true;
       _helpContent = [];
+      _helpContentClickable = isClickable;
       helpContent.forEach((content) {
         _helpContent.add(content['text']);
       });
@@ -617,10 +619,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       if (quickReplies != null && quickReplies.length == 1) {
         _removeNoPreferenceQuickReply = true;
-        _isTextFieldEnabled = true;
-      } else {
-        _isTextFieldEnabled = false;
       }
+      _isTextFieldEnabled = true;
       var replyModel = ReplyModel(
         text: replies.title,
         quickReplies: quickReplies,

@@ -207,6 +207,13 @@ class AIResponse {
         orElse: () => null);
     return payload['payload']['payload']['helpContent'];
   }
+
+  bool isHelpContentClickable() {
+    var payload = getListMessage().firstWhere(
+            (element) => element.containsKey('payload'),
+        orElse: () => null);
+    return payload['payload']['payload']['helpContentClickable'];
+  }
 }
 
 enum EntertainmentType { MOVIE, TV }

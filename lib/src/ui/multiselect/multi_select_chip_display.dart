@@ -43,37 +43,33 @@ class _MultiSelectChipDisplayState<V> extends State<MultiSelectChipDisplay<V>> {
       child: Container(
           width: MediaQuery.of(context).size.width,
           height: widget.containsNoPreference ? 100 : 40,
-          child: Scrollbar(
-            controller: _scrollController,
-            isAlwaysShown: false,
-            child: widget.containsNoPreference
-                ? Container(
-                    child: Column(
-                      children: [
-                        Flexible(child: _buildListView()),
-                        ChoiceChipMobo(
-                            isNoPreferenceSelected: isNoPreferenceSelected,
-                            label: widget.items.last,
-                            selected: _selectedItems[widget.items.length - 1] ??
-                                false,
-                            onSelected: (value) {
-                              setState(() {
-                                _selectedItems[widget.items.length - 1] =
-                                    !_selectedItems[widget.items.length - 1];
-                                isNoPreferenceSelected =
-                                    _selectedItems[widget.items.length - 1];
-                              });
-                              if (widget.onTap != null)
-                                widget.onTap(
-                                    widget.items.last,
-                                    _selectedItems[widget.items.length - 1],
-                                    _selectedItems);
-                            })
-                      ],
-                    ),
-                  )
-                : _buildListView(),
-          )),
+          child: widget.containsNoPreference
+              ? Container(
+                  child: Column(
+                    children: [
+                      Flexible(child: _buildListView()),
+                      ChoiceChipMobo(
+                          isNoPreferenceSelected: isNoPreferenceSelected,
+                          label: widget.items.last,
+                          selected: _selectedItems[widget.items.length - 1] ??
+                              false,
+                          onSelected: (value) {
+                            setState(() {
+                              _selectedItems[widget.items.length - 1] =
+                                  !_selectedItems[widget.items.length - 1];
+                              isNoPreferenceSelected =
+                                  _selectedItems[widget.items.length - 1];
+                            });
+                            if (widget.onTap != null)
+                              widget.onTap(
+                                  widget.items.last,
+                                  _selectedItems[widget.items.length - 1],
+                                  _selectedItems);
+                          })
+                    ],
+                  ),
+                )
+              : _buildListView()),
     );
   }
 

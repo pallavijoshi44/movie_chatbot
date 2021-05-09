@@ -316,6 +316,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> _multiSelectItemClicked(String value, bool isSelected,
       String selectedText, bool noPreferenceSelected) async {
     setState(() {
+      _isTextFieldEnabled = true;
       if (noPreferenceSelected && isSelected) {
         _textController.text = value;
       } else {
@@ -460,7 +461,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _executeResponse(AIResponse response) {
     setState(() {
-      _isTextFieldEnabled = true;
+      _isTextFieldEnabled = false;
       _doNotShowTyping = true;
     });
     if (response != null) {

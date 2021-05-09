@@ -168,31 +168,72 @@ class _TextComposerState extends State<TextComposer> {
             context: context,
             builder: (bCtx) {
               return SingleChildScrollView(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.helpContent
-                    .map((content) => TextButton(
-                          onPressed: widget.helpContentClickable
-                              ? () {
-                                  _enterFreeText(content, context);
-                                }
-                              : null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                content,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontFamily: 'QuickSand'),
-                              ),
-                            ),
+                  child: Container(
+                color: Color.fromRGBO(249, 248, 235, 1),
+                padding: EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () => Navigator.of(context).pop()),
+                          Align(
+                            alignment: Alignment.center,
+                            child: widget.helpContentClickable
+                                ? Text(
+                                    EXAMPLE_HELP_CONTENT,
+                                    style: TextStyle(
+                                        fontFamily: 'QuickSand',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : Text(
+                                    TIPS_AND_TRICKS,
+                                    style: TextStyle(
+                                        fontFamily: 'QuickSand',
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                           ),
-                        ))
-                    .toList(),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: widget.helpContent
+                          .map((content) => Container(
+                                margin: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.lightGreen[100],
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: TextButton(
+                                  onPressed: widget.helpContentClickable
+                                      ? () {
+                                          _enterFreeText(content, context);
+                                        }
+                                      : null,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        content,
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 14,
+                                            fontFamily: 'QuickSand'),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ],
+                ),
               ));
             })
         : null;
@@ -205,6 +246,23 @@ class _TextComposerState extends State<TextComposer> {
             context: context,
             builder: (ctx) {
               return CupertinoActionSheet(
+                  title: widget.helpContentClickable
+                      ? Text(
+                          EXAMPLE_HELP_CONTENT,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'QuickSand',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        )
+                      : Text(
+                          TIPS_AND_TRICKS,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'QuickSand',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
                   cancelButton: CupertinoActionSheetAction(
                       onPressed: () {
                         Navigator.pop(context);
@@ -217,13 +275,16 @@ class _TextComposerState extends State<TextComposer> {
                               ? () {
                                   _enterFreeText(content, context);
                                 }
-                              : null,
+                              : () {},
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               content,
                               textAlign: TextAlign.start,
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: 'QuickSand'),
                             ),
                           )))
                       .toList());

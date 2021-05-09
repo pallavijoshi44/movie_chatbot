@@ -129,5 +129,7 @@ const KEY_COUNTRY_CODE = "country-code";
 const CONTENT_FILTERING_DURATION_SECONDS = 1;
 
 const SHOULD_REFRESH_TEXT = 'Are you sure you want to refresh and start again?';
+const TIPS_AND_TRICKS = 'Tips and Tricks';
+const EXAMPLE_HELP_CONTENT = 'Some examples of texts you can search with';
 const YES = 'Yes';
 const NO = 'No';

@@ -236,8 +236,9 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                   : [];
 
               _isEntertainmentTypeMovie
-                  ? _setGenresForMovies(movieGenreItemValues)
-                  : _setGenresForTvShows(tvGenreItemValues);
+                  ? _setGenresForMovies(movieGenreItemValues, tvGenreItemValues)
+                  : _setGenresForTvShows(
+                      tvGenreItemValues, movieGenreItemValues);
             });
             await _fetchContent();
           }),
@@ -249,7 +250,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                     !_selectedMovieGenreItems[
                         movieGenreItemValues.indexOf(item)];
 
-                _setGenresForMovies(movieGenreItemValues);
+                _setGenresForMovies(movieGenreItemValues, tvGenreItemValues);
               });
               await _fetchContent();
             }),
@@ -259,7 +260,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
               setState(() {
                 _selectedTVGenreItems[tvGenreItemValues.indexOf(item)] =
                     !_selectedTVGenreItems[tvGenreItemValues.indexOf(item)];
-                _setGenresForTvShows(tvGenreItemValues);
+                _setGenresForTvShows(tvGenreItemValues, movieGenreItemValues);
               });
               await _fetchContent();
             }),
@@ -385,16 +386,30 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
     );
   }
 
-  void _setGenresForTvShows(List<String> tvGenreItemValues) {
+  void _setGenresForTvShows(
+      List<String> tvGenreItemValues, List<String> movieGenreItemValues) {
     _genres = _createRequestFor(tvGenreItemValues, _selectedTVGenreItems);
     _selectedMovieGenreItems =
         List.filled(_response.getMovieGenreContentType().length, false);
+    tvGenreItemValues.forEach((genre) {
+      if (movieGenreItemValues.contains(genre)) {
+        _selectedMovieGenreItems[movieGenreItemValues.indexOf(genre)] =
+            _selectedTVGenreItems[tvGenreItemValues.indexOf(genre)];
+      }
+    });
   }
 
-  void _setGenresForMovies(List<String> movieGenreItemValues) {
+  void _setGenresForMovies(
+      List<String> movieGenreItemValues, List<String> tvGenreItemValues) {
     _genres = _createRequestFor(movieGenreItemValues, _selectedMovieGenreItems);
     _selectedTVGenreItems =
         List.filled(_response.getTVGenreItems().length, false);
+    movieGenreItemValues.forEach((genre) {
+      if (tvGenreItemValues.contains(genre)) {
+        _selectedTVGenreItems[tvGenreItemValues.indexOf(genre)] =
+            _selectedMovieGenreItems[movieGenreItemValues.indexOf(genre)];
+      }
+    });
   }
 
   List<String> _createRequestFor(List<String> source, selectedItems) {

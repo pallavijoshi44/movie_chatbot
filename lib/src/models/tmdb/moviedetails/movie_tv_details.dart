@@ -32,7 +32,7 @@ class MovieTvDetailsModel extends MessageModel {
       this.releaseYear =
           item['releaseYear'] != null ? item['releaseYear'].toString() : "";
       this.rating = item['rating'] != null ? item['rating'].toString() : "";
-      this.description = item['description'];
+      this.description = item['description'] != null ?  item['description'] : "";
       this.duration = item['duration'];
       this.watchProviderLink = item['watchProviderLink'];
       this.isMovie = item['isMovie'] ?? true;

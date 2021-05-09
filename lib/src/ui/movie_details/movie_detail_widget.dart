@@ -72,8 +72,8 @@ class MovieDetailWidget extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView _buildSingleChildScrollView(BuildContext context,
-      MovieTvDetailsModel model) {
+  SingleChildScrollView _buildSingleChildScrollView(
+      BuildContext context, MovieTvDetailsModel model) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +109,7 @@ class MovieDetailWidget extends StatelessWidget {
               isMovie: model.isMovie,
               id: model.id,
               settings: settings,
-              text:  model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,
+              text: model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,
               onCountryChanged: onCountryChanged,
             ),
           if (model.providers != null)
@@ -123,11 +123,12 @@ class MovieDetailWidget extends StatelessWidget {
           MovieJustWatch(
             title: JUST_WATCH_TEXT,
           ),
-          MovieDescriptionWidget(
-            title: model.isMovie ? "About Movie" : "About TV Show",
-            description: model.description,
-          ),
-          CastDetails(cast: model.cast)
+          if (model.description.isNotEmpty)
+            MovieDescriptionWidget(
+              title: model.isMovie ? "About Movie" : "About TV Show",
+              description: model.description,
+            ),
+          if (model.cast.isNotEmpty) CastDetails(cast: model.cast)
         ],
       ),
     );

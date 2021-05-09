@@ -31,16 +31,20 @@ class TextComposer extends StatelessWidget {
             child: new Container(
               height: 50,
               decoration: new BoxDecoration(color: Theme.of(context).cardColor),
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 5.0),
               child: new Row(
                 children: <Widget>[
+                  new Container(
+                      child: new IconButton(
+                          icon: new Icon(Icons.help),
+                          onPressed: () => _handleFreeTextAndroid(context))),
                   new Flexible(
                       child: new TextField(
                     enabled: isTextFieldEnabled,
                     controller: textController,
                     onChanged: textEditorChanged,
                     onSubmitted: handleSubmitted,
-                    style: TextStyle(fontSize: 14, fontFamily: 'QuickSand'),
+                    style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
                     maxLines: null,
                     decoration:
                         new InputDecoration.collapsed(hintText: HINT_TEXT),
@@ -78,35 +82,32 @@ class TextComposer extends StatelessWidget {
   Widget _buildForIOS(BuildContext context) {
     return new SafeArea(
       child: new Container(
-        padding: const EdgeInsets.only(
-            top: 10.0, bottom: 10.0, left: 10.0, right: 0.0),
-        child: new Row(
-          children: <Widget>[
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.only(
-                    top: 5.0, bottom: 5.0, left: 20.0, right: 0.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                child: CupertinoTextField.borderless(
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'QuickSand',
-                        fontSize: 15),
-                    enabled: isTextFieldEnabled,
-                    controller: textController,
-                    onChanged: textEditorChanged,
-                    onSubmitted: handleSubmitted,
-                    placeholder: HINT_TEXT),
+        margin: const EdgeInsets.all(10),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(30))),
+          child: CupertinoTextField.borderless(
+              prefix: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Icon(
+                  CupertinoIcons.question_circle_fill,
+                  size: 28,
+                ),
+                onPressed: () => _handleFreeTextiOS(context),
               ),
-            ),
-            CupertinoButton(
-                child: shouldShowTwinkleButton
-                    ? _buildTwinkleButton()
-                    : Icon(Icons.send),
-                onPressed: _handleTextEntered())
-          ],
+              suffix: CupertinoButton(
+                  child: shouldShowTwinkleButton
+                      ? _buildTwinkleButton()
+                      : Icon(CupertinoIcons.arrow_up_circle_fill, size: 28),
+                  onPressed: _handleTextEntered()),
+              style: TextStyle(
+                  color: Colors.black, fontFamily: 'QuickSand', fontSize: 16),
+              enabled: isTextFieldEnabled,
+              controller: textController,
+              onChanged: textEditorChanged,
+              onSubmitted: handleSubmitted,
+              placeholder: HINT_TEXT),
         ),
       ),
     );
@@ -116,5 +117,124 @@ class TextComposer extends StatelessWidget {
     return isTextFieldEnabled
         ? () => handleSubmitted(textController.text)
         : null;
+  }
+
+  void _handleFreeTextAndroid(BuildContext context) {
+    showModalBottomSheet(
+      elevation: 5,
+        context: context,
+        builder: (bCtx) {
+          return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Tom Hanks")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Shah rukh khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Salman Khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Tom Hanks")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Shah rukh khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Salman Khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Tom Hanks")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Shah rukh khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Salman Khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Tom Hanks")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Shah rukh khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Salman Khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Tom Hanks")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Shah rukh khan")),
+              TextButton(
+                  onPressed: null,
+                  child: Text("I want to know movies of Salman Khan"))
+            ],
+          ));
+        });
+  }
+  void _handleFreeTextiOS(BuildContext context) {
+    showCupertinoModalPopup(
+        useRootNavigator: false,
+        context: context,
+        builder: (ctx) {
+          return CupertinoActionSheet(
+            cancelButton: CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(CANCEL)),
+            actions: [
+              CupertinoActionSheetAction(
+                  onPressed: () {},
+                  child: const Text("I want to know movies of Tom Hanks dsklcwscl weifhweklhflwehf ihiowehfoiwehfoiwehf ihwioehfoiwehioweh ")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Shah rukh khan")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Salman Khan")),
+              CupertinoActionSheetAction(
+                  onPressed: () {},
+                  child: const Text("I want to know movies of Tom Hanks")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Shah rukh khan")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Salman Khan")),
+              CupertinoActionSheetAction(
+                  onPressed: () {},
+                  child: const Text("I want to know movies of Tom Hanks")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Shah rukh khan")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Salman Khan")),
+              CupertinoActionSheetAction(
+                  onPressed: () {},
+                  child: const Text("I want to know movies of Tom Hanks")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Shah rukh khan")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Salman Khan")), CupertinoActionSheetAction(
+                  onPressed: () {},
+                  child: const Text("I want to know movies of Tom Hanks")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Shah rukh khan")),
+              CupertinoActionSheetAction(
+                  onPressed:  () {},
+                  child: const Text("I want to know movies of Salman Khan")),
+            ],
+          );
+        });
   }
 }

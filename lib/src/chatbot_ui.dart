@@ -59,6 +59,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   int _pageNumber = 2;
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
+  List<String> _helpContent = [];
   final TextEditingController _textController = new TextEditingController();
   ScrollController _scrollController = new ScrollController();
 
@@ -214,13 +215,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             ),
             Divider(height: 1.0),
             TextComposer(
-              textController: _textController,
-              textEditorChanged: _textEditorChanged,
-              handleSubmitted: _handleSubmitted,
-              isTextFieldEnabled: _isTextFieldEnabled,
-              shouldShowTwinkleButton: _shouldShowTwinkleButton,
-              handleTwinkleButton: _handleTwinkleButton,
-            ),
+                textController: _textController,
+                textEditorChanged: _textEditorChanged,
+                handleSubmitted: _handleSubmitted,
+                isTextFieldEnabled: _isTextFieldEnabled,
+                shouldShowTwinkleButton: _shouldShowTwinkleButton,
+                handleTwinkleButton: _handleTwinkleButton,
+                helpContent: _helpContent),
           ]),
           // _firstTimeOverlayWidget(context),
           BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
@@ -510,6 +511,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _constructCarousel(response);
         return;
       }
+
+      if (response.containsHelpContent()) {
+        _constructHelpContent(response.helpContent());
+      }
+
       _constructChatMessage(response.getDefaultOrChatMessage());
       return;
     }
@@ -551,6 +557,16 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       _doNotShowTyping = true;
       _handleNewUIForMovieDetails(movieProviders);
+    });
+  }
+
+  void _constructHelpContent(List<dynamic> helpContent) {
+    setState(() {
+      _isTextFieldEnabled = true;
+      _helpContent = [];
+      helpContent.forEach((content) {
+        _helpContent.add(content['text']);
+      });
     });
   }
 

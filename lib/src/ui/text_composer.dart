@@ -13,6 +13,7 @@ class TextComposer extends StatelessWidget {
   final bool isTextFieldEnabled;
   final bool shouldShowTwinkleButton;
   final Function handleTwinkleButton;
+  final List<String> helpContent;
 
   TextComposer(
       {this.textController,
@@ -20,7 +21,8 @@ class TextComposer extends StatelessWidget {
       this.handleSubmitted,
       this.isTextFieldEnabled,
       this.shouldShowTwinkleButton,
-      this.handleTwinkleButton});
+      this.handleTwinkleButton,
+      this.helpContent});
 
   @override
   Widget build(BuildContext context) {
@@ -129,17 +131,20 @@ class TextComposer extends StatelessWidget {
               return SingleChildScrollView(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton(
-                      onPressed: null,
-                      child: Text("I want to know movies of Tom Hanks")),
-                  TextButton(
-                      onPressed: null,
-                      child: Text("I want to know movies of Shah rukh khan")),
-                  TextButton(
-                      onPressed: null,
-                      child: Text("I want to know movies of Salman Khan"))
-                ],
+                children: helpContent
+                    .map((content) => TextButton(
+                        onPressed: () {
+                          _enterFreeText(content, context);
+                        },
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            content,
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        )))
+                    .toList(),
               ));
             })
         : null;
@@ -152,30 +157,32 @@ class TextComposer extends StatelessWidget {
             context: context,
             builder: (ctx) {
               return CupertinoActionSheet(
-                cancelButton: CupertinoActionSheetAction(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(CANCEL)),
-                actions: [
-                  CupertinoActionSheetAction(
-                      onPressed: () {},
-                      child: const Text(
-                          "I want to know movies of Tom Hanks dsklcwscl weifhweklhflwehf ihiowehfoiwehfoiwehf ihwioehfoiwehioweh ")),
-                  CupertinoActionSheetAction(
-                      onPressed: () {},
-                      child: const Text(
-                          "I want to know movies of Shah rukh khan")),
-                  CupertinoActionSheetAction(
-                      onPressed: () {},
+                  cancelButton: CupertinoActionSheetAction(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                       child:
-                          const Text("I want to know movies of Salman Khan")),
-                  CupertinoActionSheetAction(
-                      onPressed: () {},
-                      child: const Text("I want to know movies of Tom Hanks")),
-                ],
-              );
+                          const Text(CANCEL, style: TextStyle(fontSize: 16))),
+                  actions: helpContent
+                      .map((content) => CupertinoActionSheetAction(
+                          onPressed: () {
+                            _enterFreeText(content, context);
+                          },
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              content,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          )))
+                      .toList());
             })
         : null;
+  }
+
+  void _enterFreeText(String content, BuildContext context) {
+     textController.text = content;
+    Navigator.of(context).pop();
   }
 }

@@ -103,7 +103,8 @@ class AIResponse {
       null;
 
   bool containsMovieOrTvRecommendationsActions() =>
-     getAction() == ACTION_MOVIE_RECOMMENDATIONS || getAction() == ACTION_TV_RECOMMENDATIONS;
+      getAction() == ACTION_MOVIE_RECOMMENDATIONS ||
+      getAction() == ACTION_TV_RECOMMENDATIONS;
 
   bool containsMovieDetails() => getMovieDetails() != null;
 
@@ -111,11 +112,15 @@ class AIResponse {
     List<String> list = [];
     if (getListMessage() != null && getListMessage().length > 0) {
       getListMessage().forEach((element) {
-        var listMessage = element['text']['text'];
-        if (listMessage != null &&
-            listMessage[0] != null &&
-            listMessage[0].toString().isNotEmpty) {
-          list.add(listMessage[0]);
+        if (element['text'] != null && element['text']['text'] != null) {
+          var listMessage = element['text']['text'];
+          if (listMessage != null &&
+              listMessage[0] != null &&
+              listMessage[0]
+                  .toString()
+                  .isNotEmpty) {
+            list.add(listMessage[0]);
+          }
         }
       });
     }
@@ -180,6 +185,27 @@ class AIResponse {
   dynamic getCard() {
     return getListMessage().firstWhere((element) => element.containsKey('card'),
         orElse: () => null);
+  }
+
+  bool containsHelpContent() {
+    var payload = getListMessage().firstWhere(
+        (element) => element.containsKey('payload'),
+        orElse: () => null);
+    var hasHelpContentKey = (payload != null &&
+        payload['payload'] != null &&
+        payload['payload']['payload'] != null &&
+        payload['payload']['payload'].containsKey('helpContent'));
+
+    return hasHelpContentKey &&
+        payload['payload']['payload']['helpContent'] != null &&
+        payload['payload']['payload']['helpContent'].length > 0;
+  }
+
+  List<dynamic> helpContent() {
+    var payload = getListMessage().firstWhere(
+            (element) => element.containsKey('payload'),
+        orElse: () => null);
+    return payload['payload']['payload']['helpContent'];
   }
 }
 

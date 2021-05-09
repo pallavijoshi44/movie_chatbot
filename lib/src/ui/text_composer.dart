@@ -47,7 +47,7 @@ class _TextComposerState extends State<TextComposer> {
 
   @override
   Widget build(BuildContext context) {
-    //if (widget.isTextFieldEnabled) focusNode.requestFocus();
+    if (widget.isTextFieldEnabled) focusNode.requestFocus();
     return Platform.isIOS ? _buildForIOS(context) : _buildForAndroid(context);
   }
 

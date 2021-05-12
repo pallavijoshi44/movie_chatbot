@@ -57,14 +57,14 @@ class AIResponse {
 
   dynamic getPayload() {
     var payload = getListMessage()
-        .firstWhere((element) => element.containsKey('payload'));
+        .firstWhere((element) => element.containsKey('payload'), orElse: null);
     return payload['payload'];
   }
 
-  dynamic getCarousel() {
-    return getListMessage()
-        .firstWhere((element) => element.containsKey('carouselSelect'));
-  }
+  // dynamic getCarousel() {
+  //   var payload = getPayload();
+  //   return payload['carouselSelect'];
+  // }
 
   List<dynamic> getListMessage() {
     return _queryResult.fulfillmentMessages;
@@ -96,11 +96,24 @@ class AIResponse {
     return false;
   }
 
-  bool containsCarousel() =>
-      getListMessage().firstWhere(
-          (element) => element.containsKey('carouselSelect'),
-          orElse: () => null) !=
-      null;
+  bool containsPayload() {
+    var payload = getListMessage().firstWhere(
+        (element) => element.containsKey('payload'),
+        orElse: () => null);
+    if (payload != null) {
+      return payload.containsKey('payload');
+    }
+    return false;
+  }
+
+  bool containsCarousel() {
+    if (containsPayload()) {
+      var payload = getPayload();
+      return payload['carouselSelect'] != null;
+    }
+    return false;
+
+  }
 
   bool containsMovieOrTvRecommendationsActions() =>
       getAction() == ACTION_MOVIE_RECOMMENDATIONS ||
@@ -116,9 +129,7 @@ class AIResponse {
           var listMessage = element['text']['text'];
           if (listMessage != null &&
               listMessage[0] != null &&
-              listMessage[0]
-                  .toString()
-                  .isNotEmpty) {
+              listMessage[0].toString().isNotEmpty) {
             list.add(listMessage[0]);
           }
         }
@@ -203,14 +214,14 @@ class AIResponse {
 
   List<dynamic> helpContent() {
     var payload = getListMessage().firstWhere(
-            (element) => element.containsKey('payload'),
+        (element) => element.containsKey('payload'),
         orElse: () => null);
     return payload['payload']['payload']['helpContent'];
   }
 
   bool isHelpContentClickable() {
     var payload = getListMessage().firstWhere(
-            (element) => element.containsKey('payload'),
+        (element) => element.containsKey('payload'),
         orElse: () => null);
     return payload['payload']['payload']['helpContentClickable'];
   }

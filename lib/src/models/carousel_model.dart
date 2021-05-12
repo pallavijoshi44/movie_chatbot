@@ -17,7 +17,7 @@ class CarouselModel extends MessageModel {
   CarouselModel({String name, @required MessageType type, this.response, this.settings})
       : super(name: name, type: type) {
     _items = response.containsCarousel()
-        ? _getItems(CarouselSelect(response.getCarousel()))
+        ? _getItems(CarouselSelect(response.getPayload()))
         : [];
     _entertainmentType = response.getEntertainmentContentType();
     _parameters = response.getParametersJson();

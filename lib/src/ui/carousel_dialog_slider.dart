@@ -205,7 +205,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
       _enabled = false;
     });
     _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
-    return widget.carouselItemClicked(item.info['key'], _entertainmentType);
+    return widget.carouselItemClicked(item.info['key'].toString(), _entertainmentType);
   }
 
   @override

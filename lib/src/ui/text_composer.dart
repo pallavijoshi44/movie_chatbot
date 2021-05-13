@@ -140,7 +140,8 @@ class _TextComposerState extends State<TextComposer> {
               suffix: widget.shouldShowTwinkleButton
                   ? _buildTwinkleButton()
                   : CupertinoButton(
-                      child:
+                  padding: EdgeInsets.zero,
+                  child:
                           Icon(CupertinoIcons.arrow_up_circle_fill, size: 28),
                       onPressed: _handleTextEntered()),
               style: TextStyle(

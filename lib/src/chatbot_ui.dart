@@ -527,10 +527,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _handleSubmitted(String text) {
-    _messages.removeWhere((element) => element is CarouselModel);
     if (text.trim() != "") {
       _textController.clear();
       setState(() {
+        _messages.removeWhere((element) => element is CarouselModel);
         _doNotShowTyping = false;
         if (_removeNoPreferenceQuickReply && _messages.first is ReplyModel) {
           _messages.removeAt(0);

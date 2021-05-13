@@ -229,7 +229,7 @@ class AIResponse {
     if (containsPayload())
       return getPayload()['enableTextField'] ?? false;
 
-    return false;
+    return true;
   }
 }
 

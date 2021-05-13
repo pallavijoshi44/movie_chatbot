@@ -8,7 +8,6 @@ import '../domain/constants.dart';
 
 class TextComposer extends StatefulWidget {
   final TextEditingController textController;
-  final Function textEditorChanged;
   final Function handleSubmitted;
   final bool isTextFieldEnabled;
   final bool shouldShowTwinkleButton;
@@ -18,7 +17,6 @@ class TextComposer extends StatefulWidget {
 
   TextComposer(
       {this.textController,
-      this.textEditorChanged,
       this.handleSubmitted,
       this.isTextFieldEnabled,
       this.shouldShowTwinkleButton,
@@ -76,7 +74,6 @@ class _TextComposerState extends State<TextComposer> {
               focusNode: focusNode,
               enabled: widget.isTextFieldEnabled,
               controller: widget.textController,
-              onChanged: widget.textEditorChanged,
               onSubmitted: widget.handleSubmitted,
               style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
               maxLines: null,
@@ -147,7 +144,6 @@ class _TextComposerState extends State<TextComposer> {
                   color: Colors.black, fontFamily: 'QuickSand', fontSize: 16),
               enabled: widget.isTextFieldEnabled,
               controller: widget.textController,
-              onChanged: widget.textEditorChanged,
               onSubmitted: widget.handleSubmitted,
               placeholder: HINT_TEXT),
         ),

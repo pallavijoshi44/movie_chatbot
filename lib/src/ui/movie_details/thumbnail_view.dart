@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../originalmoviedetails/thumbnail_card.dart';
+import 'thumbnail_card.dart';
 
 class ThumbnailView extends StatefulWidget {
   const ThumbnailView({

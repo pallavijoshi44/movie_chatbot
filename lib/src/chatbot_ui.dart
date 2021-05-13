@@ -7,58 +7,42 @@ import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/models/carousel_model.dart';
 import 'package:flutter_app/src/models/chat_model.dart';
 import 'package:flutter_app/src/models/message_model.dart';
-import 'package:flutter_app/src/models/movie_just_watch_model.dart';
-import 'package:flutter_app/src/models/movie_provider_model.dart';
-import 'package:flutter_app/src/models/movie_provider_url_model.dart';
-import 'package:flutter_app/src/models/movie_trailer_model.dart';
 import 'package:flutter_app/src/models/multi_select_model.dart';
 import 'package:flutter_app/src/models/reply_model.dart';
 import 'package:flutter_app/src/models/settings_model.dart';
-import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
-import 'package:flutter_app/src/models/unread_message_model.dart';
 import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
-import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/typing_indicator.dart';
-import 'package:flutter_app/src/ui/unread_message.dart';
-import 'package:flutter_app/src/ui/url.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
 
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
 import 'ui/chat_message.dart';
-import 'ui/movie_details/movie_just_watch.dart';
-import 'ui/movie_provider.dart';
 import 'ui/multiselect/multi_select.dart';
 import 'ui/quick_reply.dart';
-import 'ui/tips.dart';
 
 class ChatBotUI extends StatefulWidget {
-  final bool selectedTips;
   final SettingsModel settings;
   final AuthGoogle authGoogle;
 
-  ChatBotUI(this.selectedTips, this.settings, this.authGoogle);
+  ChatBotUI(this.settings, this.authGoogle);
 
   @override
   _ChatBotUIState createState() => _ChatBotUIState();
 }
 
 class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
-  Timer _uiInactivityTimer;
-  Timer _absoluteInactivityTimer;
   bool _doNotShowTyping = true;
   int _unknownAction = 0;
   bool _isTextFieldEnabled = false;
   bool _removeNoPreferenceQuickReply = false;
   final List<MessageModel> _messages = [];
   List<dynamic> _selectedGenres = [];
-  int _pageNumber = 2;
   bool _isCountryChanged = false;
   bool _shouldShowTwinkleButton = false;
   List<String> _helpContent = [];
@@ -94,217 +78,160 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    setState(() {
-      _messages.removeWhere((element) => element is UnreadMessageModel);
-    });
-  }
-
-  _startUIInactivityTimer(String eventName) {
-    if (widget.selectedTips) {
-      _uiInactivityTimer = new Timer(Duration(seconds: TIPS_DURATION), () {
-        _showTips(eventName);
-      });
-    }
-  }
-
-  _startAbsoluteInactivityTimer(String eventName) {
-    if (widget.selectedTips) {
-      _absoluteInactivityTimer =
-          new Timer(Duration(seconds: ABSOLUTE_DURATION), () {
-        _showTips(eventName);
-      });
-    }
-  }
-
-  void _showTips(String eventName) {
-    _getDialogFlowResponseByEvent(
-        eventName, DEFAULT_PARAMETERS_FOR_EVENT, false);
-  }
-
-  void _handleUserInteraction() {
-    stopUITimer();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _handleUserInteraction,
-      behavior: HitTestBehavior.translucent,
-      child: Stack(
-        children: [
-          Column(children: <Widget>[
-            Flexible(
-                child: ListView.builder(
-              padding: EdgeInsets.all(8.0),
-              reverse: true,
-              controller: _scrollController,
-              itemBuilder: (_, int index) {
-                var message = _messages[index];
-                if (message != null) {
-                  switch (message.type) {
-                    case MessageType.CHAT_MESSAGE:
-                      return ChatMessage(
-                        text: (message as ChatModel).text,
-                        type: (message as ChatModel).chatType,
+    return Stack(
+      children: [
+        Column(children: <Widget>[
+          Flexible(
+              child: ListView.builder(
+            padding: EdgeInsets.all(8.0),
+            reverse: true,
+            controller: _scrollController,
+            itemBuilder: (_, int index) {
+              var message = _messages[index];
+              if (message != null) {
+                switch (message.type) {
+                  case MessageType.CHAT_MESSAGE:
+                    return ChatMessage(
+                      text: (message as ChatModel).text,
+                      type: (message as ChatModel).chatType,
+                    );
+                  case MessageType.QUICK_REPLY:
+                    {
+                      return QuickReply(
+                        quickReplies: (message as ReplyModel).quickReplies,
+                        insertQuickReply:
+                            (message as ReplyModel).updateQuickReply,
                       );
-                    case MessageType.QUICK_REPLY:
-                      {
-                        return QuickReply(
-                          quickReplies: (message as ReplyModel).quickReplies,
-                          insertQuickReply:
-                              (message as ReplyModel).updateQuickReply,
-                        );
-                      }
-                    case MessageType.MULTI_SELECT:
-                      {
-                        return MultiSelect(
-                            title: (message as MultiSelectModel).text,
-                            buttons: (message as MultiSelectModel).buttons,
-                            insertMultiSelect:
-                                (message as MultiSelectModel).updateMultiSelect,
-                            previouslySelected: _selectedGenres,
-                            containsNoPreference: (message as MultiSelectModel)
-                                .containsNoPreference);
-                      }
-                    case MessageType.CAROUSEL:
-                      {
-                        _disableKeyboardForAndroid(context);
-                        return CarouselDialogSlider(
-                            message as CarouselModel,
-                            _movieItemClicked,
-                            widget.settings,
-                            _constructHelpContent,
-                            widget.authGoogle);
-                      }
-                    case MessageType.MOVIE_PROVIDER_URL:
-                      return Url(
-                          title: (message as MovieProviderUrlModel).name,
-                          url: (message as MovieProviderUrlModel).text);
-                    case MessageType.MOVIE_PROVIDER:
-                      return MovieProvider(
-                          title: (message as MovieProviderModel).text,
-                          logos: (message as MovieProviderModel).logos);
-                    case MessageType.MOVIE_TRAILER:
-                      return MovieThumbnail(
-                          url: (message as MovieTrailerModel).url,
-                          thumbNail: (message as MovieTrailerModel).thumbNail);
-                    case MessageType.MOVIE_JUST_WATCH:
-                      return MovieJustWatch(
-                          title: (message as MovieJustWatchModel).name);
-                    case MessageType.TIPS_MESSAGE:
-                      return Tips(text: (message as TipsModel).text);
-                    case MessageType.UNREAD_MESSAGE:
-                      return UnreadMessage();
-                  }
+                    }
+                  case MessageType.MULTI_SELECT:
+                    {
+                      return MultiSelect(
+                          title: (message as MultiSelectModel).text,
+                          buttons: (message as MultiSelectModel).buttons,
+                          insertMultiSelect:
+                              (message as MultiSelectModel).updateMultiSelect,
+                          previouslySelected: _selectedGenres,
+                          containsNoPreference: (message as MultiSelectModel)
+                              .containsNoPreference);
+                    }
+                  case MessageType.CAROUSEL:
+                    {
+                      _disableKeyboardForAndroid(context);
+                      return CarouselDialogSlider(
+                          message as CarouselModel,
+                          _movieItemClicked,
+                          widget.settings,
+                          _constructHelpContent,
+                          widget.authGoogle);
+                    }
                 }
-                return Container();
-              },
-              itemCount: _messages.length,
-            )),
-            Visibility(
-              visible: !_doNotShowTyping,
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: TypingIndicator(
-                  showIndicator: !_doNotShowTyping,
-                ),
-              ),
-            ),
-            Divider(height: 1.0),
-            TextComposer(
-                textController: _textController,
-                textEditorChanged: _textEditorChanged,
-                handleSubmitted: _handleSubmitted,
-                isTextFieldEnabled: _isTextFieldEnabled,
-                shouldShowTwinkleButton: _shouldShowTwinkleButton,
-                handleTwinkleButton: _handleTwinkleButton,
-                helpContent: _helpContent,
-                helpContentClickable: _helpContentClickable),
-          ]),
-          // _firstTimeOverlayWidget(context),
-          BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
-            builder: (BuildContext context, state) {
-              if (state is MovieDetailsLoading) {
-                return Center(
-                  child: Container(
-                      width: 40,
-                      height: 40,
-                      child: Platform.isIOS
-                          ? Image.asset(
-                              "packages/loading_gifs/assets/images/cupertino_activity_indicator.gif",
-                              scale: 5)
-                          : Image.asset(
-                              "packages/loading_gifs/assets/images/circular_progress_indicator.gif",
-                              scale: 10)),
-                );
               }
               return Container();
             },
-            listener: (BuildContext context, state) {
-              if (state is MovieDetailsLoaded) {
-                _handleNewUIForMovieDetails(state.model);
-              }
-              if (state is MovieDetailsError) {
-                _defaultResponse();
-              }
-            },
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: FloatingActionButton(
-              foregroundColor: Colors.deepOrangeAccent,
-              backgroundColor: Colors.orange[200],
-              child: new Icon(
-                  Platform.isIOS ? CupertinoIcons.refresh : Icons.refresh),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext ctx) {
-                    return Platform.isIOS
-                        ? CupertinoAlertDialog(
-                            title: Text(SHOULD_REFRESH_TEXT),
-                            actions: <Widget>[
-                              CupertinoButton(
-                                child: Text(YES),
-                                onPressed: () async {
-                                  Navigator.of(ctx).pop();
-                                  _callWelcomeIntent(true);
-                                },
-                              ),
-                              CupertinoButton(
-                                child: Text(NO),
-                                onPressed: () async {
-                                  Navigator.of(ctx).pop();
-                                },
-                              ),
-                            ],
-                          )
-                        : AlertDialog(
-                            title: Text(SHOULD_REFRESH_TEXT),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text(YES),
-                                onPressed: () async {
-                                  Navigator.of(ctx).pop();
-                                  _callWelcomeIntent(true);
-                                },
-                              ),
-                              TextButton(
-                                child: Text(NO),
-                                onPressed: () async {
-                                  Navigator.of(ctx).pop();
-                                },
-                              ),
-                            ],
-                          );
-                  },
-                );
-              },
+            itemCount: _messages.length,
+          )),
+          Visibility(
+            visible: !_doNotShowTyping,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: TypingIndicator(
+                showIndicator: !_doNotShowTyping,
+              ),
             ),
           ),
-        ],
-      ),
+          Divider(height: 1.0),
+          TextComposer(
+              textController: _textController,
+              handleSubmitted: _handleSubmitted,
+              isTextFieldEnabled: _isTextFieldEnabled,
+              shouldShowTwinkleButton: _shouldShowTwinkleButton,
+              handleTwinkleButton: _handleTwinkleButton,
+              helpContent: _helpContent,
+              helpContentClickable: _helpContentClickable),
+        ]),
+        // _firstTimeOverlayWidget(context),
+        BlocConsumer<MovieDetailsBloc, MovieDetailsState>(
+          builder: (BuildContext context, state) {
+            if (state is MovieDetailsLoading) {
+              return Center(
+                child: Container(
+                    width: 40,
+                    height: 40,
+                    child: Platform.isIOS
+                        ? Image.asset(
+                            "packages/loading_gifs/assets/images/cupertino_activity_indicator.gif",
+                            scale: 5)
+                        : Image.asset(
+                            "packages/loading_gifs/assets/images/circular_progress_indicator.gif",
+                            scale: 10)),
+              );
+            }
+            return Container();
+          },
+          listener: (BuildContext context, state) {
+            if (state is MovieDetailsLoaded) {
+              _handleNewUIForMovieDetails(state.model);
+            }
+            if (state is MovieDetailsError) {
+              _defaultResponse();
+            }
+          },
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: FloatingActionButton(
+            foregroundColor: Colors.deepOrangeAccent,
+            backgroundColor: Colors.orange[200],
+            child: new Icon(
+                Platform.isIOS ? CupertinoIcons.refresh : Icons.refresh),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext ctx) {
+                  return Platform.isIOS
+                      ? CupertinoAlertDialog(
+                          title: Text(SHOULD_REFRESH_TEXT),
+                          actions: <Widget>[
+                            CupertinoButton(
+                              child: Text(YES),
+                              onPressed: () async {
+                                Navigator.of(ctx).pop();
+                                _callWelcomeIntent(true);
+                              },
+                            ),
+                            CupertinoButton(
+                              child: Text(NO),
+                              onPressed: () async {
+                                Navigator.of(ctx).pop();
+                              },
+                            ),
+                          ],
+                        )
+                      : AlertDialog(
+                          title: Text(SHOULD_REFRESH_TEXT),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text(YES),
+                              onPressed: () async {
+                                Navigator.of(ctx).pop();
+                                _callWelcomeIntent(true);
+                              },
+                            ),
+                            TextButton(
+                              child: Text(NO),
+                              onPressed: () async {
+                                Navigator.of(ctx).pop();
+                              },
+                            ),
+                          ],
+                        );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -342,24 +269,17 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   Future<void> _movieItemClicked(
       String movieId, EntertainmentType entertainmentType) async {
-    _stopAllTimers();
     String _countryCode = _getCountryCode();
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: movieId,
         countryCode: _countryCode,
         entertainmentType: entertainmentType,
         eventStatus: EventStatus.fetchMovieDetails));
-    //  await _getWatchProvidersAndVideos(movieId, _countryCode);
   }
 
   String _getCountryCode() {
     String _countryCode = widget.settings.countryCode.getValue();
     return _countryCode;
-  }
-
-  void _stopAllTimers() {
-    stopAbsoluteTimer();
-    stopUITimer();
   }
 
   void _scrollToBottom() {
@@ -376,26 +296,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _messages.removeAt(0);
       });
       _showChatMessage(reply, true, true);
-
-      if (reply.toLowerCase() == SHOW_GENRES) {
-        _pageNumber = 2;
-        _getDialogFlowResponse(reply);
-        return;
-      }
-      if (reply.toLowerCase() == IGNORE_GENRES) {
-        _pageNumber = 2;
-        String countryCode = _getCountryCode();
-        var parameters = "'parameters' : { 'watch-region' : '$countryCode' }";
-        _getDialogFlowResponseByEvent(
-            GENRES_SELECTED_OR_IGNORED, parameters, false);
-        return;
-      }
-      if (reply.toLowerCase() == SAME_CRITERIA) {
-        var param = "'parameters' : { 'page-number':  $_pageNumber }";
-        _getDialogFlowResponseByEvent(SAME_CRITERIA_EVENT, param, false);
-        _pageNumber = _pageNumber + 1;
-        return;
-      }
       _getDialogFlowResponse(reply);
     }
   }
@@ -403,8 +303,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> handleFilterContents(eventName, parameters) async {
     setState(() {
       _doNotShowTyping = true;
-      // _messages.removeAt(0);
-      //_messages.removeWhere((element) => element is CarouselModel);
     });
     _getDialogFlowResponseByEvent(eventName, parameters, true);
   }
@@ -475,20 +373,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       if (ACTION_CHANGE_COUNTRY == action) {
         return;
       }
-      if (ACTION_TRIGGER_TIPS == action) {
-        _scrollToBottom();
-        setState(() {
-          _doNotShowTyping = true;
-          var chatModel = new TipsModel(
-              type: MessageType.TIPS_MESSAGE,
-              text: response.getChatMessage()[0]);
-          _messages.insert(0, chatModel);
-        });
-        _stopAllTimers();
-        return;
-      }
-      _handleTimers(action);
-
       if (response.containsHelpContent()) {
         _constructHelpContent(
             response.helpContent(), response.isHelpContentClickable());
@@ -521,25 +405,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
       _constructChatMessage(response.getDefaultOrChatMessage());
       return;
-    }
-  }
-
-  void _handleTimers(String action) {
-    if (ACTION_MOVIE_RECOMMENDATIONS == action ||
-        ACTION_MORE_MOVIE_RECOMMENDATIONS == action) {
-      _startUIInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-      _startAbsoluteInactivityTimer(POST_RECOMMENDATION_TIPS_EVENT);
-    }
-    if (ACTION_UNKNOWN == action) {
-      _unknownAction++;
-
-      if (widget.selectedTips && _unknownAction == 2) {
-        setState(() {
-          _unknownAction = 0;
-        });
-        _startUIInactivityTimer(POST_ERROR_TIPS_EVENT);
-        _startAbsoluteInactivityTimer(POST_ERROR_TIPS_EVENT);
-      }
     }
   }
 
@@ -643,9 +508,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _handleSubmitted(String text) {
     _messages.removeWhere((element) => element is CarouselModel);
-
-    _stopAllTimers();
-
     if (text.trim() != "") {
       _textController.clear();
       setState(() {
@@ -662,28 +524,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     }
   }
 
-  void stopAbsoluteTimer() {
-    if (_absoluteInactivityTimer != null) {
-      _absoluteInactivityTimer.cancel();
-    }
-  }
-
-  void stopUITimer() {
-    if (_uiInactivityTimer != null) {
-      _uiInactivityTimer.cancel();
-    }
-  }
-
-  void _textEditorChanged(String text) {
-    _stopAllTimers();
-  }
-
   @override
   void dispose() {
     _scrollController.dispose();
     _textController.dispose();
     WidgetsBinding.instance.removeObserver(this);
-    _stopAllTimers();
     super.dispose();
   }
 

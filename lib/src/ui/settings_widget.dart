@@ -4,31 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/models/settings_model.dart';
-import 'package:flutter_app/src/ui/ios/cupertino_switch_list_tile.dart';
 
 import 'country/country_list_pick.dart';
 
 class SettingsWidget extends StatefulWidget {
   static const routeName = '/settings';
 
-  final currentTipStatus;
-  final Function saveTips;
-
-  SettingsWidget(this.currentTipStatus, this.saveTips);
-
   @override
   _SettingsWidgetState createState() => _SettingsWidgetState();
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  bool _tipsOn = false;
   SettingsModel prefs;
-
-  @override
-  void initState() {
-    _tipsOn = widget.currentTipStatus;
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -36,36 +23,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         as Map<String, SettingsModel>;
     prefs = routeArgs['prefs'];
     super.didChangeDependencies();
-  }
-
-  Widget _buildSwitchListTile(
-    String title,
-    String description,
-    bool currentValue,
-    Function updateValue,
-  ) {
-    return Container(
-      margin: EdgeInsets.only(top: 16.0),
-      child: Platform.isIOS
-          ? CupertinoSwitchListTile(
-              title: Text(
-                title,
-                style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-              ),
-              value: currentValue,
-              subtitle: Text(description,
-                  style:
-                      CupertinoTheme.of(context).textTheme.tabLabelTextStyle),
-              onChanged: updateValue)
-          : SwitchListTile(
-              title: Text(title),
-              value: currentValue,
-              subtitle: Text(
-                description,
-              ),
-              onChanged: updateValue,
-            ),
-    );
   }
 
   Widget _buildCountryCode() {
@@ -132,19 +89,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               ),
         body: Column(
           children: [
-            _buildSwitchListTile(
-              RECEIVE_TIPS,
-              RECEIVE_TIPS_CONTENT,
-              _tipsOn,
-              (newValue) {
-                setState(
-                  () {
-                    _tipsOn = newValue;
-                    widget.saveTips(newValue);
-                  },
-                );
-              },
-            ),
             _buildCountryCode(),
           ],
         ));

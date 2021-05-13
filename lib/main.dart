@@ -66,8 +66,6 @@ Future<AuthGoogle> getAuthGoogle() async {
   return authGoogle;
 }
 
-bool _selectedTips = false;
-
 class ChatBot extends StatefulWidget {
   final SettingsModel settings;
   final AuthGoogle authGoogle;
@@ -79,11 +77,6 @@ class ChatBot extends StatefulWidget {
 }
 
 class _ChatBotState extends State<ChatBot> {
-  _onTipSelected(bool value) {
-    setState(() {
-      _selectedTips = value;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +103,7 @@ class _ChatBotState extends State<ChatBot> {
           case SettingsWidget.routeName:
             {
               builder =
-                  (context) => SettingsWidget(_selectedTips, _onTipSelected);
+                  (context) => SettingsWidget();
             }
             break;
           case AboutAppWidget.routeName:
@@ -149,7 +142,7 @@ class ChatBotFlow extends StatelessWidget {
               child: ConnectivityCheck(
                   child: LocationCheck(
                       settings: this.settings,
-                      child: ChatBotUI(_selectedTips, settings, authGoogle)))),
+                      child: ChatBotUI(settings, authGoogle)))),
         ));
   }
 

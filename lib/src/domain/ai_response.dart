@@ -112,7 +112,6 @@ class AIResponse {
       return payload['carouselSelect'] != null;
     }
     return false;
-
   }
 
   bool containsMovieOrTvRecommendationsActions() =>
@@ -224,6 +223,13 @@ class AIResponse {
         (element) => element.containsKey('payload'),
         orElse: () => null);
     return payload['payload']['payload']['helpContentClickable'];
+  }
+
+  bool isTextFieldEnabled() {
+    if (containsPayload())
+      return getPayload()['enableTextField'] ?? false;
+
+    return false;
   }
 }
 

@@ -459,7 +459,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _executeResponse(AIResponse response) {
     setState(() {
-      _isTextFieldEnabled = false;
+      _isTextFieldEnabled = response.isTextFieldEnabled();
       _doNotShowTyping = true;
     });
     if (response != null) {
@@ -615,9 +615,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     setState(() {
       if (quickReplies != null && quickReplies.length == 1) {
         _removeNoPreferenceQuickReply = true;
-        _isTextFieldEnabled = true;
-      } else {
-        _isTextFieldEnabled = false;
       }
       var replyModel = ReplyModel(
         text: replies.title,

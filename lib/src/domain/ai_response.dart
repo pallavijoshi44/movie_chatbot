@@ -61,11 +61,6 @@ class AIResponse {
     return payload['payload'];
   }
 
-  // dynamic getCarousel() {
-  //   var payload = getPayload();
-  //   return payload['carouselSelect'];
-  // }
-
   List<dynamic> getListMessage() {
     return _queryResult.fulfillmentMessages;
   }

@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:http/http.dart' show Client;
 
 class ApiProvider {
   Client client = Client();
-
-  //final _baseUrl = "http://localhost:5001/movie-chatbot-api/us-central1/dev";
+  String functionName = kReleaseMode ? "prod" : "dev";
 
   Future<MovieTvDetailsModel> fetchMovieDetails(String id, String countryCode,
       EntertainmentType entertainmentType) async {
@@ -27,8 +27,8 @@ class ApiProvider {
           };
     var body = json.encode(data);
     final _baseUrl = entertainmentType == EntertainmentType.MOVIE
-        ? "https://us-central1-movie-chatbot-api.cloudfunctions.net/dev/get-movie_watch_providers_and_videos"
-        : "https://us-central1-movie-chatbot-api.cloudfunctions.net/dev/get-tv_watch_providers_and_videos";
+        ? "https://us-central1-movie-chatbot-api.cloudfunctions.net/$functionName/get-movie_watch_providers_and_videos"
+        : "https://us-central1-movie-chatbot-api.cloudfunctions.net/$functionName/get-tv_watch_providers_and_videos";
 
     var response = await client.post(_baseUrl,
         headers: {HttpHeaders.contentTypeHeader: "application/json"},

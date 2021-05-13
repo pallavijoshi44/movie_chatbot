@@ -58,9 +58,11 @@ class DialogFlow {
     // return url;
 
     var url =  "https://dialogflow.googleapis.com/v2/projects/${authGoogle.getProjectId}/agent/sessions/${authGoogle.getSessionId}/contexts";
-    await authGoogle.delete(url,
+    var response = await authGoogle.delete(url,
         headers: {
           HttpHeaders.authorizationHeader: "Bearer ${authGoogle.getToken}"
         });
+
+    return response;
   }
 }

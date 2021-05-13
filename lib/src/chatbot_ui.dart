@@ -65,7 +65,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     if (clearMessages) {
       _messages.clear();
     }
-    _deleteDialogFlowContexts();
+    await _deleteDialogFlowContexts();
     var countryCode = _getCountryCode();
     var parameters = "'parameters' : { 'country-code' : '$countryCode' }";
     _getDialogFlowResponseByEvent(WELCOME_EVENT, parameters, true);
@@ -117,7 +117,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     }
                   case MessageType.CAROUSEL:
                     {
-                     // _disableKeyboardForAndroid(context);
+                      // _disableKeyboardForAndroid(context);
                       return CarouselDialogSlider(
                           message as CarouselModel,
                           _movieItemClicked,
@@ -238,7 +238,6 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   void _disableKeyboardForAndroid(BuildContext context) {
     //  FocusScope.of(context).requestFocus(new FocusNode());
     FocusScope.of(context).unfocus();
-
   }
 
   Future<void> _multiSelectItemClicked(String value, bool isSelected,
@@ -341,10 +340,10 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     detectDialogResponses.callDialogFlow();
   }
 
-  void _deleteDialogFlowContexts() {
+  Future<void> _deleteDialogFlowContexts() async {
     DetectDialogResponses detectDialogResponses =
         new DetectDialogResponses(authGoogle: widget.authGoogle);
-    detectDialogResponses.deleteDialogFlowContexts();
+    await detectDialogResponses.deleteDialogFlowContexts();
   }
 
   void _defaultResponse() {

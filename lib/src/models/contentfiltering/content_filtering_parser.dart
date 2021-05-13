@@ -58,22 +58,21 @@ class ContentFilteringParser {
   }
 
   void _constructShort(Map parameters) {
-    _initializeKey(_short, KEY_SHORT_MOVIE, parameters);
+    _short = _initializeKey(KEY_SHORT_MOVIE, parameters);
   }
 
   void _constructOthers(Map parameters) {
-    _initializeKey(_likePhrases, KEY_LIKE_PHRASES, parameters);
-    _initializeKey(_sortyBy, KEY_LIKE_PHRASES, parameters);
-    _initializeKey(_movieOrTvId, KEY_MOVIE_OR_TV_ID, parameters);
+    _likePhrases = _initializeKey(KEY_LIKE_PHRASES, parameters);
+    _sortyBy = _initializeKey( KEY_LIKE_PHRASES, parameters);
+    _movieOrTvId = _initializeKey(KEY_MOVIE_OR_TV_ID, parameters);
   }
 
-  void _initializeKey(String key, String value, Map parameters) {
+  String _initializeKey(String key, Map parameters) {
+    String value = "";
     if (_isValidKey(parameters, key)) {
       value = parameters[key];
-      return;
-    } else {
-      value = "";
     }
+    return value;
   }
 
   bool _isValidKey(Map parameters, String key) {

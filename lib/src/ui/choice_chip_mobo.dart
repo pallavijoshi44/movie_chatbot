@@ -22,6 +22,7 @@ class ChoiceChipMobo extends StatelessWidget {
       child: Material(
         color: Color.fromRGBO(249, 248, 235, 1),
         child: ChoiceChip(
+            elevation: 2,
             backgroundColor: Color.fromRGBO(249, 248, 235, 1),
             disabledColor: Colors.lightGreen[100],
             label: Text(label,

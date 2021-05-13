@@ -276,7 +276,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   }
 
   void _handleFilterContents(String eventName, String parameters) {
-    _controller.jumpTo(0);
+    if (_controller != null && _controller.hasClients)
+      _controller.jumpTo(0);
     _callDialogFlowByEvent(eventName, parameters,
         _updateItemsForCarouselAndFilters, _showDefaultMessage);
   }

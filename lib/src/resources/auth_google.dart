@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:googleapis_auth/auth_io.dart';
@@ -9,14 +10,13 @@ import 'package:meta/meta.dart';
 class AuthGoogle {
   final String fileJson;
   final List<String> scope;
-  final String sessionId;
 
   AuthGoogle(
       {@required this.fileJson,
-      this.scope = const ["https://www.googleapis.com/auth/cloud-platform"],
-      this.sessionId = "123"});
+      this.scope = const ["https://www.googleapis.com/auth/cloud-platform"]});
 
   String _projectId;
+  String _sessionId;
   AccessCredentials _credentials;
 
   Future<String> getReadJson() async {
@@ -30,8 +30,17 @@ class AuthGoogle {
     var _credentialsResponse = new ServiceAccountCredentials.fromJson(readJson);
     var data = await clientViaServiceAccount(_credentialsResponse, this.scope);
     _projectId = jsonData['project_id'];
+    _sessionId = getRandomNumberString();
     _credentials = data.credentials;
     return this;
+  }
+
+  String getRandomNumberString() {
+    int min = 100000; //min and max values act as your 6 digit range
+    int max = 999999;
+    var randomizer = new Random();
+    var rNum = min + randomizer.nextInt(max - min);
+    return rNum.toString();
   }
 
   bool get hasExpired {
@@ -39,7 +48,7 @@ class AuthGoogle {
   }
 
   String get getSessionId {
-    return sessionId;
+    return _sessionId;
   }
 
   String get getProjectId {

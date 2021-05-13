@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/chatbot_ui.dart';
 import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
+import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
 import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/location_check.dart';
@@ -55,16 +56,24 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final preferences = await StreamingSharedPreferences.instance;
   final settings = SettingsModel(preferences);
+  AuthGoogle authGoogle = await getAuthGoogle();
 
-  runApp(ChatBot(settings));
+  runApp(ChatBot(settings, authGoogle));
+}
+
+Future<AuthGoogle> getAuthGoogle() async {
+  AuthGoogle authGoogle =
+  await AuthGoogle(fileJson: "assets/credentials.json").build();
+  return authGoogle;
 }
 
 bool _selectedTips = false;
 
 class ChatBot extends StatefulWidget {
   final SettingsModel settings;
+  final AuthGoogle authGoogle;
 
-  ChatBot(this.settings);
+  ChatBot(this.settings, this.authGoogle);
 
   @override
   _ChatBotState createState() => _ChatBotState();
@@ -122,15 +131,16 @@ class _ChatBotState extends State<ChatBot> {
         } else
           return MaterialPageRoute(builder: builder, settings: settings);
       },
-      home: ChatBotFlow(widget.settings),
+      home: ChatBotFlow(widget.settings, widget.authGoogle),
     );
   }
 }
 
 class ChatBotFlow extends StatelessWidget {
   final SettingsModel settings;
+  final AuthGoogle authGoogle;
 
-  ChatBotFlow(this.settings);
+  ChatBotFlow(this.settings, this.authGoogle);
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +155,7 @@ class ChatBotFlow extends StatelessWidget {
               child: ConnectivityCheck(
                   child: LocationCheck(
                       settings: this.settings,
-                      child: ChatBotUI(_selectedTips, settings)))),
+                      child: ChatBotUI(_selectedTips, settings, authGoogle)))),
         ));
   }
 

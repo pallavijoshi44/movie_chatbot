@@ -18,6 +18,7 @@ import 'package:flutter_app/src/models/tips_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_tv_details.dart';
 import 'package:flutter_app/src/models/unread_message_model.dart';
+import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/originalmoviedetails/movie_thumbnail.dart';
@@ -40,8 +41,9 @@ import 'ui/tips.dart';
 class ChatBotUI extends StatefulWidget {
   final bool selectedTips;
   final SettingsModel settings;
+  final AuthGoogle authGoogle;
 
-  ChatBotUI(this.selectedTips, this.settings);
+  ChatBotUI(this.selectedTips, this.settings, this.authGoogle);
 
   @override
   _ChatBotUIState createState() => _ChatBotUIState();
@@ -168,7 +170,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.CAROUSEL:
                       {
                         return CarouselDialogSlider(message as CarouselModel,
-                            _movieItemClicked, widget.settings, _constructHelpContent);
+                            _movieItemClicked, widget.settings, _constructHelpContent, widget.authGoogle);
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -412,7 +414,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         query: query,
         queryInputType: QUERY_INPUT_TYPE.QUERY,
         executeResponse: _executeResponse,
-        defaultResponse: _defaultResponse);
+        defaultResponse: _defaultResponse,
+      authGoogle: widget.authGoogle
+    );
 
     detectDialogResponses.callDialogFlow();
   }
@@ -428,13 +432,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         eventName: eventName,
         parameters: parameters,
         queryInputType: QUERY_INPUT_TYPE.EVENT,
-        defaultResponse: _defaultResponse);
+        defaultResponse: _defaultResponse,
+    authGoogle: widget.authGoogle);
 
     detectDialogResponses.callDialogFlow();
   }
 
   void _deleteDialogFlowContexts() {
-    DetectDialogResponses detectDialogResponses = new DetectDialogResponses();
+    DetectDialogResponses detectDialogResponses = new DetectDialogResponses(authGoogle: widget.authGoogle);
     detectDialogResponses.deleteDialogFlowContexts();
   }
 

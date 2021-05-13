@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/dialog_flow.dart';
 import 'package:flutter_dialogflow/utils/language.dart';
@@ -11,6 +12,7 @@ class DetectDialogResponses {
   final String eventName;
   final String query;
   final dynamic parameters;
+  final AuthGoogle authGoogle;
 
   DetectDialogResponses(
       {this.query,
@@ -18,13 +20,13 @@ class DetectDialogResponses {
       this.eventName,
       this.parameters,
       this.executeResponse,
-      this.defaultResponse});
+      this.defaultResponse,
+      @required this.authGoogle});
 
   Future<void> callDialogFlow() async {
     AIResponse response;
     try {
-      AuthGoogle authGoogle = await getAuthGoogle();
-      DialogFlow dialogflow = getDialogFlow(authGoogle);
+      DialogFlow dialogflow = await getDialogFlow();
       try {
         if (queryInputType == QUERY_INPUT_TYPE.QUERY) {
           response = await dialogflow.detectIntent(query);
@@ -45,8 +47,7 @@ class DetectDialogResponses {
 
   Future<AIResponse> callDialogFlowForGeneralReasons() async {
     AIResponse response;
-    AuthGoogle authGoogle = await getAuthGoogle();
-    DialogFlow dialogflow = getDialogFlow(authGoogle);
+    DialogFlow dialogflow = await getDialogFlow();
     if (queryInputType == QUERY_INPUT_TYPE.QUERY) {
       response = await dialogflow.detectIntent(query);
     } else {
@@ -55,21 +56,14 @@ class DetectDialogResponses {
     return response;
   }
 
-  Future<AuthGoogle> getAuthGoogle() async {
-    AuthGoogle authGoogle =
-        await AuthGoogle(fileJson: "assets/credentials.json").build();
-    return authGoogle;
-  }
-
-  DialogFlow getDialogFlow(AuthGoogle authGoogle) {
+  Future<DialogFlow> getDialogFlow() async {
     DialogFlow dialogflow =
-        DialogFlow(authGoogle: authGoogle, language: Language.english);
+        DialogFlow(authGoogle: this.authGoogle, language: Language.english);
     return dialogflow;
   }
 
   Future<void> deleteDialogFlowContexts() async {
-    AuthGoogle authGoogle = await getAuthGoogle();
-    DialogFlow dialogflow = getDialogFlow(authGoogle);
+    DialogFlow dialogflow = await getDialogFlow();
     await dialogflow.deleteContexts();
   }
 }

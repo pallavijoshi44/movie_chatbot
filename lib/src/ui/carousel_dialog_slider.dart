@@ -11,6 +11,7 @@ import 'package:flutter_app/src/models/carousel_model.dart';
 import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_app/src/models/settings_model.dart';
+import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:flutter_dialogflow/v2/message.dart';
@@ -23,9 +24,10 @@ class CarouselDialogSlider extends StatefulWidget {
   final Function carouselItemClicked;
   final Function updateHelpContent;
   final SettingsModel settings;
+  final AuthGoogle authGoogle;
 
   CarouselDialogSlider(this.carouselModel, this.carouselItemClicked,
-      this.settings, this.updateHelpContent);
+      this.settings, this.updateHelpContent, this.authGoogle);
 
   @override
   CarouselDialogSliderState createState() => CarouselDialogSliderState();
@@ -241,7 +243,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
         eventName: eventName,
         parameters: parameters,
         queryInputType: QUERY_INPUT_TYPE.EVENT,
-        defaultResponse: defaultResponse);
+        defaultResponse: defaultResponse,
+    authGoogle: widget.authGoogle);
 
     detectDialogResponses.callDialogFlow();
   }

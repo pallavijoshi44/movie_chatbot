@@ -73,7 +73,11 @@ class _TextComposerState extends State<TextComposer> {
               focusNode: focusNode,
               enabled: widget.isTextFieldEnabled,
               controller: widget.textController,
-              onSubmitted: widget.handleSubmitted,
+              onTap: () => focusNode.requestFocus(),
+              onSubmitted: (text) {
+                focusNode.unfocus();
+                return widget.handleSubmitted(text);
+              },
               style: TextStyle(fontSize: 16, fontFamily: 'QuickSand'),
               maxLines: null,
               decoration: new InputDecoration.collapsed(hintText: HINT_TEXT),
@@ -143,7 +147,11 @@ class _TextComposerState extends State<TextComposer> {
                   color: Colors.black, fontFamily: 'QuickSand', fontSize: 16),
               enabled: widget.isTextFieldEnabled,
               controller: widget.textController,
-              onSubmitted: widget.handleSubmitted,
+              onTap: () => focusNode.requestFocus(),
+              onSubmitted: (text) {
+                focusNode.unfocus();
+                return widget.handleSubmitted(text);
+              },
               placeholder: HINT_TEXT),
         ),
       ),

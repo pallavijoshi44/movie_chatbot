@@ -117,7 +117,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     }
                   case MessageType.CAROUSEL:
                     {
-                      _disableKeyboardForAndroid(context);
+                     // _disableKeyboardForAndroid(context);
                       return CarouselDialogSlider(
                           message as CarouselModel,
                           _movieItemClicked,
@@ -236,8 +236,9 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _disableKeyboardForAndroid(BuildContext context) {
-    if (Platform.isAndroid)
-      FocusScope.of(context).requestFocus(new FocusNode());
+    //  FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).unfocus();
+
   }
 
   Future<void> _multiSelectItemClicked(String value, bool isSelected,
@@ -456,6 +457,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         _helpContent.add(content['text']);
       });
     });
+    _disableKeyboardForAndroid(context);
   }
 
   void _constructMultiSelect(response) {

@@ -7,7 +7,6 @@ import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/models/tmdb/moviedetails/movie_detail_bloc.dart';
 import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/ui/connectivity_check.dart';
-import 'package:flutter_app/src/ui/help_widget.dart';
 import 'package:flutter_app/src/ui/location_check.dart';
 import 'package:flutter_app/src/ui/settings_widget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -114,11 +113,6 @@ class _ChatBotState extends State<ChatBot> {
                   (context) => SettingsWidget(_selectedTips, _onTipSelected);
             }
             break;
-          case HelpWidget.routeName:
-            {
-              builder = (context) => HelpWidget();
-            }
-            break;
           case AboutAppWidget.routeName:
             {
               builder = (context) => AboutAppWidget();
@@ -201,7 +195,6 @@ class ChatBotFlow extends StatelessWidget {
             PopupMenuButton<String>(
               onSelected: (value) async {
                 if (value == ABOUT_APP) _showAboutAppScreen(context, context);
-                if (value == HELP) _showHelpWidget(context, context);
                 if (value == SETTINGS)
                   await _showSettingsScreen(context, context);
               },
@@ -262,9 +255,6 @@ class ChatBotFlow extends StatelessWidget {
                   onPressed: () => _showAboutAppScreen(ctx, context),
                   child: const Text(ABOUT_APP)),
               CupertinoActionSheetAction(
-                  onPressed: () => _showHelpWidget(ctx, context),
-                  child: const Text(HELP)),
-              CupertinoActionSheetAction(
                   onPressed: () async =>
                       await _showSettingsScreen(ctx, context),
                   child: const Text(SETTINGS))
@@ -276,11 +266,6 @@ class ChatBotFlow extends StatelessWidget {
   void _showAboutAppScreen(BuildContext ctx, BuildContext context) {
     _popActionSheetForiOS(ctx);
     Navigator.pushNamed(context, AboutAppWidget.routeName);
-  }
-
-  void _showHelpWidget(BuildContext ctx, BuildContext context) {
-    _popActionSheetForiOS(ctx);
-    Navigator.pushNamed(context, HelpWidget.routeName);
   }
 
   Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {

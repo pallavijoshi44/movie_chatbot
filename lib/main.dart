@@ -149,23 +149,19 @@ class ChatBotFlow extends StatelessWidget {
   Future<bool> _onBackPressed(BuildContext context) {
     return showDialog(
           context: context,
-          builder: (context) => new AlertDialog(
-            actionsPadding: EdgeInsets.all(10),
-            title: new Text('Are you sure?',
-                style: Theme.of(context).appBarTheme.textTheme.headline),
-            content: new Text(
-              'You don\'t want to chat with me anymore?',
-              style: Theme.of(context).textTheme.headline,
-            ),
+          builder: (context) => AlertDialog(
+            title: Text("Do you want to quit the app?"),
             actions: <Widget>[
-              new GestureDetector(
-                onTap: () => Navigator.of(context).pop(false),
-                child: Text("NO", style: Theme.of(context).textTheme.headline),
+              TextButton(
+                child: Text(YES),
+                onPressed: ()  {
+                  Navigator.of(context).pop(true);
+                },
               ),
-              SizedBox(height: 16),
-              new GestureDetector(
-                onTap: () => Navigator.of(context).pop(true),
-                child: Text("YES", style: Theme.of(context).textTheme.headline),
+              TextButton(
+                child: Text(NO),
+                onPressed: ()  {
+                  Navigator.of(context).pop(false);                },
               ),
             ],
           ),

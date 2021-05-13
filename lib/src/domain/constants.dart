@@ -1,8 +1,7 @@
-const String WELCOME_EVENT = "Welcome";
+const String WELCOME_EVENT = "REVISED_WELCOME";
 const String CHANGE_COUNTRY_EVENT = "CHANGE_COUNTRY";
 const String APP_TITLE = "Mobo - The Movie Chatbot";
 const String HINT_TEXT = "Send a message";
-const String NEW_WELCOME_EVENT = "welcomeEvent";
 const String DEFAULT_PARAMETERS_FOR_EVENT = "'parameters' : {}";
 const String ACTION_START_OVER = "startOver";
 const String ACTION_CHANGE_COUNTRY = "changeCountry";

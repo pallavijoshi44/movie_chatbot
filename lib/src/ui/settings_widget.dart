@@ -26,43 +26,54 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Widget _buildCountryCode() {
-    return ListTile(
-      title: Platform.isIOS
-          ? Text(SET_COUNTRY,
-              style: CupertinoTheme.of(context).textTheme.navTitleTextStyle)
-          : Text(SET_COUNTRY),
-      subtitle: Platform.isIOS
-          ? Text(SET_COUNTRY_LOCATION_CONTENT,
-              style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle)
-          : Text(
-              SET_COUNTRY_LOCATION_CONTENT,
-            ),
-      trailing: CountryListPick(
-        appBar: Platform.isIOS
-            ? CupertinoNavigationBar(
-                leading: new CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: new Icon(CupertinoIcons.back, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                middle: Text('Choose Country',
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-              )
-            : AppBar(
-                title: Text('Choose Country'),
-              ),
-        theme: CountryTheme(
-          isShowFlag: true,
-          isShowTitle: true,
-          isShowCode: false,
-          isDownIcon: false,
-          showEnglishName: true,
+    return Container(
+      child: ListTile(
+        title: Padding(
+          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
+          child: Platform.isIOS
+              ? Text(SET_COUNTRY,
+                  style: CupertinoTheme.of(context).textTheme.navTitleTextStyle)
+              : Text(SET_COUNTRY),
         ),
-        initialSelection: prefs.countryCode.getValue(),
-        onChanged: (CountryCode code)  {
-          prefs.countryCode.setValue(code.code);
-        },
+        subtitle: Padding(
+          padding: EdgeInsets.only(bottom: 10, left: 10, right: 10),
+          child: Platform.isIOS
+              ? Text(SET_COUNTRY_LOCATION_CONTENT,
+                  style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle)
+              : Text(
+                  SET_COUNTRY_LOCATION_CONTENT,
+                ),
+        ),
+        trailing: Container(
+          width: 150,
+          child: CountryListPick(
+            appBar: Platform.isIOS
+                ? CupertinoNavigationBar(
+                    leading: new CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: new Icon(CupertinoIcons.back, color: Colors.white),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    middle: Text('Choose Country',
+                        style:
+                            CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+                  )
+                : AppBar(
+                    title: Text('Choose Country'),
+                  ),
+            theme: CountryTheme(
+              isShowFlag: true,
+              isShowTitle: true,
+              isShowCode: false,
+              isDownIcon: false,
+              showEnglishName: true,
+            ),
+            initialSelection: prefs.countryCode.getValue(),
+            onChanged: (CountryCode code)  {
+              prefs.countryCode.setValue(code.code);
+            },
+          ),
+        ),
       ),
     );
   }
@@ -87,10 +98,6 @@ class _SettingsWidgetState extends State<SettingsWidget> {
             : AppBar(
                 title: Text(SETTINGS),
               ),
-        body: Column(
-          children: [
-            _buildCountryCode(),
-          ],
-        ));
+        body: _buildCountryCode());
   }
 }

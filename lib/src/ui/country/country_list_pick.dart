@@ -65,9 +65,17 @@ class _CountryListPickState extends State<CountryListPick> {
           (e) =>
               (e.code.toUpperCase() == widget.initialSelection.toUpperCase()) ||
               (e.dialCode == widget.initialSelection),
-          orElse: () => CountryCode(name: "India", dialCode: "+91", code: "IN"));
+          orElse: () => CountryCode(
+              name: "India",
+              dialCode: "+91",
+              code: "IN",
+              flagUri: 'assets/flags/in.png'));
     } else {
-      selectedItem = CountryCode(name: "India", dialCode: "+91", code: "IN");
+      selectedItem = CountryCode(
+          name: "India",
+          dialCode: "+91",
+          code: "IN",
+          flagUri: 'assets/flags/in.png');
     }
 
     super.initState();

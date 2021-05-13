@@ -168,7 +168,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                     case MessageType.CAROUSEL:
                       {
                         return CarouselDialogSlider(message as CarouselModel,
-                            _movieItemClicked, widget.settings);
+                            _movieItemClicked, widget.settings, _constructHelpContent);
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(

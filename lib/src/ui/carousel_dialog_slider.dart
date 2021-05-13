@@ -21,10 +21,11 @@ import 'content_filtering_tags.dart';
 class CarouselDialogSlider extends StatefulWidget {
   final CarouselModel carouselModel;
   final Function carouselItemClicked;
+  final Function updateHelpContent;
   final SettingsModel settings;
 
   CarouselDialogSlider(
-      this.carouselModel, this.carouselItemClicked, this.settings);
+      this.carouselModel, this.carouselItemClicked, this.settings, this.updateHelpContent);
 
   @override
   CarouselDialogSliderState createState() => CarouselDialogSliderState();
@@ -225,6 +226,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
           : TV_RECOMMENDATIONS_EVENT;
       Parameters parameters = _parameters;
       parameters.pageNumber = _pageNumber;
+      parameters.countryCode = widget.settings.countryCode.getValue();
       setState(() {
         _pageNumber += 1;
       });
@@ -264,6 +266,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     setState(() {
       _initializeItems(carouselModel);
     });
+    widget.updateHelpContent(response.helpContent(), response.isHelpContentClickable());
   }
 
   void showPlaceHolders() {

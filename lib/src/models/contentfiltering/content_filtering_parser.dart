@@ -42,7 +42,6 @@ class ContentFilteringParser {
     _constructOthers(parameters);
   }
 
-
   void _constructDatePeriod(Map parameters) {
     if (_isValidKey(parameters, KEY_DATE_PERIOD)) {
       _datePeriod = parameters[KEY_DATE_PERIOD];
@@ -208,7 +207,9 @@ class ContentFilteringParser {
           return;
         }
       });
-    } else {
+    }
+
+    if (_movieGenreItems.isEmpty) {
       _addAllGenresWhenNoneSelected(
           _movieGenreItems,
           GenresContentType.movieGenresGroup1,
@@ -216,6 +217,9 @@ class ContentFilteringParser {
           GenresContentType.movieGenresGroup3,
           GenresContentType.movieGenresGroup4,
           GenresContentType.movieGenresGroup5);
+    }
+
+    if (_tvGenreItems.isEmpty)
       _addAllGenresWhenNoneSelected(
           _tvGenreItems,
           GenresContentType.tvGenresGroup1,
@@ -223,7 +227,6 @@ class ContentFilteringParser {
           GenresContentType.tvGenresGroup3,
           GenresContentType.tvGenresGroup4,
           GenresContentType.tvGenresGroup5);
-    }
   }
 
   void _addAllGenresWhenNoneSelected(
@@ -314,7 +317,6 @@ class ContentFilteringParser {
     return _searchKeywordsOriginal;
   }
 
-
   List<String> getLanguages() {
     return _languages;
   }
@@ -330,6 +332,7 @@ class ContentFilteringParser {
   String getCustomDatePeriod() {
     return _customDatePeriod;
   }
+
   String getShortMovie() {
     return _short;
   }

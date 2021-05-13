@@ -46,7 +46,7 @@ class DialogFlow {
     return AIResponse(body: json.decode(response.body));
   }
 
-  void deleteContexts() async {
+  Future<void> deleteContexts() async {
     // String baseURL = "https://dialogflow.googleapis.com";
     // String version = "v2";
     // String environmentIdentifier;

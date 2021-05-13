@@ -36,6 +36,7 @@ class ContentFilteringParser {
     _constructMusicArtists(parameters);
     _constructWatchProviders(parameters);
     _constructDatePeriod(parameters);
+    _constructCustomDate(parameters);
     _constructSearchKeywords(parameters);
     _constructShort(parameters);
     _constructOthers(parameters);
@@ -48,6 +49,9 @@ class ContentFilteringParser {
       _datePeriodOriginal = parameters[KEY_DATE_PERIOD_ORIGINAL];
       return;
     }
+  }
+
+  void _constructCustomDate(Map parameters) {
     if (_isValidKey(parameters, KEY_CUSTOM_DATE_PERIOD)) {
       _customDatePeriod = parameters[KEY_CUSTOM_DATE_PERIOD];
       return;

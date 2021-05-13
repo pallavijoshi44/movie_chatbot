@@ -354,7 +354,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                   setState(() {
                     _selectedDatePeriodOriginal = !_selectedDatePeriodOriginal;
                     _datePeriodOriginal =
-                        _selectedDatePeriodOriginal ? _datePeriodOriginal : "";
+                        _selectedDatePeriodOriginal ? _response.getDatePeriodOriginal() : "";
                     // _datePeriod =
                     //     _selectedDatePeriodOriginal ? _datePeriod : "";
                   });
@@ -366,7 +366,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                   setState(() {
                     _selectedCustomDate = !_selectedCustomDate;
                     _customDatePeriod =
-                        _selectedCustomDate ? _customDatePeriod : "";
+                        _selectedCustomDate ? _response.getCustomDatePeriod() : "";
                   });
                   await _fetchContent();
                 }),
@@ -375,7 +375,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                     (item) async {
                   setState(() {
                     _selectedShortMovie = !_selectedShortMovie;
-                    _shortMovie = _selectedShortMovie ? _shortMovie : "";
+                    _shortMovie = _selectedShortMovie ? _response.getShortMovie() : "";
                   });
                   await _fetchContent();
                 })

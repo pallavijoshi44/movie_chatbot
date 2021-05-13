@@ -169,8 +169,13 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                       }
                     case MessageType.CAROUSEL:
                       {
-                        return CarouselDialogSlider(message as CarouselModel,
-                            _movieItemClicked, widget.settings, _constructHelpContent, widget.authGoogle);
+                        _disableKeyboardForAndroid(context);
+                        return CarouselDialogSlider(
+                            message as CarouselModel,
+                            _movieItemClicked,
+                            widget.settings,
+                            _constructHelpContent,
+                            widget.authGoogle);
                       }
                     case MessageType.MOVIE_PROVIDER_URL:
                       return Url(
@@ -415,8 +420,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         queryInputType: QUERY_INPUT_TYPE.QUERY,
         executeResponse: _executeResponse,
         defaultResponse: _defaultResponse,
-      authGoogle: widget.authGoogle
-    );
+        authGoogle: widget.authGoogle);
 
     detectDialogResponses.callDialogFlow();
   }
@@ -433,13 +437,14 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
         parameters: parameters,
         queryInputType: QUERY_INPUT_TYPE.EVENT,
         defaultResponse: _defaultResponse,
-    authGoogle: widget.authGoogle);
+        authGoogle: widget.authGoogle);
 
     detectDialogResponses.callDialogFlow();
   }
 
   void _deleteDialogFlowContexts() {
-    DetectDialogResponses detectDialogResponses = new DetectDialogResponses(authGoogle: widget.authGoogle);
+    DetectDialogResponses detectDialogResponses =
+        new DetectDialogResponses(authGoogle: widget.authGoogle);
     detectDialogResponses.deleteDialogFlowContexts();
   }
 
@@ -449,7 +454,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _showChatMessage(String text, bool chatType, bool doNotShowTyping) {
     setState(() {
-     // _isTextFieldEnabled = true;
+      // _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);
@@ -485,7 +490,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _handleTimers(action);
 
       if (response.containsHelpContent()) {
-        _constructHelpContent(response.helpContent(), response.isHelpContentClickable());
+        _constructHelpContent(
+            response.helpContent(), response.isHelpContentClickable());
       }
 
       if (response.containsMultiSelect()) {

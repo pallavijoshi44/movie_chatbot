@@ -441,6 +441,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
     return Container(
       height: 40,
       child: Material(
+        color: Color.fromRGBO(249, 248, 235, 1),
         child: FilterChip(
             backgroundColor: Color.fromRGBO(249, 248, 235, 1),
             disabledColor: Colors.lightGreen[100],
@@ -506,11 +507,5 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
   void dispose() {
     _stopClickTimer();
     super.dispose();
-  }
-
-  void updateFilteringTags(ContentFilteringParser response) {
-    setState(() {
-      _initialize();
-    });
   }
 }

@@ -20,6 +20,7 @@ class ChoiceChipMobo extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(2.0),
       child: Material(
+        color: Color.fromRGBO(249, 248, 235, 1),
         child: ChoiceChip(
             backgroundColor: Color.fromRGBO(249, 248, 235, 1),
             disabledColor: Colors.lightGreen[100],

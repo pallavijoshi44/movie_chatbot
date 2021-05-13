@@ -24,8 +24,8 @@ class CarouselDialogSlider extends StatefulWidget {
   final Function updateHelpContent;
   final SettingsModel settings;
 
-  CarouselDialogSlider(
-      this.carouselModel, this.carouselItemClicked, this.settings, this.updateHelpContent);
+  CarouselDialogSlider(this.carouselModel, this.carouselItemClicked,
+      this.settings, this.updateHelpContent);
 
   @override
   CarouselDialogSliderState createState() => CarouselDialogSliderState();
@@ -55,6 +55,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     _items = carouselModel.getCarouselItems();
     _entertainmentType = carouselModel.getEntertainmentType();
     _parameters = carouselModel.getParameters();
+    _pageNumber = carouselModel.getParameters().pageNumber ?? 1;
     _contentFilteringResponse = carouselModel.getContentFilteringResponse();
     _showDefault = false;
   }
@@ -206,7 +207,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
       _enabled = false;
     });
     _timer = Timer(Duration(seconds: 1), () => setState(() => _enabled = true));
-    return widget.carouselItemClicked(item.info['key'].toString(), _entertainmentType);
+    return widget.carouselItemClicked(
+        item.info['key'].toString(), _entertainmentType);
   }
 
   @override
@@ -219,17 +221,14 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   }
 
   void _scrollListener() {
-    if (_controller.position.extentAfter <= 0) {
-      _pageNumber++;
+    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
       String eventName = _entertainmentType == EntertainmentType.MOVIE
           ? MOVIE_RECOMMENDATIONS_EVENT
           : TV_RECOMMENDATIONS_EVENT;
+      _pageNumber = _pageNumber + 1;
       Parameters parameters = _parameters;
       parameters.pageNumber = _pageNumber;
       parameters.countryCode = widget.settings.countryCode.getValue();
-      setState(() {
-        _pageNumber += 1;
-      });
       _callDialogFlowByEvent(eventName, parameters.toString(),
           _updateItemsInHorizontalScrollview, _showDefaultMessage);
     }
@@ -266,7 +265,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     setState(() {
       _initializeItems(carouselModel);
     });
-    widget.updateHelpContent(response.helpContent(), response.isHelpContentClickable());
+    widget.updateHelpContent(
+        response.helpContent(), response.isHelpContentClickable());
   }
 
   void showPlaceHolders() {

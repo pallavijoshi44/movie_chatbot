@@ -37,7 +37,7 @@ class _QuickReplyState extends State<QuickReply> {
                     label: quickReply,
                     selected: false,
                     onSelected: (isSelected) {
-                      var isTapped = _isSelected;
+                      var isTapped = isSelected;
                       setState(() {
                         _isSelected = false;
                       });

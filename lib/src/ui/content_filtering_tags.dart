@@ -227,9 +227,6 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
               _eventName = _isEntertainmentTypeMovie
                   ? MOVIE_RECOMMENDATIONS_EVENT
                   : TV_RECOMMENDATIONS_EVENT;
-              _selectedMusicArtists = _isEntertainmentTypeMovie
-                  ? List.filled(_response.getMusicArtists().length, true)
-                  : [];
               _musicArtists = _isEntertainmentTypeMovie
                   ? _createRequestFor(
                       _response.getMusicArtists(), _selectedMusicArtists)

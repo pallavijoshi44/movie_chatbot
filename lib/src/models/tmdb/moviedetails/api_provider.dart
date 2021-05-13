@@ -8,7 +8,7 @@ import 'package:http/http.dart' show Client;
 
 class ApiProvider {
   Client client = Client();
-  String functionName = kReleaseMode ? "prod" : "dev";
+  String functionName = kReleaseMode ? "production" : "dev";
 
   Future<MovieTvDetailsModel> fetchMovieDetails(String id, String countryCode,
       EntertainmentType entertainmentType) async {

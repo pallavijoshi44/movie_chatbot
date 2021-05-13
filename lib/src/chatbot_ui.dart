@@ -370,6 +370,25 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       if (ACTION_START_OVER == action) {
         _callWelcomeIntent(false);
       }
+      if (ACTION_UNKNOWN == action) {
+        _unknownAction++;
+        if (_unknownAction == 2) {
+          _showChatMessage(UNKNOWN_RESPONSE, false, true);
+          return;
+        } else if (_unknownAction == 3) {
+          _unknownAction = 0;
+          _showChatMessage(START_OVER_TEXT, false, true);
+          Future.delayed(Duration(seconds: 2))
+              .then((value) => _callWelcomeIntent(true));
+          return;
+        } else {
+          _constructChatMessage(response.getDefaultOrChatMessage());
+          return;
+        }
+      }
+
+      _unknownAction = 0;
+
       if (ACTION_CHANGE_COUNTRY == action) {
         return;
       }

@@ -18,7 +18,7 @@ class DialogFlow {
     String version = "v2";
     String environmentIdentifier;
     if (kReleaseMode)
-      environmentIdentifier = "production";
+      environmentIdentifier = "prod";
     else
       environmentIdentifier = "test";
     String url =
@@ -53,7 +53,7 @@ class DialogFlow {
     String version = "v2";
     String environmentIdentifier;
     if (kReleaseMode)
-      environmentIdentifier = "production";
+      environmentIdentifier = "prod";
     else
       environmentIdentifier = "test";
     String url = "$baseURL/$version/projects/${authGoogle.getProjectId}/agent/environments/$environmentIdentifier/users/-/sessions/${authGoogle.getSessionId}/contexts";

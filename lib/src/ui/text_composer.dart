@@ -193,28 +193,31 @@ class _TextComposerState extends State<TextComposer> {
                 child: Column(
                   children: [
                     Container(
+                      padding: EdgeInsets.all(5),
                       child: Row(
                         children: [
                           IconButton(
                               icon: Icon(Icons.clear),
                               onPressed: () => Navigator.of(context).pop()),
-                          Align(
-                            alignment: Alignment.center,
-                            child: widget.helpContentClickable
-                                ? Text(
-                                    EXAMPLE_HELP_CONTENT,
-                                    style: TextStyle(
-                                        fontFamily: 'QuickSand',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                : Text(
-                                    TIPS_AND_TRICKS,
-                                    style: TextStyle(
-                                        fontFamily: 'QuickSand',
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                          Flexible(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: widget.helpContentClickable
+                                  ? Text(
+                                      EXAMPLE_HELP_CONTENT,
+                                      style: TextStyle(
+                                          fontFamily: 'QuickSand',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    )
+                                  : Text(
+                                      TIPS_AND_TRICKS,
+                                      style: TextStyle(
+                                          fontFamily: 'QuickSand',
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                            ),
                           ),
                         ],
                       ),

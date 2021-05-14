@@ -52,8 +52,11 @@ class _TextComposerState extends State<TextComposer> {
     return new IconTheme(
       data: new IconThemeData(color: Theme.of(context).accentColor),
       child: new Container(
+        margin: EdgeInsets.all(10),
         height: 50,
-        decoration: new BoxDecoration(color: Theme.of(context).cardColor),
+        decoration: new BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(20)),
         padding: widget.helpContent.length > 0
             ? EdgeInsets.zero
             : const EdgeInsets.symmetric(horizontal: 8.0),
@@ -140,8 +143,8 @@ class _TextComposerState extends State<TextComposer> {
               suffix: widget.shouldShowTwinkleButton
                   ? _buildTwinkleButton()
                   : CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child:
+                      padding: EdgeInsets.zero,
+                      child:
                           Icon(CupertinoIcons.arrow_up_circle_fill, size: 28),
                       onPressed: _handleTextEntered()),
               style: TextStyle(

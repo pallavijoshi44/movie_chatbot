@@ -162,9 +162,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
                         ? Image.asset(
                             "packages/loading_gifs/assets/images/cupertino_activity_indicator.gif",
                             scale: 5)
-                        : Image.asset(
-                            "packages/loading_gifs/assets/images/circular_progress_indicator.gif",
-                            scale: 10)),
+                        : CircularProgressIndicator()),
               );
             }
             return Container();
@@ -270,6 +268,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> _movieItemClicked(
       String movieId, EntertainmentType entertainmentType) async {
     String _countryCode = _getCountryCode();
+    if (_countryCode.isEmpty) _countryCode = "IN";
     context.read<MovieDetailsBloc>().add(MovieDetailsEvent(
         id: movieId,
         countryCode: _countryCode,

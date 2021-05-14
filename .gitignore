@@ -10,6 +10,7 @@
 .svn/
 .last_build_id
 assets/credentials.json
+bundletool-all-1.6.0.jar
 
 # IntelliJ related
 *.iml

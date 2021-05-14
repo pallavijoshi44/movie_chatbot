@@ -41,6 +41,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   ScrollController _controller;
   List<ItemCarousel> _items;
   int _pageNumber = 1;
+  int _totalPageNumbers= 1;
   EntertainmentType _entertainmentType;
   Parameters _parameters;
   ContentFilteringParser _contentFilteringResponse;
@@ -60,6 +61,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     _pageNumber = carouselModel.getParameters().pageNumber ?? 1;
     _contentFilteringResponse = carouselModel.getContentFilteringResponse();
     _showDefault = false;
+    _totalPageNumbers = carouselModel.getTotalPages();
   }
 
   @override
@@ -224,15 +226,17 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
 
   void _scrollListener() {
     if (_controller.position.pixels == _controller.position.maxScrollExtent) {
-      String eventName = _entertainmentType == EntertainmentType.MOVIE
-          ? MOVIE_RECOMMENDATIONS_EVENT
-          : TV_RECOMMENDATIONS_EVENT;
-      _pageNumber = _pageNumber + 1;
-      Parameters parameters = _parameters;
-      parameters.pageNumber = _pageNumber;
-      parameters.countryCode = widget.settings.countryCode.getValue();
-      _callDialogFlowByEvent(eventName, parameters.toString(),
-          _updateItemsInHorizontalScrollview, _showDefaultMessage);
+      if (_pageNumber < _totalPageNumbers) {
+        String eventName = _entertainmentType == EntertainmentType.MOVIE
+            ? MOVIE_RECOMMENDATIONS_EVENT
+            : TV_RECOMMENDATIONS_EVENT;
+        _pageNumber = _pageNumber + 1;
+        Parameters parameters = _parameters;
+        parameters.pageNumber = _pageNumber;
+        parameters.countryCode = widget.settings.countryCode.getValue();
+        _callDialogFlowByEvent(eventName, parameters.toString(),
+            _updateItemsInHorizontalScrollview, _showDefaultMessage);
+      }
     }
   }
 

@@ -10,18 +10,25 @@ class CarouselModel extends MessageModel {
   List<ItemCarousel> _items;
   EntertainmentType _entertainmentType;
   Parameters _parameters;
+  int _totalPages = 1;
   final AIResponse response;
   final SettingsModel settings;
   ContentFilteringParser _contentFilteringResponse;
 
-  CarouselModel({String name, @required MessageType type, this.response, this.settings})
+  CarouselModel(
+      {String name, @required MessageType type, this.response, this.settings})
       : super(name: name, type: type) {
     _items = response.containsCarousel()
         ? _getItems(CarouselSelect(response.getPayload()))
         : [];
     _entertainmentType = response.getEntertainmentContentType();
     _parameters = response.getParametersJson();
-    _contentFilteringResponse = ContentFilteringParser(response: response, settings: settings);
+    _contentFilteringResponse =
+        ContentFilteringParser(response: response, settings: settings);
+    _totalPages =
+    response.containsInnerPayload() ? (response.getInnerPayload()['totalPages'] != null
+        ? response.getInnerPayload()['totalPages']
+        : 1) : 1;
   }
 
   EntertainmentType getEntertainmentType() {
@@ -44,6 +51,10 @@ class CarouselModel extends MessageModel {
 
   ContentFilteringParser getContentFilteringResponse() {
     return _contentFilteringResponse;
+  }
+
+  int getTotalPages() {
+    return _totalPages;
   }
 
 }

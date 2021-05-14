@@ -61,6 +61,14 @@ class AIResponse {
     return payload['payload'];
   }
 
+  dynamic getInnerPayload() {
+    var payload = getListMessage()
+        .firstWhere((element) => element.containsKey('payload'), orElse: null);
+    var firstPayload = payload['payload'];
+    if (firstPayload != null) return firstPayload['payload'];
+    return null;
+  }
+
   List<dynamic> getListMessage() {
     return _queryResult.fulfillmentMessages;
   }
@@ -225,6 +233,10 @@ class AIResponse {
       return getPayload()['enableTextField'] ?? false;
 
     return true;
+  }
+
+  bool containsInnerPayload() {
+    return getInnerPayload() != null;
   }
 }
 

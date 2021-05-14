@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
-import 'package:get_version/get_version.dart';
 import 'package:share/share.dart';
 
 class AboutAppWidget extends StatelessWidget {
@@ -19,17 +18,14 @@ class AboutAppWidget extends StatelessWidget {
                   child: Text(
                     CANCEL,
                     textScaleFactor: 1.0,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .actionTextStyle,
+                    style: CupertinoTheme.of(context).textTheme.actionTextStyle,
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
                 middle: Text(ABOUT_APP,
-                    style: CupertinoTheme.of(context)
-                        .textTheme
-                        .navTitleTextStyle),
+                    style:
+                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
                 trailing: CupertinoButton(
                   onPressed: () {
                     _onShare(context);
@@ -94,7 +90,7 @@ class Content extends StatelessWidget {
               TMDB_CONTENT,
               style: TextStyle(
                 fontFamily: 'QuickSand',
-                fontSize:  Platform.isIOS ? 14 : 16,
+                fontSize: Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
               textAlign: TextAlign.center,
@@ -108,7 +104,7 @@ class Content extends StatelessWidget {
               POWERED_BY_JUST_WATCH,
               style: TextStyle(
                 fontFamily: 'QuickSand',
-                fontSize:  Platform.isIOS ? 14 : 16,
+                fontSize: Platform.isIOS ? 14 : 16,
                 color: Color.fromRGBO(13, 37, 63, 1),
               ),
               textAlign: TextAlign.center,
@@ -130,14 +126,9 @@ class Content extends StatelessWidget {
 
 _onShare(BuildContext context) async {
   String url;
-  final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-  if (isIOS) {
-    var appId = await GetVersion.appID;
-    url = "$SHARE_APP itms-apps://itunes.apple.com/app/id$appId}";
-  } else {
-    url =
-        "$SHARE_APP http://play.google.com/store/apps/details?id=com.chatbot.mobo";
-  }
+  var appleId = 1567442951;
+  url =
+      "$SHARE_APP$SHARE_APP_IOS https://itunes.apple.com/app/id$appleId\n\n$SHARE_APP_ANDROID http://play.google.com/store/apps/details?id=com.chatbot.mobo";
   final RenderBox box = context.findRenderObject() as RenderBox;
   await Share.share(url,
       subject: SHARE_APP,

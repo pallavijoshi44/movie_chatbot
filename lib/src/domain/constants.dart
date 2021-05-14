@@ -24,23 +24,26 @@ const String JUST_WATCH_TEXT = 'This search is powered by ';
 const String ABOUT_APP = 'About';
 const String TMDB_CONTENT =
     'This product uses the TMDb API but is not endorsed or certified by TMDb.';
-const String POWERED_BY_TMDB = 'The movie recommendations are powered by TMDb.';
+const String POWERED_BY_TMDB = 'The movie and TV show recommendations are powered by TMDb.';
 const String POWERED_BY_JUST_WATCH =
     'The watch providers data is powered by JustWatch.';
 const String SETTINGS = 'Settings';
 const String CANCEL = 'Cancel';
 const String RECEIVE_TIPS = 'Receive tips';
 const String UNREAD_MESSAGE = 'UNREAD MESSAGES';
-const String SHARE_APP = 'Do you sometimes struggle to select which movie to watch? Not any more. Mobo - the movie chatbot is here to help you. Download now!';
+const String SHARE_APP_SUBJECT = 'Mobo - the movie and TV recommendation chatbot';
+const String SHARE_APP = 'Do you sometimes struggle to select which movie or TV show to watch? Not any more. Mobo - the movie and TV recommendation chatbot is here to help you. Download now!\n\n';
+const String SHARE_APP_IOS = 'iPhone: ';
+const String SHARE_APP_ANDROID = 'Android: ';
 const String RECEIVE_TIPS_CONTENT = 'Select whether you want to get occasional tips';
 const String SET_COUNTRY = 'Set country';
 const String MOVIE_WATCH_TEXT = 'Ways to watch in';
 const String TV_WATCH_TEXT = 'Ways to watch in';
 const String NO_MOVIE_WATCH_TEXT = 'No ways to watch this movie in';
-const String NO_TV_WATCH_TEXT = 'No ways to watch this tv show in';
+const String NO_TV_WATCH_TEXT = 'No ways to watch this TV show in';
 const String SET_COUNTRY_LOCATION_CONTENT = 'Country to search for movie availability in';
 const String HELP = 'Help';
-const LOCATION_PERMISSION_TEXT = "Turn on Location Services to allow Mobo to recommend ways to watch movies in your location";
+const LOCATION_PERMISSION_TEXT = "Turn on Location Services to allow Mobo to recommend ways to watch movies and TV shows in your location";
 const PHONE_SETTINGS = 'Go to Phone Settings';
 const CHANGE_LOCATION_FROM_APP = 'Change location from app';
 

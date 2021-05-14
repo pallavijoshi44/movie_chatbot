@@ -123,40 +123,52 @@ class _TextComposerState extends State<TextComposer> {
       child: new Container(
         height: 50,
         margin: const EdgeInsets.all(10),
-        child: Container(
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(30))),
-          child: CupertinoTextField.borderless(
-              focusNode: focusNode,
-              padding: widget.helpContent.length > 0
-                  ? EdgeInsets.zero
-                  : EdgeInsets.all(15),
-              prefix: widget.helpContent.length > 0
-                  ? CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child:
-                          Icon(CupertinoIcons.question_circle_fill, size: 28),
-                      onPressed: _handleFreeTextiOS(context),
-                    )
-                  : null,
-              suffix: widget.shouldShowTwinkleButton
-                  ? _buildTwinkleButton()
-                  : CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child:
-                          Icon(CupertinoIcons.arrow_up_circle_fill, size: 28),
-                      onPressed: _handleTextEntered()),
-              style: TextStyle(
-                  color: Colors.black, fontFamily: 'QuickSand', fontSize: 16),
-              enabled: widget.isTextFieldEnabled,
-              controller: widget.textController,
-              onTap: () => focusNode.requestFocus(),
-              onSubmitted: (text) {
-                focusNode.unfocus();
-                return widget.handleSubmitted(text);
-              },
-              placeholder: HINT_TEXT),
+        child: Row(
+          children: [
+            Flexible(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30))),
+                margin: widget.shouldShowTwinkleButton
+                    ? EdgeInsets.only(right: 5)
+                    : EdgeInsets.zero,
+                child: CupertinoTextField.borderless(
+                    focusNode: focusNode,
+                    padding: widget.helpContent.length > 0
+                        ? EdgeInsets.zero
+                        : EdgeInsets.all(15),
+                    prefix: widget.helpContent.length > 0
+                        ? CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Icon(CupertinoIcons.question_circle_fill,
+                                size: 28),
+                            onPressed: _handleFreeTextiOS(context),
+                          )
+                        : null,
+                    suffix: widget.shouldShowTwinkleButton
+                        ? Container()
+                        : CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            child: Icon(CupertinoIcons.arrow_up_circle_fill,
+                                size: 28),
+                            onPressed: _handleTextEntered()),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'QuickSand',
+                        fontSize: 16),
+                    enabled: widget.isTextFieldEnabled,
+                    controller: widget.textController,
+                    onTap: () => focusNode.requestFocus(),
+                    onSubmitted: (text) {
+                      focusNode.unfocus();
+                      return widget.handleSubmitted(text);
+                    },
+                    placeholder: HINT_TEXT),
+              ),
+            ),
+            if (widget.shouldShowTwinkleButton) _buildTwinkleButton()
+          ],
         ),
       ),
     );

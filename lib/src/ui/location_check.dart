@@ -22,9 +22,7 @@ class LocationCheck extends StatefulWidget {
 
 class _LocationCheckState extends State<LocationCheck>
     with WidgetsBindingObserver {
-  String _countryCode = "";
   bool _isDialogShown = false;
-  bool _isLocationSet = false;
 
   @override
   void initState() {
@@ -41,9 +39,7 @@ class _LocationCheckState extends State<LocationCheck>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!_isLocationSet) {
-      _checkLocationPreferences();
-    }
+    _checkLocationPreferences();
   }
 
   @override
@@ -51,20 +47,41 @@ class _LocationCheckState extends State<LocationCheck>
     return widget.child;
   }
 
-  Future<void> _checkLocationPreferences() async {
-    _countryCode = widget.settings.countryCode.getValue();
+  void _checkLocationPreferences() {
+    var countryCode = widget.settings.countryCode.getValue();
 
-    if (_countryCode == null || _countryCode.isEmpty) {
-      var isGpsEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!isGpsEnabled) {
-        _checkLocationServices(isGpsEnabled);
-      } else {
-        await _handleCountryCode();
-      }
+    if (countryCode == null || countryCode.isEmpty) {
+      Geolocator.isLocationServiceEnabled().then((isGpsEnabled) {
+        if (!isGpsEnabled) {
+          _checkLocationServices(isGpsEnabled);
+        } else {
+          try {
+            Geolocator.getCurrentPosition().then((currentPosition) async {
+              var placeMarks = await placemarkFromCoordinates(
+                  currentPosition.latitude, currentPosition.longitude);
+              if (placeMarks != null && placeMarks.length > 0) {
+                widget.settings.countryCode
+                    .setValue(placeMarks[0].isoCountryCode);
+              } else {
+                setCountryCodeIfNotSet();
+              }
+            });
+          } catch (error) {
+            setCountryCodeIfNotSet();
+          }
+        }
+      });
     }
   }
 
-  _checkLocationServices(bool isGpsEnabled) async {
+  void setCountryCodeIfNotSet() {
+    var countryCode = widget.settings.countryCode.getValue();
+    if (countryCode == null || countryCode.isEmpty) {
+      widget.settings.countryCode.setValue("IN");
+    }
+  }
+
+  _checkLocationServices(bool isGpsEnabled) {
     if (!_isDialogShown) {
       _isDialogShown = true;
       showDialog(
@@ -113,30 +130,7 @@ class _LocationCheckState extends State<LocationCheck>
     }
   }
 
-  Future _handleCountryCode() async {
-    try {
-      var currentPosition = await Geolocator.getCurrentPosition();
-      var placeMarks = await placemarkFromCoordinates(
-          currentPosition.latitude, currentPosition.longitude);
-      if (placeMarks != null && placeMarks.length > 0) {
-        setState(() {
-          _countryCode = placeMarks[0].isoCountryCode;
-        });
-      }
-    } catch (error) {
-      setState(() {
-        _countryCode = "IN";
-      });
-    } finally {
-      widget.settings.countryCode.setValue(_countryCode);
-      setState(() {
-        _isLocationSet = true;
-      });
-    }
-  }
-
-  Future _showSettingsScreen(
-      BuildContext ctx, BuildContext context) async {
+  Future _showSettingsScreen(BuildContext ctx, BuildContext context) async {
     var arguments = {'prefs': widget.settings};
     Navigator.of(ctx).pop();
     Navigator.pushNamed(context, SettingsWidget.routeName,

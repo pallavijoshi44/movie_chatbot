@@ -64,6 +64,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   Future<void> _callWelcomeIntent(bool clearMessages) async {
     if (clearMessages) {
       _messages.clear();
+      _helpContent = [];
     }
     await _deleteDialogFlowContexts();
     var countryCode = _getCountryCode();
@@ -234,14 +235,12 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _disableKeyboardForAndroid(BuildContext context) {
-    //  FocusScope.of(context).requestFocus(new FocusNode());
     FocusScope.of(context).unfocus();
   }
 
   Future<void> _multiSelectItemClicked(String value, bool isSelected,
       String selectedText, bool noPreferenceSelected) async {
     setState(() {
-      _isTextFieldEnabled = true;
       if (noPreferenceSelected && isSelected) {
         _textController.text = value;
       } else {

@@ -231,7 +231,6 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
                   ? _createRequestFor(
                       _response.getMusicArtists(), _selectedMusicArtists)
                   : [];
-
               _isEntertainmentTypeMovie
                   ? _setGenresForMovies(movieGenreItemValues, tvGenreItemValues)
                   : _setGenresForTvShows(
@@ -268,7 +267,7 @@ class ContentFilteringTagsState extends State<ContentFilteringTags> {
             direction: Axis.horizontal,
             children: <Widget>[
               if (_selectedMusicArtists != null &&
-                  _selectedMusicArtists.isNotEmpty)
+                  _selectedMusicArtists.isNotEmpty && _isEntertainmentTypeMovie)
                 ..._response.getMusicArtists().map((item) {
                   var index = _response.getMusicArtists().indexOf(item);
                   return _buildChip(item, _selectedMusicArtists[index],

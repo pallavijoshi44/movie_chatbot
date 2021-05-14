@@ -193,10 +193,6 @@ class ChatBotFlow extends StatelessWidget {
                   value: SETTINGS,
                 ),
                 PopupMenuItem(
-                  child: Text(HELP),
-                  value: HELP,
-                ),
-                PopupMenuItem(
                   child: Text(ABOUT_APP),
                   value: ABOUT_APP,
                 ),

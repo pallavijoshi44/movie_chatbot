@@ -56,7 +56,7 @@ class _LocationCheckState extends State<LocationCheck>
           _checkLocationServices(isGpsEnabled);
         } else {
           try {
-            Geolocator.getCurrentPosition().then((currentPosition) async {
+            Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low).then((currentPosition) async {
               var placeMarks = await placemarkFromCoordinates(
                   currentPosition.latitude, currentPosition.longitude);
               if (placeMarks != null && placeMarks.length > 0) {

@@ -24,12 +24,14 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Mobo needs to know your location to provide you with the availability of movies and TV shows on streaming platforms in your country.</string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This is required to provide you with the availability of movies and TV shows on streaming platforms in your country.</string>
 	<key>NSLocationDefaultAccuracyReduced</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This is required to provide you with the availability of movies and TV shows on streaming platforms in your country.</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>

@@ -1,12 +1,8 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class TvDetailsWidget extends StatelessWidget {
   TvDetailsWidget(
-      {this.lastAirDate, this.nextEpisodeAirDate, this.numberOfSeasons});
+      {required this.lastAirDate, required this.nextEpisodeAirDate, required this.numberOfSeasons});
 
   final String lastAirDate;
   final String nextEpisodeAirDate;

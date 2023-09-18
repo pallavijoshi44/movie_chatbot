@@ -1,13 +1,10 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieJustWatch extends StatelessWidget {
-  MovieJustWatch({this.title});
+  MovieJustWatch({required this.title});
 
   final String title;
 

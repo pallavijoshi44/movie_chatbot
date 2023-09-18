@@ -7,9 +7,9 @@ import 'thumbnail_card.dart';
 
 class ThumbnailView extends StatefulWidget {
   const ThumbnailView({
-    Key key,
+    Key? key,
     this.url,
-    this.thumbNail,
+    required this.thumbNail,
     this.keepAlive = true,
     this.overlayChild,
     this.onPressed,
@@ -18,12 +18,12 @@ class ThumbnailView extends StatefulWidget {
   }) : super(key: key);
 
   final bool keepAlive;
-  final String url;
-  final String thumbNail;
-  final Function(String) onPressed;
-  final Widget overlayChild;
-  final Color titleTextBackGroundColor;
-  final TextStyle titleTextStyle;
+  final String? url;
+  final String? thumbNail;
+  final Function(String?)? onPressed;
+  final Widget? overlayChild;
+  final Color? titleTextBackGroundColor;
+  final TextStyle? titleTextStyle;
 
   @override
   _ThumbnailViewState createState() => _ThumbnailViewState();
@@ -34,13 +34,13 @@ class _ThumbnailViewState extends State<ThumbnailView>
   @override
   bool get wantKeepAlive => widget.keepAlive;
 
-  Widget buildVideoThumbnail(String url) {
+  Widget buildVideoThumbnail(String? url) {
     return Container(
       child: ThumbnailCard(
         shadow: Shadow.soft,
         onPressed: () {
           if (widget.onPressed != null) {
-            widget.onPressed(url);
+            widget.onPressed!(url);
           }
         },
         child: Stack(
@@ -55,10 +55,10 @@ class _ThumbnailViewState extends State<ThumbnailView>
                   ))
                 : SizedBox(
                     child: Image.network(
-                      widget.thumbNail,
+                      widget.thumbNail!,
                       fit: BoxFit.cover,
                       loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent loadingProgress) {
+                          ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child;
                         return Center(
                           child: Container(

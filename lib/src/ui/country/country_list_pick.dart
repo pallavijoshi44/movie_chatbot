@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/src/ui/country/selection_list.dart';
 import 'package:flutter_app/src/ui/country/support/code_countries_en.dart';
 import 'package:flutter_app/src/ui/country/support/code_countrys.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'country_selection_theme.dart';
 import 'support/code_country.dart';
@@ -15,30 +14,28 @@ export 'support/code_country.dart';
 
 class CountryListPick extends StatefulWidget {
   CountryListPick(
-      {this.onChanged,
-      this.initialSelection,
-      this.appBar,
-      this.pickerBuilder,
-      this.countryBuilder,
-      this.theme,
+      {required this.onChanged,
+      required this.initialSelection,
+      required this.appBar,
+        this.pickerBuilder,
+       this.countryBuilder,
+      required this.theme,
       this.useUiOverlay = true,
       this.useSafeArea = false});
 
   final String initialSelection;
   final ValueChanged<CountryCode> onChanged;
   final PreferredSizeWidget appBar;
-  final Widget Function(BuildContext context, CountryCode countryCode)
-      pickerBuilder;
+  final Widget? Function(BuildContext context, CountryCode countryCode)? pickerBuilder;
   final CountryTheme theme;
-  final Widget Function(BuildContext context, CountryCode countryCode)
-      countryBuilder;
+  final Widget? Function(BuildContext context, CountryCode countryCode)? countryBuilder;
   final bool useUiOverlay;
   final bool useSafeArea;
 
   @override
   _CountryListPickState createState() {
     List<Map> jsonList =
-        this.theme?.showEnglishName ?? true ? countriesEnglish : codes;
+        this.theme.showEnglishName ?? true ? countriesEnglish : codes;
 
     List elements = jsonList
         .map((s) => CountryCode(
@@ -48,7 +45,7 @@ class CountryListPick extends StatefulWidget {
               flagUri: 'assets/flags/${s['code'].toLowerCase()}.png',
             ))
         .toList();
-    return _CountryListPickState(elements);
+    return _CountryListPickState(elements.first, elements);
   }
 }
 
@@ -56,7 +53,7 @@ class _CountryListPickState extends State<CountryListPick> {
   CountryCode selectedItem;
   List elements = [];
 
-  _CountryListPickState(this.elements);
+  _CountryListPickState(this.selectedItem, this.elements);
 
   @override
   void initState() {
@@ -89,15 +86,7 @@ class _CountryListPickState extends State<CountryListPick> {
           builder: (context) => SelectionList(
             elements,
             selectedItem,
-            appBar: widget.appBar ??
-                PlatformAppBar(
-                  backgroundColor: Platform.isIOS
-                      ? CupertinoTheme.of(context)
-                          .textTheme
-                          .navLargeTitleTextStyle
-                      : Theme.of(context).appBarTheme.color,
-                  title: Text("Select Country"),
-                ),
+            appBar: widget.appBar,
             theme: theme,
             countryBuilder: widget.countryBuilder,
             useUiOverlay: widget.useUiOverlay,
@@ -113,13 +102,12 @@ class _CountryListPickState extends State<CountryListPick> {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      padding: EdgeInsets.symmetric(horizontal: 0.0),
+    return TextButton(
       onPressed: () {
         _awaitFromSelectScreen(context, widget.appBar, widget.theme);
       },
       child: widget.pickerBuilder != null
-          ? widget.pickerBuilder(context, selectedItem)
+          ? widget.pickerBuilder!(context, selectedItem)!
           : Flex(
               direction: Axis.horizontal,
               mainAxisSize: MainAxisSize.min,
@@ -150,7 +138,7 @@ class _CountryListPickState extends State<CountryListPick> {
                               ? CupertinoTheme.of(context)
                                   .textTheme
                                   .tabLabelTextStyle
-                              : Theme.of(context).textTheme.headline),
+                              : Theme.of(context).textTheme.headline1),
                     ),
                   ),
                 if (widget.theme?.isDownIcon ?? true == true)

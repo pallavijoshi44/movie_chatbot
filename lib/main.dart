@@ -15,24 +15,34 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
+final ThemeData theme = ThemeData();
+const typeTheme = Typography.blackMountainView;
 
-final materialThemeData = ThemeData(
-    primarySwatch: Colors.green,
-    accentColor: Colors.blueGrey[600],
-    errorColor: Colors.red,
-    textTheme: ThemeData.light().textTheme.copyWith(
-        title: TextStyle(
-            fontFamily: 'QuickSand', fontSize: 16, fontWeight: FontWeight.bold),
-        headline: TextStyle(fontFamily: 'QuickSand', fontSize: 14),
-        button: TextStyle(color: Colors.white)),
+TextTheme txtTheme = Typography.blackMountainView.copyWith(
+  bodyLarge: typeTheme.bodyLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  bodyMedium: typeTheme.bodyMedium?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  displayLarge: typeTheme.displayLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  displayMedium: typeTheme.displayMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  displaySmall: typeTheme.displaySmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  headlineMedium: typeTheme.headlineMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  headlineSmall: typeTheme.headlineSmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleLarge: typeTheme.titleLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleMedium: typeTheme.titleMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleSmall: typeTheme.titleSmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+);
+final materialThemeData = theme.copyWith(
+    colorScheme: ColorScheme.fromSwatch(
+        primarySwatch: Colors.green,
+        accentColor: Colors.blueGrey[600],
+        errorColor: Colors.red),
+    textTheme: txtTheme,
     appBarTheme: AppBarTheme(
-        textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'QuickSand',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-            )));
+      titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontFamily: 'QuickSand',
+          fontSize: 20,
+          fontWeight: FontWeight.bold),
+    ));
 
 final cupertinoTheme = CupertinoThemeData(
     brightness: Brightness.light,
@@ -62,7 +72,7 @@ Future<void> main() async {
 
 Future<AuthGoogle> getAuthGoogle() async {
   AuthGoogle authGoogle =
-  await AuthGoogle(fileJson: "assets/credentials.json").build();
+      await AuthGoogle(fileJson: "assets/credentials.json").build();
   return authGoogle;
 }
 
@@ -77,7 +87,6 @@ class ChatBot extends StatefulWidget {
 }
 
 class _ChatBotState extends State<ChatBot> {
-
   @override
   Widget build(BuildContext context) {
     var localizationsDelegates = <LocalizationsDelegate<dynamic>>[
@@ -102,8 +111,7 @@ class _ChatBotState extends State<ChatBot> {
         switch (settings.name) {
           case SettingsWidget.routeName:
             {
-              builder =
-                  (context) => SettingsWidget();
+              builder = (context) => SettingsWidget();
             }
             break;
           case AboutAppWidget.routeName:
@@ -146,27 +154,28 @@ class ChatBotFlow extends StatelessWidget {
         ));
   }
 
-  Future<bool> _onBackPressed(BuildContext context) {
-    return showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Do you want to quit the app?"),
-            actions: <Widget>[
-              TextButton(
-                child: Text(YES),
-                onPressed: ()  {
-                  Navigator.of(context).pop(true);
-                },
-              ),
-              TextButton(
-                child: Text(NO),
-                onPressed: ()  {
-                  Navigator.of(context).pop(false);                },
-              ),
-            ],
+  Future<bool> _onBackPressed(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Do you want to quit the app?"),
+        actions: <Widget>[
+          TextButton(
+            child: Text(YES),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
           ),
-        ) ??
-        false;
+          TextButton(
+            child: Text(NO),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+        ],
+      ),
+    );
+    return Future.value(true);
   }
 
   MaterialScaffoldData _buildMaterialScaffoldData(BuildContext context) {
@@ -177,7 +186,7 @@ class ChatBotFlow extends StatelessWidget {
             fit: BoxFit.fitWidth,
             child: new Text(
               APP_TITLE,
-              style: Theme.of(context).appBarTheme.textTheme.title,
+              style: Theme.of(context).appBarTheme.titleTextStyle,
             ),
           ),
           actions: <Widget>[

@@ -1,27 +1,26 @@
-import 'package:flutter/material.dart';
+import 'package:dialogflow_flutter/language.dart';
 import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/dialog_flow.dart';
-import 'package:flutter_dialogflow/utils/language.dart';
 
 import '../domain/ai_response.dart';
 
 class DetectDialogResponses {
-  final Function executeResponse;
-  final Function defaultResponse;
-  final QUERY_INPUT_TYPE queryInputType;
-  final String eventName;
-  final String query;
+  final Function? executeResponse;
+  final Function? defaultResponse;
+  final QUERY_INPUT_TYPE? queryInputType;
+  final String? eventName;
+  final String? query;
   final dynamic parameters;
   final AuthGoogle authGoogle;
 
   DetectDialogResponses(
-      {this.query,
-      this.queryInputType,
-      this.eventName,
+      { this.query,
+       this.queryInputType,
+       this.eventName,
       this.parameters,
-      this.executeResponse,
-      this.defaultResponse,
-      @required this.authGoogle});
+       this.executeResponse,
+       this.defaultResponse,
+       required this.authGoogle});
 
   Future<void> callDialogFlow() async {
     AIResponse response;
@@ -34,13 +33,13 @@ class DetectDialogResponses {
           response =
               await dialogflow.detectIntentByEvent(eventName, parameters);
         }
-        executeResponse.call(response);
+        executeResponse?.call(response);
       } catch (error) {
-         defaultResponse.call();
+         defaultResponse?.call();
         print(error);
       }
     } catch (error) {
-      defaultResponse.call();
+      defaultResponse?.call();
       print(error);
     }
   }

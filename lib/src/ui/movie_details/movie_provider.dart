@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MovieProvider extends StatelessWidget {
-  MovieProvider({this.title, this.logos, this.watchProviderLink});
+  MovieProvider({required this.title,  required this.logos, required this.watchProviderLink});
 
   final String title;
-  final String watchProviderLink;
+  final String? watchProviderLink;
   final List<dynamic> logos;
 
   @override
@@ -25,7 +24,7 @@ class MovieProvider extends StatelessWidget {
             Text(title,
                 style: Platform.isIOS
                     ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                    : Theme.of(context).textTheme.title),
+                    : Theme.of(context).textTheme.titleLarge),
             SizedBox(
               height: 10,
             ),
@@ -49,8 +48,8 @@ class MovieProvider extends StatelessWidget {
     ]));
   }
 
-  Future<void> _openWebView(BuildContext context, String url) async {
-    if (await canLaunch(url)) {
+  Future<void> _openWebView(BuildContext context, String? url) async {
+    if (url != null && await canLaunch(url)) {
       await launch(
         url,
         forceSafariVC: false,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dialogflow_flutter/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
@@ -18,7 +19,6 @@ import 'package:flutter_app/src/ui/movie_details/movie_detail_widget.dart';
 import 'package:flutter_app/src/ui/text_composer.dart';
 import 'package:flutter_app/src/ui/typing_indicator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dialogflow/v2/message.dart';
 
 import 'domain/constants.dart';
 import 'ui/carousel_dialog_slider.dart';
@@ -90,45 +90,41 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
             controller: _scrollController,
             itemBuilder: (_, int index) {
               var message = _messages[index];
-              if (message != null) {
-                switch (message.type) {
-                  case MessageType.CHAT_MESSAGE:
-                    return ChatMessage(
-                      text: (message as ChatModel).text,
-                      type: (message as ChatModel).chatType,
+              switch (message.type) {
+                case MessageType.CHAT_MESSAGE:
+                  return ChatMessage(
+                    text: (message as ChatModel).text ?? "",
+                    type: message.chatType,
+                  );
+                case MessageType.QUICK_REPLY:
+                  {
+                    return QuickReply(
+                      quickReplies: (message as ReplyModel).quickReplies,
+                      insertQuickReply: (message).updateQuickReply,
                     );
-                  case MessageType.QUICK_REPLY:
-                    {
-                      return QuickReply(
-                        quickReplies: (message as ReplyModel).quickReplies,
-                        insertQuickReply:
-                            (message as ReplyModel).updateQuickReply,
-                      );
-                    }
-                  case MessageType.MULTI_SELECT:
-                    {
-                      return MultiSelect(
-                          title: (message as MultiSelectModel).text,
-                          buttons: (message as MultiSelectModel).buttons,
-                          insertMultiSelect:
-                              (message as MultiSelectModel).updateMultiSelect,
-                          previouslySelected: _selectedGenres,
-                          containsNoPreference: (message as MultiSelectModel)
-                              .containsNoPreference);
-                    }
-                  case MessageType.CAROUSEL:
-                    {
-                      // _disableKeyboardForAndroid(context);
-                      return CarouselDialogSlider(
-                          message as CarouselModel,
-                          _movieItemClicked,
-                          widget.settings,
-                          _constructHelpContent,
-                          widget.authGoogle);
-                    }
-                }
+                  }
+                case MessageType.MULTI_SELECT:
+                  {
+                    return MultiSelect(
+                        title: (message as MultiSelectModel).text ?? "",
+                        buttons: (message).buttons,
+                        insertMultiSelect: (message).updateMultiSelect,
+                        previouslySelected: _selectedGenres,
+                        containsNoPreference: (message).containsNoPreference);
+                  }
+                case MessageType.CAROUSEL:
+                  {
+                    // _disableKeyboardForAndroid(context);
+                    return CarouselDialogSlider(
+                        message as CarouselModel,
+                        _movieItemClicked,
+                        widget.settings,
+                        _constructHelpContent,
+                        widget.authGoogle);
+                  }
+                case null:
+                  break;
               }
-              return Container();
             },
             itemCount: _messages.length,
           )),
@@ -322,7 +318,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
   }
 
   void _getDialogFlowResponseByEvent(
-      String eventName, dynamic parameters, bool firstTime) async {
+      String eventName, dynamic parameters, bool? firstTime) async {
     _textController.clear();
     setState(() {
       _doNotShowTyping = firstTime ?? false;
@@ -353,7 +349,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       // _isTextFieldEnabled = true;
       _doNotShowTyping = doNotShowTyping;
       var chatModel = new ChatModel(
-          type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType);
+          type: MessageType.CHAT_MESSAGE, text: text, chatType: chatType, name: '');
       _messages.insert(0, chatModel);
     });
   }
@@ -363,67 +359,65 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       _isTextFieldEnabled = response.isTextFieldEnabled();
       _doNotShowTyping = true;
     });
-    if (response != null) {
-      var action = response.getAction();
-      if (ACTION_START_OVER == action) {
-        _callWelcomeIntent(false);
-      }
-      if (ACTION_UNKNOWN == action) {
-        _unknownAction++;
-        if (_unknownAction == 2) {
-          _showChatMessage(UNKNOWN_RESPONSE, false, true);
-          return;
-        } else if (_unknownAction == 3) {
-          _unknownAction = 0;
-          _showChatMessage(START_OVER_TEXT, false, true);
-          Future.delayed(Duration(seconds: 2))
-              .then((value) => _callWelcomeIntent(true));
-          return;
-        } else {
-          _constructChatMessage(response.getDefaultOrChatMessage());
-          return;
-        }
-      }
-
-      _unknownAction = 0;
-
-      if (ACTION_CHANGE_COUNTRY == action) {
+    var action = response.getAction();
+    if (ACTION_START_OVER == action) {
+      _callWelcomeIntent(false);
+    }
+    if (ACTION_UNKNOWN == action) {
+      _unknownAction++;
+      if (_unknownAction == 2) {
+        _showChatMessage(UNKNOWN_RESPONSE, false, true);
+        return;
+      } else if (_unknownAction == 3) {
+        _unknownAction = 0;
+        _showChatMessage(START_OVER_TEXT, false, true);
+        Future.delayed(Duration(seconds: 2))
+            .then((value) => _callWelcomeIntent(true));
+        return;
+      } else {
+        _constructChatMessage(response.getDefaultOrChatMessage());
         return;
       }
-      if (response.containsHelpContent()) {
-        _constructHelpContent(
-            response.helpContent(), response.isHelpContentClickable());
-      }
+    }
 
-      if (response.containsMultiSelect()) {
-        _constructMultiSelect(response.getMultiSelectResponse());
-        return;
-      }
+    _unknownAction = 0;
 
-      if (response.containsCard()) {
-        _constructMultiSelect(response.getCard());
-        return;
-      }
-
-      if (response.containsMovieDetails()) {
-        _constructMovieDetails(response.getMovieDetails());
-        return;
-      }
-      if (response.containsQuickReplies()) {
-        var payload = response.getPayload();
-        _constructQuickReplies(payload);
-        return;
-      }
-
-      if (response.containsMovieOrTvRecommendationsActions()) {
-        _constructCarousel(response);
-        return;
-      }
-
-      _constructChatMessage(response.getDefaultOrChatMessage());
+    if (ACTION_CHANGE_COUNTRY == action) {
       return;
     }
-  }
+    if (response.containsHelpContent()) {
+      _constructHelpContent(
+          response.helpContent(), response.isHelpContentClickable());
+    }
+
+    if (response.containsMultiSelect()) {
+      _constructMultiSelect(response.getMultiSelectResponse());
+      return;
+    }
+
+    if (response.containsCard()) {
+      _constructMultiSelect(response.getCard());
+      return;
+    }
+
+    if (response.containsMovieDetails()) {
+      _constructMovieDetails(response.getMovieDetails());
+      return;
+    }
+    if (response.containsQuickReplies()) {
+      var payload = response.getPayload();
+      _constructQuickReplies(payload);
+      return;
+    }
+
+    if (response.containsMovieOrTvRecommendationsActions()) {
+      _constructCarousel(response);
+      return;
+    }
+
+    _constructChatMessage(response.getDefaultOrChatMessage());
+    return;
+    }
 
   void _constructChatMessage(element) {
     _scrollToBottom();
@@ -432,7 +426,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       var chatModel = new ChatModel(
           type: MessageType.CHAT_MESSAGE,
           text: element[0] ?? DEFAULT_RESPONSE,
-          chatType: false);
+          chatType: false, name: '');
       _messages.insert(0, chatModel);
     });
   }
@@ -459,26 +453,26 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
 
   void _constructMultiSelect(response) {
     CardDialogflow card = new CardDialogflow(response);
-    bool isTextFieldEnabled = response['enableTextField'];
-    bool containsNoPreference = response['containsNoPreference'];
+    bool? isTextFieldEnabled = response['enableTextField'];
+    bool? containsNoPreference = response['containsNoPreference'];
 
     setState(() {
       _selectedGenres = [];
       _isTextFieldEnabled = isTextFieldEnabled ?? false;
       var multiSelectModel = MultiSelectModel(
-          text: card.title,
+          text: card.title ?? "",
           buttons: card.buttons,
           updateMultiSelect: _multiSelectItemClicked,
           type: MessageType.MULTI_SELECT,
-          containsNoPreference: containsNoPreference ?? false);
+          containsNoPreference: containsNoPreference ?? false, name: '');
       _doNotShowTyping = true;
 
       _messages.insert(
           0,
           new ChatModel(
               type: MessageType.CHAT_MESSAGE,
-              text: card.title,
-              chatType: false));
+              text: card.title ?? "",
+              chatType: false, name: ''));
 
       _messages.insert(0, multiSelectModel);
     });
@@ -492,7 +486,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
       var carouselModel = CarouselModel(
           response: response,
           type: MessageType.CAROUSEL,
-          settings: widget.settings);
+          settings: widget.settings, name: '');
 
       _messages.insert(0, carouselModel);
     });
@@ -502,11 +496,11 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
     QuickReplies replies = new QuickReplies(payload);
     var quickReplies = replies.quickReplies;
     setState(() {
-      if (quickReplies != null && quickReplies.length == 1) {
+      if (quickReplies.length == 1) {
         _removeNoPreferenceQuickReply = true;
       }
       var replyModel = ReplyModel(
-        text: replies.title,
+        text: replies.title ?? "",
         quickReplies: quickReplies,
         updateQuickReply: _insertQuickReply,
         type: MessageType.QUICK_REPLY,
@@ -517,8 +511,8 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           0,
           new ChatModel(
               type: MessageType.CHAT_MESSAGE,
-              text: replies.title,
-              chatType: false));
+              text: replies.title ?? "",
+              chatType: false, name: ''));
 
       _messages.insert(0, replyModel);
     });
@@ -535,7 +529,7 @@ class _ChatBotUIState extends State<ChatBotUI> with WidgetsBindingObserver {
           _removeNoPreferenceQuickReply = false;
         }
         var chatModel = new ChatModel(
-            type: MessageType.CHAT_MESSAGE, text: text, chatType: true);
+            type: MessageType.CHAT_MESSAGE, text: text, chatType: true, name: '');
         _messages.insert(0, chatModel);
       });
       _getDialogFlowResponse(text);

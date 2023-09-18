@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,26 +5,57 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'movie_tv_details.dart';
 import 'repository.dart';
 
+// abstract class MovieDetailsEventStatus {}
+//
+// class Loading extends MovieDetailsEventStatus {}
+//
+// class Success extends MovieDetailsEventStatus {
+//   final String countryCode;
+//   final String id;
+//   final EntertainmentType entertainmentType;
+//
+//   Success(
+//       {required this.countryCode,
+//       required this.id,
+//       required this.entertainmentType});
+// }
+//
+// class Error extends MovieDetailsEventStatus {}
+
 class MovieDetailsBloc extends Bloc<MovieDetailsEvent, MovieDetailsState> {
-  Repository _repository = Repository();
+  MovieDetailsBloc() : super(MovieDetailsInitStateState()) {
 
-  MovieDetailsBloc() : super(MovieDetailsInitStateState());
-
-  @override
-  Stream<MovieDetailsState> mapEventToState(MovieDetailsEvent event) async* {
-    switch (event.eventStatus) {
-      case EventStatus.fetchMovieDetails:
-        yield MovieDetailsLoading();
-        try {
-          MovieTvDetailsModel response = await _repository.fetchMovieDetails(event.id, event.countryCode, event.entertainmentType);
-          yield MovieDetailsLoaded(response);
-        } catch (error) {
-          yield MovieDetailsError();
-        }
-        break;
-    }
+    on<MovieDetailsEvent>((event, emit) async {
+      emit(MovieDetailsLoading());
+      Repository _repository = Repository();
+      try {
+        MovieTvDetailsModel response = await _repository.fetchMovieDetails(
+            event.id, event.countryCode, event.entertainmentType);
+        emit(MovieDetailsLoaded(response));
+      } catch (error) {
+        emit(MovieDetailsError());
+      }
+    });
   }
 }
+//class MovieDetailsBloc extends Bloc<MovieDetailsEventStatus, MovieDetailsState> {
+
+//MovieDetailsBloc() : super(MovieDetailsInitStateState());
+
+// @override
+// Stream<MovieDetailsState> mapEventToState(MovieDetailsEvent event) async* {
+//   switch (event.eventStatus) {
+//     case EventStatus.fetchMovieDetails:
+//       yield MovieDetailsLoading();
+//       try {
+//         MovieTvDetailsModel response = await _repository.fetchMovieDetails(event.id, event.countryCode, event.entertainmentType);
+//         yield MovieDetailsLoaded(response);
+//       } catch (error) {
+//         yield MovieDetailsError();
+//       }
+//       break;
+//   }
+// }
 
 class MovieDetailsEvent {
   final String countryCode;
@@ -34,8 +64,12 @@ class MovieDetailsEvent {
   final EventStatus eventStatus;
 
   MovieDetailsEvent(
-      {this.countryCode, this.id, this.eventStatus, this.entertainmentType});
+      {required this.countryCode,
+      required this.id,
+      required this.eventStatus,
+      required this.entertainmentType});
 }
+
 enum EventStatus { fetchMovieDetails }
 
 abstract class MovieDetailsState extends Equatable {
@@ -58,5 +92,3 @@ class MovieDetailsLoaded extends MovieDetailsState {
 class MovieDetailsError extends MovieDetailsState {
   MovieDetailsError();
 }
-
-

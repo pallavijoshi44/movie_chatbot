@@ -5,19 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 
 class AuthGoogle {
   final String fileJson;
   final List<String> scope;
 
   AuthGoogle(
-      {@required this.fileJson,
+      {required this.fileJson,
       this.scope = const ["https://www.googleapis.com/auth/cloud-platform"]});
 
-  String _projectId;
-  String _sessionId;
-  AccessCredentials _credentials;
+  String? _projectId;
+  String? _sessionId;
+  AccessCredentials? _credentials;
 
   Future<String> getReadJson() async {
     String data = await rootBundle.loadString(this.fileJson);
@@ -44,23 +43,23 @@ class AuthGoogle {
   }
 
   bool get hasExpired {
-    return _credentials.accessToken.hasExpired;
+    return _credentials?.accessToken.hasExpired == true;
   }
 
-  String get getSessionId {
+  String? get getSessionId {
     return _sessionId;
   }
 
-  String get getProjectId {
+  String? get getProjectId {
     return _projectId;
   }
 
-  String get getToken {
-    return _credentials.accessToken.data;
+  String? get getToken {
+    return _credentials?.accessToken.data;
   }
 
   Future<Response> post(url,
-      {Map<String, String> headers, body, Encoding encoding}) async {
+      {required Map<String, String> headers, body,  Encoding? encoding}) async {
     if (!hasExpired) {
       return await http.post(url, headers: headers, body: body);
     } else {
@@ -70,7 +69,7 @@ class AuthGoogle {
   }
 
   Future<Response> delete(url,
-      {Map<String, String> headers, body, Encoding encoding}) async {
+      {required Map<String, String> headers, body,  Encoding? encoding}) async {
     return await http.delete(url, headers: headers);
   }
 }

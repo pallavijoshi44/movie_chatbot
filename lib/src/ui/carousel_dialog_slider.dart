@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dialogflow_flutter/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/domain/parameters.dart';
@@ -14,7 +14,6 @@ import 'package:flutter_app/src/models/settings_model.dart';
 import 'package:flutter_app/src/resources/auth_google.dart';
 import 'package:flutter_app/src/resources/detect_dialog_responses.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
-import 'package:flutter_dialogflow/v2/message.dart';
 
 import 'chat_message.dart';
 import 'content_filtering_tags.dart';
@@ -37,14 +36,14 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   bool _enabled = true;
   bool _showPlaceHolder = false;
   bool _showDefault = false;
-  Timer _timer;
-  ScrollController _controller;
-  List<ItemCarousel> _items;
+  Timer? _timer;
+  ScrollController? _controller;
+  List<ItemCarousel> _items = [];
   int _pageNumber = 1;
-  int _totalPageNumbers= 1;
-  EntertainmentType _entertainmentType;
-  Parameters _parameters;
-  ContentFilteringParser _contentFilteringResponse;
+  int _totalPageNumbers = 1;
+  EntertainmentType? _entertainmentType;
+  Parameters? _parameters;
+  late ContentFilteringParser _contentFilteringResponse;
 
   @override
   void initState() {
@@ -58,7 +57,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     _items = carouselModel.getCarouselItems();
     _entertainmentType = carouselModel.getEntertainmentType();
     _parameters = carouselModel.getParameters();
-    _pageNumber = carouselModel.getParameters().pageNumber ?? 1;
+    _pageNumber = carouselModel.getParameters()?.pageNumber ?? 1;
     _contentFilteringResponse = carouselModel.getContentFilteringResponse();
     _showDefault = false;
     _totalPageNumbers = carouselModel.getTotalPages();
@@ -151,18 +150,17 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.all(15),
-                  padding: EdgeInsets.only(top: 10),
-                  height: 300,
-                  width: 200,
-                  child: item.image.imageUri == null
-                      ? Image.asset(
-                          'assets/images/placeholder.jpg',
-                          fit: BoxFit.fitHeight,
-                        )
-                      : Image.network(item.image.imageUri,
-                          fit: BoxFit.fitHeight),
-                ),
+                    margin: EdgeInsets.all(15),
+                    padding: EdgeInsets.only(top: 10),
+                    height: 300,
+                    width: 200,
+                    child: item.image?.imageUri != null
+                        ? Image.network(item.image!.imageUri!,
+                            fit: BoxFit.fitHeight)
+                        : Image.asset(
+                            'assets/images/placeholder.jpg',
+                            fit: BoxFit.fitHeight,
+                          )),
                 Expanded(
                   child: Container(
                     margin: EdgeInsets.only(left: 5, right: 5),
@@ -218,22 +216,22 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   @override
   void dispose() {
     if (_timer != null) {
-      _timer.cancel();
+      _timer?.cancel();
     }
-    _controller.removeListener(_scrollListener);
+    _controller?.removeListener(_scrollListener);
     super.dispose();
   }
 
   void _scrollListener() {
-    if (_controller.position.pixels == _controller.position.maxScrollExtent) {
+    if (_controller?.position.pixels == _controller?.position.maxScrollExtent) {
       if (_pageNumber < _totalPageNumbers) {
         String eventName = _entertainmentType == EntertainmentType.MOVIE
             ? MOVIE_RECOMMENDATIONS_EVENT
             : TV_RECOMMENDATIONS_EVENT;
         _pageNumber = _pageNumber + 1;
-        Parameters parameters = _parameters;
-        parameters.pageNumber = _pageNumber;
-        parameters.countryCode = widget.settings.countryCode.getValue();
+        Parameters? parameters = _parameters;
+        parameters?.pageNumber = _pageNumber;
+        parameters?.countryCode = widget.settings.countryCode.getValue();
         _callDialogFlowByEvent(eventName, parameters.toString(),
             _updateItemsInHorizontalScrollview, _showDefaultMessage);
       }
@@ -248,7 +246,7 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
         parameters: parameters,
         queryInputType: QUERY_INPUT_TYPE.EVENT,
         defaultResponse: defaultResponse,
-    authGoogle: widget.authGoogle);
+        authGoogle: widget.authGoogle);
 
     detectDialogResponses.callDialogFlow();
   }
@@ -257,7 +255,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     var carouselModel = CarouselModel(
         response: response,
         type: MessageType.CAROUSEL,
-        settings: widget.settings);
+        settings: widget.settings,
+        name: '');
     setState(() {
       _items.addAll(carouselModel.getCarouselItems());
     });
@@ -267,7 +266,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
     CarouselModel carouselModel = CarouselModel(
         response: response,
         type: MessageType.CAROUSEL,
-        settings: widget.settings);
+        settings: widget.settings,
+        name: '');
 
     setState(() {
       _initializeItems(carouselModel);
@@ -283,8 +283,8 @@ class CarouselDialogSliderState extends State<CarouselDialogSlider> {
   }
 
   void _handleFilterContents(String eventName, String parameters) {
-    if (_controller != null && _controller.hasClients)
-      _controller.jumpTo(0);
+    if (_controller != null && _controller?.hasClients == true)
+      _controller?.jumpTo(0);
     _callDialogFlowByEvent(eventName, parameters,
         _updateItemsForCarouselAndFilters, _showDefaultMessage);
   }

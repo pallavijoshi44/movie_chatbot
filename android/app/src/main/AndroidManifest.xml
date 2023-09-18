@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.chatbot.mobo">
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -26,6 +25,7 @@ layoutDirection|fontScale|screenLayout|density|smallestScreenSize|orientation"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"
             android:resizeableActivity="true"
+            android:exported="true"
             android:supportsPictureInPicture="true">
 
             <!-- This keeps the window background of the activity showing

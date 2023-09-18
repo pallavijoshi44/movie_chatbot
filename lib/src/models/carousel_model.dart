@@ -1,37 +1,36 @@
-import 'package:flutter/cupertino.dart';
+import 'package:dialogflow_flutter/message.dart';
 import 'package:flutter_app/src/domain/ai_response.dart';
 import 'package:flutter_app/src/domain/parameters.dart';
 import 'package:flutter_app/src/models/contentfiltering/content_filtering_parser.dart';
 import 'package:flutter_app/src/models/message_model.dart';
 import 'package:flutter_app/src/models/settings_model.dart';
-import 'package:flutter_dialogflow/v2/message.dart';
 
 class CarouselModel extends MessageModel {
-  List<ItemCarousel> _items;
-  EntertainmentType _entertainmentType;
-  Parameters _parameters;
+  List<ItemCarousel> _items = [];
+  EntertainmentType? _entertainmentType;
+  Parameters? _parameters;
   int _totalPages = 1;
-  final AIResponse response;
-  final SettingsModel settings;
-  ContentFilteringParser _contentFilteringResponse;
+  final AIResponse? response;
+  final SettingsModel? settings;
+  late ContentFilteringParser _contentFilteringResponse;
 
   CarouselModel(
-      {String name, @required MessageType type, this.response, this.settings})
+      {required String name, required MessageType type,  this.response,  this.settings})
       : super(name: name, type: type) {
-    _items = response.containsCarousel()
-        ? _getItems(CarouselSelect(response.getPayload()))
+    _items = response?.containsCarousel() == true
+        ? _getItems(CarouselSelect(response?.getPayload()))
         : [];
-    _entertainmentType = response.getEntertainmentContentType();
-    _parameters = response.getParametersJson();
+    _entertainmentType = response?.getEntertainmentContentType();
+    _parameters = response?.getParametersJson();
     _contentFilteringResponse =
         ContentFilteringParser(response: response, settings: settings);
     _totalPages =
-    response.containsInnerPayload() ? (response.getInnerPayload()['totalPages'] != null
-        ? response.getInnerPayload()['totalPages']
+    response?.containsInnerPayload() == true ? (response?.getInnerPayload()['totalPages'] != null
+        ? response?.getInnerPayload()['totalPages']
         : 1) : 1;
   }
 
-  EntertainmentType getEntertainmentType() {
+  EntertainmentType? getEntertainmentType() {
     return _entertainmentType;
   }
 
@@ -45,7 +44,7 @@ class CarouselModel extends MessageModel {
         : [];
   }
 
-  Parameters getParameters() {
+  Parameters? getParameters() {
     return _parameters;
   }
 

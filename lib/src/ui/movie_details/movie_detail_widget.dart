@@ -27,28 +27,11 @@ class MovieDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(249, 248, 235, 1),
-      appBar: Platform.isIOS
-          ? CupertinoNavigationBar(
-              leading: CupertinoButton(
-                child: Text("Back",
-                    textScaleFactor: 1.0,
-                    style:
-                        CupertinoTheme.of(context).textTheme.actionTextStyle),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              middle: FittedBox(
-                fit: BoxFit.fitWidth,
-                child: Text(model.title,
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-              ),
-            )
-          : AppBar(
+      appBar:  AppBar(
               title: FittedBox(
                 fit: BoxFit.fitWidth,
-                child: Text(model.title,
-                    style: Theme.of(context).appBarTheme.textTheme.title),
+                child: Text(model.title ?? "",
+                    style: Theme.of(context).appBarTheme.titleTextStyle),
               ),
             ),
       body: Container(
@@ -56,14 +39,14 @@ class MovieDetailWidget extends StatelessWidget {
         padding: EdgeInsets.only(bottom: 15),
         child: Platform.isIOS
             ? CupertinoScrollbar(
-                isAlwaysShown: true,
+                thumbVisibility: true,
                 radiusWhileDragging: Radius.circular(15),
                 thicknessWhileDragging: 2,
                 child: _buildSingleChildScrollView(context, model),
               )
             : Scrollbar(
                 child: _buildSingleChildScrollView(context, model),
-                isAlwaysShown: true,
+                thumbVisibility: true,
                 showTrackOnHover: true,
                 radius: Radius.circular(15),
                 thickness: 5,
@@ -92,14 +75,14 @@ class MovieDetailWidget extends StatelessWidget {
           ),
           if (!model.isMovie)
             TvDetailsWidget(
-              nextEpisodeAirDate: model.nextEpisodeAirDate,
-              lastAirDate: model.lastAirDate,
-              numberOfSeasons: model.numberOfSeasons,
+              nextEpisodeAirDate: model.nextEpisodeAirDate ?? "",
+              lastAirDate: model.lastAirDate ?? "",
+              numberOfSeasons: model.numberOfSeasons ?? 0,
             ),
-          if (model.providers != null && model.providers.length > 0)
+          if (model.providers != null && model.providers!.length > 0)
             CountryPickerWidget(
               isMovie: model.isMovie,
-              id: model.id,
+              id: model.id ?? "",
               settings: settings,
               text: model.isMovie ? MOVIE_WATCH_TEXT : TV_WATCH_TEXT,
               onCountryChanged: onCountryChanged,
@@ -112,8 +95,8 @@ class MovieDetailWidget extends StatelessWidget {
               text: model.isMovie ? NO_MOVIE_WATCH_TEXT : NO_TV_WATCH_TEXT,
               onCountryChanged: onCountryChanged,
             ),
-          if (model.providers != null)
-            ...model.providers
+          if (model.providers != null && model.providers?.isNotEmpty == true)
+            ...model.providers!
                 .map((provider) => MovieProvider(
                       title: provider.title,
                       logos: provider.logos,
@@ -123,10 +106,10 @@ class MovieDetailWidget extends StatelessWidget {
           MovieJustWatch(
             title: JUST_WATCH_TEXT,
           ),
-          if (model.description.isNotEmpty)
+          if (model.description != null && model.description?.isNotEmpty == true)
             MovieDescriptionWidget(
               title: model.isMovie ? "About Movie" : "About TV Show",
-              description: model.description,
+              description: model.description ?? "",
             ),
           if (model.cast.isNotEmpty) CastDetails(cast: model.cast)
         ],

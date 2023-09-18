@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_app/src/models/message_model.dart';
 
 class ChatModel extends MessageModel {
   bool chatType;
 
-  ChatModel({String text, String name, @required MessageType type, this.chatType}) : super(text: text, name: name, type: type);
+  ChatModel({required String text, required String name, required MessageType type, required this.chatType}) : super(text: text, name: name, type: type);
 
 }

@@ -3,28 +3,28 @@ import 'package:intl/intl.dart';
 
 
 class MovieTvDetailsModel extends MessageModel {
-  String id;
-  String title;
-  String countryName;
-  String imagePath;
-  String releaseYear;
-  String rating;
-  String description;
-  List<dynamic> providers = [];
-  String videoUrl;
-  String videoThumbnail;
-  String duration;
-  String watchProviderLink;
-  bool isMovie;
-  String homePage;
-  String lastAirDate;
-  String nextEpisodeAirDate;
-  int numberOfSeasons;
-  String tagline;
+  String id = "";
+  String? title = "";
+  String? countryName = "";
+  String? imagePath = "";
+  String? releaseYear = "";
+  String? rating = "";
+  String? description = "";
+  List<dynamic>? providers = [];
+  String? videoUrl = "";
+  String? videoThumbnail = "";
+  String? duration = "";
+  String? watchProviderLink = "";
+  bool isMovie = false;
+  String? homePage = "";
+  String? lastAirDate = "";
+  String? nextEpisodeAirDate = "";
+  int? numberOfSeasons;
+  String? tagline = "";
   List<dynamic> cast = [];
 
   MovieTvDetailsModel(Map item) {
-    if (item != null && item.isNotEmpty) {
+    if (item.isNotEmpty) {
       this.id = item['id'].toString();
       this.title = item['title'];
       this.countryName = item['countryName'];
@@ -41,19 +41,19 @@ class MovieTvDetailsModel extends MessageModel {
       this.nextEpisodeAirDate = _parseDate(item['nextEpisodeAirDate']);
       this.numberOfSeasons = item['numberOfSeasons'];
       this.tagline = item['tagline'];
-      List<dynamic> providers = item['providers'];
+      List<dynamic>? providers = item['providers'];
       if (providers != null && providers.length > 0) {
         providers.forEach((element) {
           Provider provider = new Provider(element);
-          this.providers.add(provider);
+          this.providers?.add(provider);
         });
       }
     }
-    List<dynamic> casts = item['cast'];
+    List<dynamic>? casts = item['cast'];
     if (casts != null && casts.length > 0) {
       casts.forEach((element) {
         Cast cast = new Cast(element);
-        this.cast.add(cast);
+        this.cast?.add(cast);
       });
     }
     var videos = item['videos'];
@@ -63,7 +63,7 @@ class MovieTvDetailsModel extends MessageModel {
     }
   }
 
-  String _parseDate(String date) {
+  String? _parseDate(String? date) {
     if (date != null && date.isNotEmpty) {
       return DateFormat.yMMMd().format(DateTime.parse(date));
     }
@@ -72,12 +72,12 @@ class MovieTvDetailsModel extends MessageModel {
 }
 
 class Provider {
-  String title;
+  String? title;
   List<dynamic> logos = [];
 
   Provider(Map response) {
     this.title = response['title'];
-    List<dynamic> logos = response['logos'];
+    List<dynamic>? logos = response['logos'];
     if (logos != null) {
       logos.forEach((element) {
         this.logos.add(element);
@@ -87,8 +87,8 @@ class Provider {
 }
 
 class Cast {
-  String name;
-  String profile;
+  String? name;
+  String? profile;
 
   Cast(Map response) {
     this.name = response['title'];

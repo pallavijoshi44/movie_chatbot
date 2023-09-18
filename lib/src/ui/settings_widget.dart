@@ -15,13 +15,13 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  SettingsModel prefs;
+  late SettingsModel prefs;
 
   @override
   void didChangeDependencies() {
-    final routeArgs = ModalRoute.of(context).settings.arguments
+    final routeArgs = ModalRoute.of(context)?.settings.arguments
         as Map<String, SettingsModel>;
-    prefs = routeArgs['prefs'];
+    prefs = routeArgs['prefs']!;
     super.didChangeDependencies();
   }
 
@@ -45,20 +45,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
                 ),
         ),
         trailing: Container(
-          width: 150,
+          // width: 150,
           child: CountryListPick(
-            appBar: Platform.isIOS
-                ? CupertinoNavigationBar(
-                    leading: new CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: new Icon(CupertinoIcons.back, color: Colors.white),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    middle: Text('Choose Country',
-                        style:
-                            CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-                  )
-                : AppBar(
+            appBar:
+            // Platform.isIOS
+            //     ? CupertinoNavigationBar(
+            //         leading: new CupertinoButton(
+            //           padding: EdgeInsets.zero,
+            //           child: new Icon(CupertinoIcons.back, color: Colors.white),
+            //           onPressed: () => Navigator.of(context).pop(),
+            //         ),
+            //         middle: Text('Choose Country',
+            //             style: CupertinoTheme.of(context)
+            //                 .textTheme
+            //                 .navTitleTextStyle),
+            //       )
+            //     :
+            AppBar(
                     title: Text('Choose Country'),
                   ),
             theme: CountryTheme(
@@ -69,7 +72,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
               showEnglishName: true,
             ),
             initialSelection: prefs.countryCode.getValue(),
-            onChanged: (CountryCode code)  {
+            onChanged: (CountryCode code) {
               prefs.countryCode.setValue(code.code);
             },
           ),
@@ -81,21 +84,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: Platform.isIOS
-            ? CupertinoNavigationBar(
-                leading: CupertinoButton(
-                  child: Text(CANCEL,
-                      textScaleFactor: 1.0,
-                      style:
-                          CupertinoTheme.of(context).textTheme.actionTextStyle),
-                  padding: EdgeInsets.zero,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                middle: Text(SETTINGS,
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-              )
-            : AppBar(
+        appBar:
+        // Platform.isIOS
+        //     ? CupertinoNavigationBar(
+        //         leading: CupertinoButton(
+        //           child: Text(CANCEL,
+        //               textScaleFactor: 1.0,
+        //               style:
+        //                   CupertinoTheme.of(context).textTheme.actionTextStyle),
+        //           padding: EdgeInsets.zero,
+        //           onPressed: () => Navigator.of(context).pop(),
+        //         ),
+        //         middle: Text(SETTINGS,
+        //             style:
+        //                 CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+        //       )
+        //     :
+        AppBar(
                 title: Text(SETTINGS),
               ),
         body: _buildCountryCode());

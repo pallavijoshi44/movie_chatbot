@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:share/share.dart';
@@ -12,32 +10,34 @@ class AboutAppWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: Platform.isIOS
-            ? CupertinoNavigationBar(
-                leading: CupertinoButton(
-                  child: Text(
-                    CANCEL,
-                    textScaleFactor: 1.0,
-                    style: CupertinoTheme.of(context).textTheme.actionTextStyle,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-                middle: Text(ABOUT_APP,
-                    style:
-                        CupertinoTheme.of(context).textTheme.navTitleTextStyle),
-                trailing: CupertinoButton(
-                  onPressed: () {
-                    _onShare(context);
-                  },
-                  padding: EdgeInsets.zero,
-                  child: Icon(
-                    CupertinoIcons.share,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            : AppBar(
+        appBar:
+            // Platform.isIOS
+            // ? CupertinoNavigationBar(
+            //     leading: CupertinoButton(
+            //       child: Text(
+            //         CANCEL,
+            //         textScaleFactor: 1.0,
+            //         style: CupertinoTheme.of(context).textTheme.actionTextStyle,
+            //       ),
+            //       padding: EdgeInsets.zero,
+            //       onPressed: () => Navigator.of(context).pop(),
+            //     ),
+            //     middle: Text(ABOUT_APP,
+            //         style:
+            //             CupertinoTheme.of(context).textTheme.navTitleTextStyle),
+            //     trailing: CupertinoButton(
+            //       onPressed: () {
+            //         _onShare(context);
+            //       },
+            //       padding: EdgeInsets.zero,
+            //       child: Icon(
+            //         CupertinoIcons.share,
+            //         color: Colors.white,
+            //       ),
+            //     ),
+            //   )
+            // :
+        AppBar(
                 title: Text(ABOUT_APP),
                 actions: <Widget>[
                   IconButton(

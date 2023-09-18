@@ -1,8 +1,4 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_app/src/ui/rating_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,13 +12,13 @@ class MovieInformationWidget extends StatelessWidget {
       this.tagline,
       this.homePage});
 
-  final String title;
-  final String image;
-  final String year;
-  final String rating;
-  final String duration;
-  final String tagline;
-  final String homePage;
+  String? title = "";
+  String? image = "";
+  String? year = "";
+  String? rating = "";
+  String? duration = "";
+  String? tagline = "";
+  String? homePage = "";
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +37,14 @@ class MovieInformationWidget extends StatelessWidget {
                       _openWebView(context, this.homePage);
                     }
                   : null,
-              child: image == null
+              child: image == null && image != ""
                   ? Image.asset(
                       'assets/images/placeholder.jpg',
                       fit: BoxFit.cover,
                       height: 180,
                     )
                   : Image.network(
-                      image,
+                      image!,
                       fit: BoxFit.cover,
                       height: 180,
                     ),
@@ -60,7 +56,7 @@ class MovieInformationWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(this.title,
+                  Text(this.title ?? "",
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'QuickSand',
@@ -71,7 +67,7 @@ class MovieInformationWidget extends StatelessWidget {
                   ),
                   Visibility(
                     visible: isValid(this.tagline),
-                    child: Text(this.tagline,
+                    child: Text(this.tagline ?? "",
                         style: TextStyle(
                             color: Colors.green[900],
                             fontFamily: 'QuickSand',
@@ -82,35 +78,38 @@ class MovieInformationWidget extends StatelessWidget {
                   SizedBox(
                     height: 5.0,
                   ),
-                  Visibility(
-                    visible: isValid(this.year),
-                    child: Text(this.year,
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: 'QuickSand',
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
-                  ),
+                  if (isValid(this.year))
+                    Visibility(
+                      visible: isValid(this.year),
+                      child: Text(this.year!,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontFamily: 'QuickSand',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold)),
+                    ),
                   SizedBox(
                     height: 5.0,
                   ),
-                  Visibility(
-                      visible: isValid(this.rating),
-                      child: RatingWidget(
-                        rating: this.rating,
-                        centerAlignment: false,
-                      )),
+                  if (isValid(this.rating))
+                    Visibility(
+                        visible: isValid(this.rating),
+                        child: RatingWidget(
+                          rating: this.rating,
+                          centerAlignment: false,
+                        )),
                   SizedBox(
                     height: 5.0,
                   ),
-                  Visibility(
-                    visible: isValid(this.duration),
-                    child: Text(this.duration,
-                        style: TextStyle(
-                            color: Colors.grey[900],
-                            fontFamily: 'QuickSand',
-                            fontSize: 14)),
-                  ),
+                  if (isValid(this.duration))
+                    Visibility(
+                      visible: isValid(this.duration),
+                      child: Text(this.duration!,
+                          style: TextStyle(
+                              color: Colors.grey[900],
+                              fontFamily: 'QuickSand',
+                              fontSize: 14)),
+                    ),
                 ],
               ),
             ),
@@ -120,10 +119,10 @@ class MovieInformationWidget extends StatelessWidget {
     );
   }
 
-  bool isValid(String item) => item != null && item.isNotEmpty;
+  bool isValid(String? item) => item != null && item.isNotEmpty;
 
-  Future<void> _openWebView(BuildContext context, String url) async {
-    if (await canLaunch(url)) {
+  Future<void> _openWebView(BuildContext context, String? url) async {
+    if (url != null && await canLaunch(url)) {
       await launch(
         url,
         forceSafariVC: false,

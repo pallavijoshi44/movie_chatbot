@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ThumbnailCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsets padding;
-  final Function onPressed;
+  final Widget? child;
+  final EdgeInsets? padding;
+  final VoidCallback? onPressed;
   final Brightness rippleBrightness;
   final double borderRadiusValue;
-  final Color backgroundColor;
-  final Gradient backgroundGradient;
+  final Color? backgroundColor;
+  final Gradient? backgroundGradient;
   final Shadow shadow;
-  final BoxBorder boxBorder;
+  final BoxBorder? boxBorder;
 
   const ThumbnailCard({
-    Key key,
+    Key? key,
     this.child,
     this.padding,
     this.onPressed,
@@ -49,8 +49,7 @@ class ThumbnailCard extends StatelessWidget {
             left: 0,
             child: onPressed == null
                 ? SizedBox()
-                : FlatButton(
-                    colorBrightness: rippleBrightness,
+                : TextButton(
                     onPressed: onPressed,
                     child: SizedBox(),
                   ),

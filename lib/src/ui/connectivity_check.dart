@@ -11,7 +11,7 @@ import '../domain/constants.dart';
 class ConnectivityCheck extends StatefulWidget {
   final Widget child;
 
-  ConnectivityCheck({@required this.child});
+  ConnectivityCheck({required this.child});
 
   @override
   _ConnectivityCheckState createState() => _ConnectivityCheckState();
@@ -20,7 +20,7 @@ class ConnectivityCheck extends StatefulWidget {
 class _ConnectivityCheckState extends State<ConnectivityCheck> {
   bool isInternetOn = true;
   final Connectivity _connectivity = Connectivity();
-  StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
   }
 
   Future<void> initConnectivity() async {
-    ConnectivityResult result;
+    ConnectivityResult? result;
     try {
       result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
@@ -49,7 +49,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
     return _updateConnectionStatus(result);
   }
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+  Future<void> _updateConnectionStatus(ConnectivityResult? result) async {
     if (result == ConnectivityResult.none) {
       setState(() {
         isInternetOn = false;
@@ -67,7 +67,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
         NO_NETWORK_MESSAGE,
         style: Platform.isIOS
             ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-            : Theme.of(context).textTheme.headline,
+            : Theme.of(context).textTheme.headline1,
       ),
     );
   }

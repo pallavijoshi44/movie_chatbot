@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,7 +7,7 @@ import 'country_list_pick.dart';
 
 class SelectionList extends StatefulWidget {
   SelectionList(this.elements, this.initialSelection,
-      {Key key, this.appBar, this.theme, this.countryBuilder,
+      {Key? key, required this.appBar, required this.theme, required this.countryBuilder,
         this.useUiOverlay = true, this.useSafeArea = false})
       : super(key: key);
 
@@ -14,7 +15,7 @@ class SelectionList extends StatefulWidget {
   final List elements;
   final CountryCode initialSelection;
   final CountryTheme theme;
-  final Widget Function(BuildContext context, CountryCode) countryBuilder;
+  final Widget? Function(BuildContext context, CountryCode)? countryBuilder;
   final bool useUiOverlay;
   final bool useSafeArea;
 
@@ -23,9 +24,9 @@ class SelectionList extends StatefulWidget {
 }
 
 class _SelectionListState extends State<SelectionList> {
-  List countries;
+  late List countries;
   final TextEditingController _controller = TextEditingController();
-  ScrollController _controllerScroll;
+  late ScrollController _controllerScroll;
   var diff = 0.0;
 
   var posSelected = 0;
@@ -42,11 +43,11 @@ class _SelectionListState extends State<SelectionList> {
   @override
   void initState() {
     countries = widget.elements;
-    countries.sort((a, b) {
+    countries?.sort((a, b) {
       return a.name.toString().compareTo(b.name.toString());
     });
     _controllerScroll = ScrollController();
-    _controllerScroll.addListener(_scrollListener);
+    _controllerScroll?.addListener(_scrollListener);
     super.initState();
   }
 
@@ -142,10 +143,10 @@ class _SelectionListState extends State<SelectionList> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
                       return widget.countryBuilder != null
-                          ? widget.countryBuilder(
-                              context, countries.elementAt(index))
-                          : getListCountry(countries.elementAt(index));
-                    }, childCount: countries.length),
+                          ? widget.countryBuilder!(
+                              context, countries?.elementAt(index))
+                          : getListCountry(countries?.elementAt(index));
+                    }, childCount: countries?.length),
                   )
                 ],
               ),
@@ -208,7 +209,7 @@ class _SelectionListState extends State<SelectionList> {
                 if (_text.toString().compareTo(
                         countries[i].name.toString().toUpperCase()[0]) ==
                     0) {
-                  _controllerScroll.jumpTo((i * _itemsizeheight) + 10);
+                  _controllerScroll?.jumpTo((i * _itemsizeheight) + 10);
                   break;
                 }
               }
@@ -272,7 +273,7 @@ class _SelectionListState extends State<SelectionList> {
                     .toString()
                     .compareTo(countries[i].name.toString().toUpperCase()[0]) ==
                 0) {
-              _controllerScroll.jumpTo((i * _itemsizeheight) + 15);
+              _controllerScroll?.jumpTo((i * _itemsizeheight) + 15);
               break;
             }
           }

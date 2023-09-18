@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'choice_chip_mobo.dart';
 
 class QuickReply extends StatefulWidget {
-  QuickReply({this.quickReplies, this.insertQuickReply});
+  QuickReply({required this.quickReplies, required this.insertQuickReply});
 
   final List<String> quickReplies;
   final Function insertQuickReply;

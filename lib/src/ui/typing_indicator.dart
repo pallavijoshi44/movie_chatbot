@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class TypingIndicator extends StatefulWidget {
   const TypingIndicator({
-    Key key,
+    Key? key,
     this.showIndicator = false,
     this.bubbleColor =  const Color(0xFFAED581),
     this.flashingCircleDarkColor = Colors.white,
@@ -22,15 +22,15 @@ class TypingIndicator extends StatefulWidget {
 
 class _TypingIndicatorState extends State<TypingIndicator>
     with TickerProviderStateMixin {
-  AnimationController _appearanceController;
+  late AnimationController _appearanceController;
 
-  Animation<double> _indicatorSpaceAnimation;
+  late Animation<double> _indicatorSpaceAnimation;
 
-  Animation<double> _smallBubbleAnimation;
-  Animation<double> _mediumBubbleAnimation;
-  Animation<double> _largeBubbleAnimation;
+  late Animation<double> _smallBubbleAnimation;
+  late Animation<double> _mediumBubbleAnimation;
+  late Animation<double> _largeBubbleAnimation;
 
-  AnimationController _repeatingController;
+  late AnimationController _repeatingController;
   final List<Interval> _dotIntervals = const [
     Interval(0.25, 0.8),
     Interval(0.35, 0.9),
@@ -155,10 +155,10 @@ class _TypingIndicatorState extends State<TypingIndicator>
   }
 
   Widget _buildAnimatedBubble({
-    Animation<double> animation,
-    double left,
-    double bottom,
-    Widget bubble,
+    required Animation<double> animation,
+    required double left,
+    required double bottom,
+    required Widget bubble,
   }) {
     return Positioned(
       left: left,

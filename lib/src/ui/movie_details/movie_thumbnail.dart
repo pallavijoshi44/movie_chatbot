@@ -6,20 +6,22 @@ import 'thumbnail_view.dart';
 
 
 class MovieThumbnail extends StatelessWidget {
-  final String url;
-  final String thumbNail;
+  final String? url;
+  final String? thumbNail;
 
-  const MovieThumbnail({Key key, this.url, this.thumbNail}) : super(key: key);
+  const MovieThumbnail({Key? key,  this.url, required this.thumbNail}) : super(key: key);
 
   _launchURL() async {
-    if (await canLaunch(url)) {
-      await launch(url, forceSafariVC: false);
-    } else {
-      await launch(
-        url,
-        forceSafariVC: false,
-        forceWebView: false,
-      );
+    if (url != null) {
+      if (await canLaunch(url!)) {
+        await launch(url!, forceSafariVC: false);
+      } else {
+        await launch(
+          url!,
+          forceSafariVC: false,
+          forceWebView: false,
+        );
+      }
     }
   }
 

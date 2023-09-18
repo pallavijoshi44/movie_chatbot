@@ -14,7 +14,7 @@ class LocationCheck extends StatefulWidget {
   final Widget child;
   final SettingsModel settings;
 
-  LocationCheck({@required this.child, this.settings});
+  LocationCheck({required this.child, required this.settings});
 
   @override
   _LocationCheckState createState() => _LocationCheckState();
@@ -59,9 +59,9 @@ class _LocationCheckState extends State<LocationCheck>
             Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low).then((currentPosition) async {
               var placeMarks = await placemarkFromCoordinates(
                   currentPosition.latitude, currentPosition.longitude);
-              if (placeMarks != null && placeMarks.length > 0) {
+              if (placeMarks.length > 0) {
                 widget.settings.countryCode
-                    .setValue(placeMarks[0].isoCountryCode);
+                    .setValue(placeMarks[0].isoCountryCode ?? "BE");
               } else {
                 setCountryCodeIfNotSet();
               }
@@ -110,14 +110,14 @@ class _LocationCheckState extends State<LocationCheck>
               : AlertDialog(
                   title: Text(LOCATION_PERMISSION_TEXT),
                   actions: <Widget>[
-                    FlatButton(
+                    TextButton(
                       child: Text(PHONE_SETTINGS),
                       onPressed: () async {
                         Navigator.of(ctx).pop();
                         Geolocator.openLocationSettings();
                       },
                     ),
-                    FlatButton(
+                    TextButton(
                       child: Text(CHANGE_LOCATION_FROM_APP),
                       onPressed: () async {
                         _showSettingsScreen(ctx, context);

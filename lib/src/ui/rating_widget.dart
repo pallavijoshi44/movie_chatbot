@@ -4,10 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RatingWidget extends StatelessWidget {
-  final String rating;
+  final String? rating;
   final bool centerAlignment;
 
-  RatingWidget({Key key, this.rating, this.centerAlignment}) : super(key: key);
+  RatingWidget({Key? key, this.rating, required this.centerAlignment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class RatingWidget extends StatelessWidget {
       mainAxisAlignment:
           centerAlignment ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
-        Text(this.rating,
+        Text(this.rating ?? "",
             style: TextStyle(
                 color: Colors.grey[600], fontFamily: 'QuickSand', fontSize: 14)),
         SizedBox(

@@ -17,7 +17,7 @@ class CountryCode {
   /// the dial code (+39,+93..)
   String dialCode;
 
-  CountryCode({this.name, this.flagUri, this.code, this.dialCode});
+  CountryCode({required this.name, required this.flagUri, required this.code, required this.dialCode});
 
   @override
   String toString() => "$dialCode";

@@ -1,17 +1,17 @@
+import 'package:dialogflow_flutter/dialogflowFlutter.dart';
 import 'package:flutter_app/src/domain/constants.dart';
 import 'package:flutter_app/src/domain/parameters.dart';
-import 'package:flutter_dialogflow/v2/dialogflow_v2.dart';
 
 class AIResponse {
-  String _responseId;
-  QueryResult _queryResult;
-  num _intentDetectionConfidence;
-  String _languageCode;
-  DiagnosticInfo _diagnosticInfo;
-  WebhookStatus _webhookStatus;
+  String? _responseId;
+  QueryResult? _queryResult;
+  num? _intentDetectionConfidence;
+  String? _languageCode;
+  DiagnosticInfo? _diagnosticInfo;
+  WebhookStatus? _webhookStatus;
   dynamic _webhookPayload;
 
-  AIResponse({Map body}) {
+  AIResponse({required Map body}) {
     _responseId = body['responseId'];
     _intentDetectionConfidence = body['intentDetectionConfidence'];
     _queryResult = new QueryResult(body['queryResult']);
@@ -19,36 +19,36 @@ class AIResponse {
     _diagnosticInfo = (body['diagnosticInfo'] != null
         ? new DiagnosticInfo(body['diagnosticInfo'])
         : null);
-    _webhookStatus = body['webhookStatus'] != null
+    _webhookStatus = (body['webhookStatus'] != null
         ? new WebhookStatus(body['webhookStatus'])
-        : null;
+        : null);
     _webhookPayload = body['queryResult']['webhookPayload'] != null
         ? body['queryResult']['webhookPayload']
         : null;
   }
 
-  Map getParameters() {
-    return _queryResult.parameters;
+  Map? getParameters() {
+    return _queryResult?.parameters;
   }
 
   Parameters getParametersJson() {
-    Parameters parameters = Parameters.fromJson(_queryResult.parameters);
+    Parameters parameters = Parameters.fromJson(_queryResult?.parameters);
     return parameters;
   }
 
   EntertainmentType getEntertainmentContentType() {
-    if (_queryResult.action == ACTION_MOVIE_RECOMMENDATIONS)
+    if (_queryResult?.action == ACTION_MOVIE_RECOMMENDATIONS)
       return EntertainmentType.MOVIE;
     else
       return EntertainmentType.TV;
   }
 
-  String get responseId {
+  String? get responseId {
     return _responseId;
   }
 
-  String getMessage() {
-    return _queryResult.fulfillmentText;
+  String? getMessage() {
+    return _queryResult?.fulfillmentText;
   }
 
   List<String> getChatMessage() {
@@ -57,26 +57,26 @@ class AIResponse {
 
   dynamic getPayload() {
     var payload = getListMessage()
-        .firstWhere((element) => element.containsKey('payload'), orElse: null);
+        ?.firstWhere((element) => element.containsKey('payload'), orElse: null);
     return payload['payload'];
   }
 
   dynamic getInnerPayload() {
     var payload = getListMessage()
-        .firstWhere((element) => element.containsKey('payload'), orElse: null);
+        ?.firstWhere((element) => element.containsKey('payload'), orElse: null);
     var firstPayload = payload['payload'];
     if (firstPayload != null) return firstPayload['payload'];
     return null;
   }
 
-  List<dynamic> getListMessage() {
-    return _queryResult.fulfillmentMessages;
+  List<dynamic>? getListMessage() {
+    return _queryResult?.fulfillmentMessages;
   }
 
   bool containsFulfillmentMessages() => getListMessage() != null;
 
   bool containsMultiSelect() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     return (payload != null &&
@@ -90,7 +90,7 @@ class AIResponse {
   }
 
   bool containsQuickReplies() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     if (payload != null) {
@@ -100,7 +100,7 @@ class AIResponse {
   }
 
   bool containsPayload() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     if (payload != null) {
@@ -125,8 +125,8 @@ class AIResponse {
 
   List<String> getDefaultOrChatMessage() {
     List<String> list = [];
-    if (getListMessage() != null && getListMessage().length > 0) {
-      getListMessage().forEach((element) {
+    if (getListMessage() != null && getListMessage()!.length > 0) {
+      getListMessage()?.forEach((element) {
         if (element['text'] != null && element['text']['text'] != null) {
           var listMessage = element['text']['text'];
           if (listMessage != null &&
@@ -141,36 +141,36 @@ class AIResponse {
       var message = getMessage() != null && getMessage() != ""
           ? getMessage()
           : DEFAULT_RESPONSE;
-      list.add(message);
+      list.add(message!);
     }
     return list;
   }
 
-  String getAction() {
-    return _queryResult.action;
+  String? getAction() {
+    return _queryResult?.action;
   }
 
   dynamic getWebHookPayload() {
     return _webhookPayload;
   }
 
-  num get intentDetectionConfidence {
+  num? get intentDetectionConfidence {
     return _intentDetectionConfidence;
   }
 
-  String get languageCode {
+  String? get languageCode {
     return _languageCode;
   }
 
-  DiagnosticInfo get diagnosticInfo {
+  DiagnosticInfo? get diagnosticInfo {
     return _diagnosticInfo;
   }
 
-  WebhookStatus get webhookStatus {
+  WebhookStatus? get webhookStatus {
     return _webhookStatus;
   }
 
-  QueryResult get queryResult {
+  QueryResult? get queryResult {
     return _queryResult;
   }
 
@@ -196,12 +196,13 @@ class AIResponse {
   }
 
   dynamic getCard() {
-    return getListMessage().firstWhere((element) => element.containsKey('card'),
+    return getListMessage()?.firstWhere(
+        (element) => element.containsKey('card'),
         orElse: () => null);
   }
 
   bool containsHelpContent() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     var hasHelpContentKey = (payload != null &&
@@ -215,22 +216,21 @@ class AIResponse {
   }
 
   List<dynamic> helpContent() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     return payload['payload']['payload']['helpContent'];
   }
 
   bool isHelpContentClickable() {
-    var payload = getListMessage().firstWhere(
+    var payload = getListMessage()?.firstWhere(
         (element) => element.containsKey('payload'),
         orElse: () => null);
     return payload['payload']['payload']['helpContentClickable'];
   }
 
   bool isTextFieldEnabled() {
-    if (containsPayload())
-      return getPayload()['enableTextField'] ?? false;
+    if (containsPayload()) return getPayload()['enableTextField'] ?? false;
 
     return true;
   }

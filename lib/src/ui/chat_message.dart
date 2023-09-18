@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../domain/constants.dart';
 import 'bot_chat_message.dart';
 import 'message_layout.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text, this.type});
+  ChatMessage({required this.text, required this.type});
 
   final String text;
   final bool type;

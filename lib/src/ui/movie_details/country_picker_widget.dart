@@ -14,7 +14,7 @@ class CountryPickerWidget extends StatelessWidget {
   final bool isMovie;
 
   const CountryPickerWidget(
-      {this.text, this.settings, this.onCountryChanged, this.id, this.isMovie});
+      {required this.text, required this.settings, required this.onCountryChanged, required this.id, required this.isMovie});
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +25,10 @@ class CountryPickerWidget extends StatelessWidget {
           Text(text,
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                  : Theme.of(context).textTheme.title),
+                  : Theme.of(context).textTheme.titleLarge),
           Flexible(
             child: CountryListPick(
-              appBar: Platform.isIOS
-                  ? CupertinoNavigationBar(
-                      leading: new CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child:
-                            new Icon(CupertinoIcons.back, color: Colors.white),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      middle: Text('Choose Country',
-                          style: CupertinoTheme.of(context)
-                              .textTheme
-                              .navTitleTextStyle),
-                    )
-                  : AppBar(title: Text('Choose Country')),
+              appBar: AppBar(title: Text('Choose Country')),
               theme: CountryTheme(
                 isShowFlag: true,
                 isShowTitle: true,

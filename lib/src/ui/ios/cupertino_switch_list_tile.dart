@@ -5,15 +5,15 @@ class CupertinoSwitchListTile extends StatelessWidget {
   /// This has been shamelessly copied from Material/SwitchListTile.
   /// The applicable license applies.
   const CupertinoSwitchListTile({
-    Key key,
-    @required this.value,
-    @required this.onChanged,
+    Key? key,
+    required this.value,
+    required this.onChanged,
     this.activeColor,
-    this.title,
-    this.subtitle,
+    required this.title,
+    required this.subtitle,
     this.isThreeLine: false,
-    this.dense,
-    this.secondary,
+    required this.dense,
+    required this.secondary,
     this.selected: false,
   })  : assert(value != null),
         assert(isThreeLine != null),
@@ -54,7 +54,7 @@ class CupertinoSwitchListTile extends StatelessWidget {
   /// The color to use when this switch is on.
   ///
   /// Defaults to accent color of the current [Theme].
-  final Color activeColor;
+  final Color? activeColor;
 
   /// The primary content of the list tile.
   ///

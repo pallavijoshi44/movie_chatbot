@@ -6,7 +6,7 @@ import 'message_layout.dart';
 class BotChatMessage extends StatelessWidget {
   final String text;
 
-  const BotChatMessage({this.text});
+  const BotChatMessage({required this.text});
 
   @override
   Widget build(BuildContext context) {

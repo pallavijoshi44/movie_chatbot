@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class CastDetails extends StatelessWidget {
-  CastDetails({this.cast});
+  CastDetails({required this.cast});
 
   final List<dynamic> cast;
 

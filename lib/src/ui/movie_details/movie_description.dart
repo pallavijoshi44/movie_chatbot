@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class MovieDescriptionWidget extends StatelessWidget {
-  MovieDescriptionWidget({this.title, this.description});
+  MovieDescriptionWidget({required this.title, required this.description});
 
   final String title;
   final String description;
@@ -20,12 +19,12 @@ class MovieDescriptionWidget extends StatelessWidget {
           Text(this.title,
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.navTitleTextStyle
-                  : Theme.of(context).textTheme.title),
+                  : Theme.of(context).textTheme.titleLarge),
           SizedBox(height: 5,),
           Text(this.description,
               style: Platform.isIOS
                   ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-                  : Theme.of(context).textTheme.headline)
+                  : Theme.of(context).textTheme.headline1)
         ],
       ),
     );

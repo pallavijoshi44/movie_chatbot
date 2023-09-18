@@ -6,9 +6,9 @@ import 'entertainment_type.dart';
 import 'genre_content_type.dart';
 
 class ContentFilteringParser {
-  final AIResponse response;
-  final SettingsModel settings;
-  List<EntertainmentContentType> _entertainmentTypes;
+  final AIResponse? response;
+  final SettingsModel? settings;
+  List<EntertainmentContentType> _entertainmentTypes = [];
   List<GenresContentType> _movieGenreItems = [];
   List<GenresContentType> _tvGenreItems = [];
   List<String> _musicArtists = [];
@@ -17,7 +17,7 @@ class ContentFilteringParser {
   List<String> _searchKeywords = [];
   List<String> _searchKeywordsOriginal = [];
   List<String> _languages = [];
-  Map _datePeriod;
+  Map? _datePeriod;
   String _datePeriodOriginal = "";
   String _customDatePeriod = "";
   String _short = "";
@@ -26,9 +26,9 @@ class ContentFilteringParser {
   String _movieOrTvId = "";
 
   ContentFilteringParser({this.response, this.settings}) {
-    var parameters = response.getParameters();
+    var parameters = response?.getParameters();
     bool isMovie =
-        response.getEntertainmentContentType() == EntertainmentType.MOVIE;
+        response?.getEntertainmentContentType() == EntertainmentType.MOVIE;
 
     _constructEntertainmentType(isMovie);
     _constructGenres(parameters, isMovie);
@@ -42,48 +42,48 @@ class ContentFilteringParser {
     _constructOthers(parameters);
   }
 
-  void _constructDatePeriod(Map parameters) {
+  void _constructDatePeriod(Map? parameters) {
     if (_isValidKey(parameters, KEY_DATE_PERIOD)) {
-      _datePeriod = parameters[KEY_DATE_PERIOD];
-      _datePeriodOriginal = parameters[KEY_DATE_PERIOD_ORIGINAL];
+      _datePeriod = parameters?[KEY_DATE_PERIOD];
+      _datePeriodOriginal = parameters?[KEY_DATE_PERIOD_ORIGINAL];
       return;
     }
   }
 
-  void _constructCustomDate(Map parameters) {
+  void _constructCustomDate(Map? parameters) {
     if (_isValidKey(parameters, KEY_CUSTOM_DATE_PERIOD)) {
-      _customDatePeriod = parameters[KEY_CUSTOM_DATE_PERIOD];
+      _customDatePeriod = parameters?[KEY_CUSTOM_DATE_PERIOD];
       return;
     }
   }
 
-  void _constructShort(Map parameters) {
+  void _constructShort(Map? parameters) {
     _short = _initializeKey(KEY_SHORT_MOVIE, parameters);
   }
 
-  void _constructOthers(Map parameters) {
+  void _constructOthers(Map? parameters) {
     _likePhrases = _initializeKey(KEY_LIKE_PHRASES, parameters);
-    _sortyBy = _initializeKey( KEY_LIKE_PHRASES, parameters);
+    _sortyBy = _initializeKey(KEY_LIKE_PHRASES, parameters);
     _movieOrTvId = _initializeKey(KEY_MOVIE_OR_TV_ID, parameters);
   }
 
-  String _initializeKey(String key, Map parameters) {
+  String _initializeKey(String key, Map? parameters) {
     String value = "";
     if (_isValidKey(parameters, key)) {
-      value = parameters[key];
+      value = parameters?[key];
     }
     return value;
   }
 
-  bool _isValidKey(Map parameters, String key) {
+  bool _isValidKey(Map? parameters, String key) {
     return parameters != null &&
         parameters[key] != null &&
         parameters[key].isNotEmpty;
   }
 
-  void _constructLanguages(Map parameters) {
+  void _constructLanguages(Map? parameters) {
     if (isValidList(parameters, KEY_LANGUAGE)) {
-      List<dynamic> list = parameters[KEY_LANGUAGE];
+      List<dynamic> list = parameters?[KEY_LANGUAGE];
       list.forEach((element) {
         _languages.add(element);
       });
@@ -92,9 +92,9 @@ class ContentFilteringParser {
     }
   }
 
-  void _constructMusicArtists(Map parameters) {
+  void _constructMusicArtists(Map? parameters) {
     if (isValidList(parameters, KEY_MUSIC_ARTIST)) {
-      List<dynamic> list = parameters[KEY_MUSIC_ARTIST];
+      List<dynamic> list = parameters?[KEY_MUSIC_ARTIST];
       list.forEach((element) {
         _musicArtists.add(element);
       });
@@ -103,10 +103,10 @@ class ContentFilteringParser {
     }
   }
 
-  void _constructWatchProviders(Map parameters) {
+  void _constructWatchProviders(Map? parameters) {
     if (isValidList(parameters, KEY_WATCH_PROVIDER_ORIGINAL)) {
-      List<dynamic> list = parameters[KEY_WATCH_PROVIDER_ORIGINAL];
-      List<dynamic> listIds = parameters[KEY_WATCH_PROVIDER];
+      List<dynamic> list = parameters?[KEY_WATCH_PROVIDER_ORIGINAL];
+      List<dynamic> listIds = parameters?[KEY_WATCH_PROVIDER];
       list.forEach((element) {
         _watchProvidersOriginal.add(element);
         _watchProviders.add(listIds[list.indexOf(element)]);
@@ -117,10 +117,10 @@ class ContentFilteringParser {
     }
   }
 
-  void _constructSearchKeywords(Map parameters) {
+  void _constructSearchKeywords(Map? parameters) {
     if (isValidList(parameters, KEY_SEARCH_KEYWORD_ORIGINAL)) {
-      List<dynamic> list = parameters[KEY_SEARCH_KEYWORD_ORIGINAL];
-      List<dynamic> listIds = parameters[KEY_SEARCH_KEYWORD];
+      List<dynamic> list = parameters?[KEY_SEARCH_KEYWORD_ORIGINAL];
+      List<dynamic> listIds = parameters?[KEY_SEARCH_KEYWORD];
       list.forEach((element) {
         _searchKeywordsOriginal.add(element);
         _searchKeywords.add(listIds[list.indexOf(element)]);
@@ -131,7 +131,7 @@ class ContentFilteringParser {
     }
   }
 
-  void _constructGenres(Map parameters, bool isMovie) {
+  void _constructGenres(Map? parameters, bool isMovie) {
     _movieGenreItems = [];
     _tvGenreItems = [];
     _musicArtists = [];
@@ -153,7 +153,7 @@ class ContentFilteringParser {
         : GenresContentType.tvGenresGroup5;
 
     if (isValidList(parameters, 'genres')) {
-      List<dynamic> selectedGenres = parameters['genres'];
+      List<dynamic> selectedGenres = parameters?['genres'];
       selectedGenres.forEach((genre) {
         if (list1.contains(genre)) {
           if (isMovie) {
@@ -275,11 +275,11 @@ class ContentFilteringParser {
     _entertainmentTypes = [
       EntertainmentContentType(ENTERTAINMENT_CONTENT_TYPE_MOVIES, isMovie),
       EntertainmentContentType(ENTERTAINMENT_CONTENT_TYPE_TV_SHOWS,
-          response.getEntertainmentContentType() == EntertainmentType.TV)
+          response?.getEntertainmentContentType() == EntertainmentType.TV)
     ];
   }
 
-  bool isValidList(Map parameters, String key) =>
+  bool isValidList(Map? parameters, String key) =>
       parameters != null &&
       parameters[key] != null &&
       parameters[key].length > 0;
@@ -320,7 +320,7 @@ class ContentFilteringParser {
     return _languages;
   }
 
-  Map getDatePeriod() {
+  Map? getDatePeriod() {
     return _datePeriod;
   }
 
@@ -336,13 +336,12 @@ class ContentFilteringParser {
     return _short;
   }
 
-  List<GenresContentType> _removeDuplicates(List<GenresContentType> source) {
+  List<GenresContentType> _removeDuplicates(List<GenresContentType>? source) {
     List<GenresContentType> result = [];
-    var _genreValues = source.map((item) => item.value).toList();
-    _genreValues = _genreValues.toSet().toList();
-    _genreValues.forEach((element) {
-      GenresContentType item = source
-          .firstWhere((item) => item.value == element, orElse: () => null);
+    var _genreValues = source?.map((item) => item.value).toList();
+    _genreValues = _genreValues?.toSet().toList();
+    _genreValues?.forEach((element) {
+      GenresContentType? item = source?.firstWhere((item) => item.value == element, orElse: null);
       if (item != null) {
         result.add(item);
       }
@@ -354,15 +353,15 @@ class ContentFilteringParser {
     return result;
   }
 
-  String getLikePhrases() {
+  String? getLikePhrases() {
     return _likePhrases;
   }
 
-  String getMovieOrTvId() {
+  String? getMovieOrTvId() {
     return _movieOrTvId;
   }
 
-  String getSortBy() {
+  String? getSortBy() {
     return _sortyBy;
   }
 }

@@ -30,7 +30,7 @@ class ApiProvider {
         ? "https://us-central1-movie-chatbot-api.cloudfunctions.net/$functionName/get-movie_watch_providers_and_videos"
         : "https://us-central1-movie-chatbot-api.cloudfunctions.net/$functionName/get-tv_watch_providers_and_videos";
 
-    var response = await client.post(_baseUrl,
+    var response = await client.post(Uri.parse(_baseUrl),
         headers: {HttpHeaders.contentTypeHeader: "application/json"},
         body: body);
 

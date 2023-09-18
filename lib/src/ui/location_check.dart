@@ -50,22 +50,25 @@ class _LocationCheckState extends State<LocationCheck>
   void _checkLocationPreferences() {
     var countryCode = widget.settings.countryCode.getValue();
 
-    if (countryCode == null || countryCode.isEmpty) {
-      Geolocator.isLocationServiceEnabled().then((isGpsEnabled) {
+    if (countryCode.isEmpty) {
+      Geolocator.isLocationServiceEnabled().then((isGpsEnabled) async {
         if (!isGpsEnabled) {
           _checkLocationServices(isGpsEnabled);
         } else {
           try {
-            Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low).then((currentPosition) async {
-              var placeMarks = await placemarkFromCoordinates(
-                  currentPosition.latitude, currentPosition.longitude);
-              if (placeMarks.length > 0) {
-                widget.settings.countryCode
-                    .setValue(placeMarks[0].isoCountryCode ?? "BE");
-              } else {
-                setCountryCodeIfNotSet();
-              }
-            });
+            LocationPermission permission =
+                await Geolocator.requestPermission();
+            Position currentPosition = await Geolocator.getCurrentPosition(
+                desiredAccuracy: LocationAccuracy.low);
+
+            var placeMarks = await placemarkFromCoordinates(
+                currentPosition.latitude, currentPosition.longitude);
+            if (placeMarks.length > 0) {
+              widget.settings.countryCode
+                  .setValue(placeMarks[0].isoCountryCode ?? "BE");
+            } else {
+              setCountryCodeIfNotSet();
+            }
           } catch (error) {
             setCountryCodeIfNotSet();
           }
@@ -76,7 +79,7 @@ class _LocationCheckState extends State<LocationCheck>
 
   void setCountryCodeIfNotSet() {
     var countryCode = widget.settings.countryCode.getValue();
-    if (countryCode == null || countryCode.isEmpty) {
+    if (countryCode.isEmpty) {
       widget.settings.countryCode.setValue("IN");
     }
   }

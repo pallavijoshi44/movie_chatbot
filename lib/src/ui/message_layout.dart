@@ -53,7 +53,7 @@ class Message extends StatelessWidget {
           linkColor: Colors.blue,
           style: Platform.isIOS
               ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-              : Theme.of(context).textTheme.headline1),
+              : Theme.of(context).textTheme.displayLarge),
     );
   }
 }

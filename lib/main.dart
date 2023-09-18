@@ -21,7 +21,7 @@ const typeTheme = Typography.blackMountainView;
 TextTheme txtTheme = Typography.blackMountainView.copyWith(
   bodyLarge: typeTheme.bodyLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
   bodyMedium: typeTheme.bodyMedium?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
-  displayLarge: typeTheme.displayLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  displayLarge: typeTheme.displayLarge?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
   displayMedium: typeTheme.displayMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
   displaySmall: typeTheme.displaySmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
   headlineMedium: typeTheme.headlineMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),

@@ -47,7 +47,7 @@ class MovieDetailWidget extends StatelessWidget {
             : Scrollbar(
                 child: _buildSingleChildScrollView(context, model),
                 thumbVisibility: true,
-                showTrackOnHover: true,
+                trackVisibility: true,
                 radius: Radius.circular(15),
                 thickness: 5,
               ),

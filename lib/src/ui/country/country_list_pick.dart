@@ -138,7 +138,7 @@ class _CountryListPickState extends State<CountryListPick> {
                               ? CupertinoTheme.of(context)
                                   .textTheme
                                   .tabLabelTextStyle
-                              : Theme.of(context).textTheme.headline1),
+                              : Theme.of(context).textTheme.displayLarge),
                     ),
                   ),
                 if (widget.theme?.isDownIcon ?? true == true)

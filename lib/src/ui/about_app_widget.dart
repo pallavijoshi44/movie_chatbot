@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/src/domain/constants.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AboutAppWidget extends StatelessWidget {
   static const routeName = '/about';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +27,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
     super.initState();
     initConnectivity();
     _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
   }
 
   @override
@@ -38,7 +38,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
   Future<void> initConnectivity() async {
     ConnectivityResult? result;
     try {
-      result = await _connectivity.checkConnectivity();
+      result = (await _connectivity.checkConnectivity()) as ConnectivityResult?;
     } on PlatformException catch (e) {
       print(e.toString());
     }
@@ -67,7 +67,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
         NO_NETWORK_MESSAGE,
         style: Platform.isIOS
             ? CupertinoTheme.of(context).textTheme.tabLabelTextStyle
-            : Theme.of(context).textTheme.headline1,
+            : Theme.of(context).textTheme.displayLarge,
       ),
     );
   }

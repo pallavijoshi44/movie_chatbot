@@ -15,20 +15,31 @@ import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 import 'src/domain/constants.dart';
 import 'src/ui/about_app_widget.dart';
+
 final ThemeData theme = ThemeData();
 const typeTheme = Typography.blackMountainView;
 
 TextTheme txtTheme = Typography.blackMountainView.copyWith(
-  bodyLarge: typeTheme.bodyLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  bodyMedium: typeTheme.bodyMedium?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
-  displayLarge: typeTheme.displayLarge?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  displayMedium: typeTheme.displayMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
-  displaySmall: typeTheme.displaySmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  headlineMedium: typeTheme.headlineMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
-  headlineSmall: typeTheme.headlineSmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  titleLarge: typeTheme.titleLarge?.copyWith(fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  titleMedium: typeTheme.titleMedium?.copyWith(fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
-  titleSmall: typeTheme.titleSmall?.copyWith(fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  bodyLarge: typeTheme.bodyLarge?.copyWith(
+      fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  bodyMedium: typeTheme.bodyMedium?.copyWith(
+      fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  displayLarge: typeTheme.displayLarge?.copyWith(
+      fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  displayMedium: typeTheme.displayMedium?.copyWith(
+      fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  displaySmall: typeTheme.displaySmall?.copyWith(
+      fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  headlineMedium: typeTheme.headlineMedium?.copyWith(
+      fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.normal),
+  headlineSmall: typeTheme.headlineSmall?.copyWith(
+      fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleLarge: typeTheme.titleLarge?.copyWith(
+      fontSize: 16, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleMedium: typeTheme.titleMedium?.copyWith(
+      fontSize: 14, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
+  titleSmall: typeTheme.titleSmall?.copyWith(
+      fontSize: 12, fontFamily: 'QuickSand', fontWeight: FontWeight.bold),
 );
 final materialThemeData = theme.copyWith(
     colorScheme: ColorScheme.fromSwatch(
@@ -37,8 +48,9 @@ final materialThemeData = theme.copyWith(
         errorColor: Colors.red),
     textTheme: txtTheme,
     appBarTheme: AppBarTheme(
+      backgroundColor: Colors.transparent,
       titleTextStyle: TextStyle(
-          color: Colors.white,
+          color: Colors.black,
           fontFamily: 'QuickSand',
           fontSize: 20,
           fontWeight: FontWeight.bold),
@@ -180,15 +192,9 @@ class ChatBotFlow extends StatelessWidget {
 
   MaterialScaffoldData _buildMaterialScaffoldData(BuildContext context) {
     return MaterialScaffoldData(
-      appBar: new AppBar(
+      appBar: AppBar(
+          title: const Text(APP_TITLE),
           centerTitle: true,
-          title: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: new Text(
-              APP_TITLE,
-              style: Theme.of(context).appBarTheme.titleTextStyle,
-            ),
-          ),
           actions: <Widget>[
             PopupMenuButton<String>(
               onSelected: (value) async {

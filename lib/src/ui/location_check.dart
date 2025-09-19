@@ -9,6 +9,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../domain/constants.dart';
+import 'location_service.dart';
 
 class LocationCheck extends StatefulWidget {
   final Widget child;
@@ -27,8 +28,9 @@ class _LocationCheckState extends State<LocationCheck>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _checkLocationPreferences();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLocationPreferences();
+    });
   }
 
   @override
@@ -47,32 +49,30 @@ class _LocationCheckState extends State<LocationCheck>
     return widget.child;
   }
 
-  void _checkLocationPreferences() {
+  void _checkLocationPreferences() async {
     var countryCode = widget.settings.countryCode.getValue();
-
     if (countryCode.isEmpty) {
       Geolocator.isLocationServiceEnabled().then((isGpsEnabled) async {
         if (!isGpsEnabled) {
           _checkLocationServices(isGpsEnabled);
         } else {
           try {
-            LocationPermission permission =
-                await Geolocator.requestPermission();
-            Position currentPosition = await Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.low);
+            final pos = await LocationService.getCurrentLocation();
 
-            var placeMarks = await placemarkFromCoordinates(
-                currentPosition.latitude, currentPosition.longitude);
-            if (placeMarks.length > 0) {
-              widget.settings.countryCode
-                  .setValue(placeMarks[0].isoCountryCode ?? "BE");
-            } else {
-              setCountryCodeIfNotSet();
+            if (pos != null) {
+              var placeMarks =
+                  await placemarkFromCoordinates(pos.latitude, pos.longitude);
+              if (placeMarks.length > 0) {
+                widget.settings.countryCode
+                    .setValue(placeMarks[0].isoCountryCode ?? "BE");
+              } else {
+                setCountryCodeIfNotSet();
+              }
             }
           } catch (error) {
             setCountryCodeIfNotSet();
           }
-        }
+       }
       });
     }
   }

@@ -45,7 +45,15 @@ class _TextComposerState extends State<TextComposer> {
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ? _buildForIOS(context) : _buildForAndroid(context);
+    return Platform.isIOS
+        ? _buildForIOS(context)
+        : Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom +
+                  MediaQuery.of(context).padding.bottom,
+            ),
+            child: _buildForAndroid(context),
+          );
   }
 
   IconTheme _buildForAndroid(BuildContext context) {

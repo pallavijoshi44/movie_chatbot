@@ -20,14 +20,14 @@ class ConnectivityCheck extends StatefulWidget {
 class _ConnectivityCheckState extends State<ConnectivityCheck> {
   bool isInternetOn = true;
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
     initConnectivity();
     _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus as void Function(List<ConnectivityResult> event)?) as StreamSubscription<ConnectivityResult>;
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
   @override
@@ -36,9 +36,9 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
   }
 
   Future<void> initConnectivity() async {
-    ConnectivityResult? result;
+    List<ConnectivityResult> result = List.empty();
     try {
-      result = (await _connectivity.checkConnectivity()) as ConnectivityResult?;
+      result = await _connectivity.checkConnectivity();
     } on PlatformException catch (e) {
       print(e.toString());
     }
@@ -49,7 +49,7 @@ class _ConnectivityCheckState extends State<ConnectivityCheck> {
     return _updateConnectionStatus(result);
   }
 
-  Future<void> _updateConnectionStatus(ConnectivityResult? result) async {
+  Future<void> _updateConnectionStatus(List<ConnectivityResult?> result) async {
     if (result == ConnectivityResult.none) {
       setState(() {
         isInternetOn = false;
